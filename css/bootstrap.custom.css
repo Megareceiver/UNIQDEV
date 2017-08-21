@@ -1,0 +1,58 @@
+/* Bootstrap custom */
+input.form-control:focus, textarea.form-control:focus {
+	background-color: FFFFFF;
+    border-color: #CCCCCC;
+           box-shadow: none;
+   -webkit-box-shadow: none;
+      -moz-box-shadow: none;
+      -moz-transition: none;
+   -webkit-transition: none;
+}
+
+.btn {
+	-webkit-border-radius: 0%;
+	-moz-border-radius: 0%;
+	-ms-border-radius: 0%;
+	border-radius: 0%;
+}
+
+.btn-default { background-color: transparent; border: none }
+.btn-default:hover { background-color: transparent; }
+.btn-link.clear { padding-left: 0; padding-right: 0 }
+
+.modal-content {
+	-webkit-border-radius: 0;
+	   -moz-border-radius: 0;
+	    -ms-border-radius: 0;
+	        border-radius: 0;
+}
+
+/* modals */
+/*==============================================================*/
+.modal-backdrop { background-color: #C2185B }
+.modal-backdrop.in { opacity: 1 }
+
+
+/* RESPONSIVE */
+/* extra small */
+@media (max-width: 767px) {
+	
+}
+
+/* extra small to small */
+@media (max-width: 991px) {
+	
+}
+
+/* small */
+@media (min-width: 768px) and (max-width: 991px) {
+	
+}
+/* medium */
+@media (min-width: 992px) and (max-width: 1199px) {
+	
+}
+/* large */
+@media (min-width: 1200px) {
+	
+}
