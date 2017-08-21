@@ -239,7 +239,7 @@ function showToggleBox(elem){
 
 /* datepicker **/
 function datePickerActivator(){
-	$(".date").datepicker()
+	$(".date").datepicker({ dateFormat: "yy-mm-dd"});
 	$("input.date").on('focus', function(){ $('html, body').css('overflow','hidden'); });
 	$("input.date").on('blur', function(){ $('html, body').css('overflow','initial'); });
 }
@@ -277,3 +277,7 @@ function autoCompleteActivator(targetId, sources, sourcesDetail, targetIndex){
 	  }
     });
 }
+
+// function flexform(){
+	
+// }

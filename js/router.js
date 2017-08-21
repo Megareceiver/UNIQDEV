@@ -95,6 +95,17 @@ function r_customCallBack(formType, group, target, recentId){
 			switch(target){
 				case 'f111' :
 					$('#f-sejarah-create input[name="noreg"]').val(recentId);
+					$('#f-kelembagaan-create input[name="noreg"]').val(recentId);
+					$('#f-sarana-create input[name="noreg"]').val(recentId);
+					$('#f-kepengurusan-create input[name="noreg"]').val(recentId);
+					$('#f-kelembagaan-create input[name="kelurahan"]').attr('readonly','readonly');
+					p_formHandler("f-kelembagaan-create", "updateData");
+				break;
+				case 'f112' :
+					p_formHandler("f-sejarah-create", "updateData");
+				break;
+				case 'f114' :
+					p_formHandler("f-kepengurusan-create", "updateData");
 				break;
 			}
 		break;
@@ -214,6 +225,9 @@ function r_autoCompleteCallback(targetIndex, sources, sourcesDetail, ui, targetI
 			$("#" + targetId + "_kode4").val(sourcesDetail.list[sources.indexOf(ui.item.value)].kodeProvinsi);
 		break;
 	}
+}
+function r_flexForm(){
+
 }
 
 function r_pageClear(){
@@ -1125,7 +1139,6 @@ function r_f1DaftarLembaga(packet) {
 					'group':'Data ajuan', 'collapse': 'y', 'list' : [
 						{ 'id':'1', 'picture': 'avatar-2.jpg', 'nama': 'xx', 'noreg': '001', 'telp':'123', 'email':'a@e.c', 'alamat': 'jkl' },
 						{ 'id':'2', 'picture': 'avatar-4.jpg', 'nama': 'yy', 'noreg': '002', 'telp':'456', 'email':'b@e.c', 'alamat': 'mno' },
-						{ 'id':'2', 'picture': 'avatar-4.jpg', 'nama': 'yy', 'noreg': '002', 'telp':'456', 'email':'b@e.c', 'alamat': 'mno' },
 					]
 				},
 				{
@@ -1146,7 +1159,6 @@ function r_f1DaftarLembaga(packet) {
 				{'selector': 'verification-card', 	'icon': 'check',  'label': 'Verifikasi'},
 				{'selector': 'edit-card', 			'icon': 'pencil', 'label': 'Ubah profil'},
 				{'selector': 'delete-card', 		'icon': 'trash',  'label': 'Hapus lembaga'},
-				{'selector': 'email-card', 		'icon': 'envelope',  'label': 'Email ke lembaga'},
 			] 
 		}];
 		
@@ -1822,6 +1834,7 @@ function r_f1FormKelembagaan(packet){
 		sourcesData 	  = dataTemp.feedData[0];
 		sourcesDetailData = dataTemp.feedDataDetail;
 		
+		//-- get data legalitas
 		
 		//--open
 		head	= 
@@ -1871,6 +1884,7 @@ function r_f1FormKelembagaan(packet){
 		body = body + 
 		'<div class="col-md-6">' +
 			'<div class="input-box">' +
+				'<input name="noreg" placeholder="Nama lembaga" tabindex="1" type="hidden" value="" />' +
 				'<input name="nama" placeholder="Nama lembaga" tabindex="1" type="text" value="" />' +
 			'</div>' +
 			'<div class="input-box rows-2">' +
@@ -1896,13 +1910,15 @@ function r_f1FormKelembagaan(packet){
 			'</div>' +
 			'<div class="input-box">' +
 				'<div class="icon-box left">' +
-					'<input name="wilayah" placeholder="Wilayah" tabindex="1" type="text" value="" readonly />' +
+					'<input id="f111_lingkupArea_3" name="wilayah" placeholder="Wilayah" tabindex="1" type="text" value="" readonly />' +
+					'<input id="f111_lingkupArea_kode3" name="kodeWilayah" placeholder="Wilayah" tabindex="1" type="hidden" value="" readonly />' +
 					'<span class="fa fa-repeat"></span>' +
 				'</div>' +
 			'</div>' +
 			'<div class="input-box">' +
 				'<div class="icon-box left">' +
-					'<input name="provinsi" placeholder="Provinsi" tabindex="1" type="text" value="" readonly />' +
+					'<input id="f111_lingkupArea_4" name="provinsi" placeholder="Provinsi" tabindex="1" type="text" value="" readonly />' +
+					'<input id="f111_lingkupArea_kode4" name="kodeProvinsi" placeholder="Provinsi" tabindex="1" type="hidden" value="" readonly />' +
 					'<span class="fa fa-repeat"></span>' +
 				'</div>' +
 			'</div>' +
@@ -1962,7 +1978,7 @@ function r_f1FormKelembagaan(packet){
 					'<div class="icon-box both">' +
 						'<label class="browser-box" id="v-usaha1">' +
 							'<p class="placeholder">berkas belum diunggah...</p>' +
-							'<input type="file" tabindex="5" />' +
+							'<input name="imageUrl" type="file" tabindex="5" />' +
 						'</label>' +
 						'<button type="button" browser-id="v-usaha1" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
 						'<span class="left fa fa-paperclip text-purple"></span>' +
@@ -2059,42 +2075,56 @@ function r_f1FormKelembagaan(packet){
 			'<div class="col-md-6">' +
 				'<div class="input-box">' +
 					'<div class="icon-box left">' +
-						'<input name="tanggalBerdiri" placeholder="Tanggal didirikan" class="date" tabindex="6" type="text" value="" />' +
+						'<input class="date" name="tanggalBerdiri" placeholder="Tanggal didirikan" tabindex="6" type="text" value="" />' +
 						'<span class="fa fa-calendar"></span>' +
 					'</div>' +
 				'</div>' +
 				'<div class="select-box">' +
-					'<select tabindex="6">' +
+					'<select name="kepemilikan" tabindex="6">' +
 						'<option value="" selected>Kepemilikan</option>' +
+						'<option value="Pribadi">Pribadi</option>' +
+						'<option value="Keluarga">Keluarga</option>' +
+						'<option value="Lembaga">Lembaga</option>' +
 					'</select>' +
 				'</div>' +
 				'<div class="select-box">' +
-					'<select tabindex="6">' +
+					'<select name="statusTanah" tabindex="6">' +
 						'<option value="" selected>Status Tanah</option>' +
+						'<option value="Sewa" >Sewa</option>' +
+						'<option value="Hak milik" >Hak milik</option>' +
+						'<option value="Hak guna bangun" >Hak guna bangun</option>' +
+						'<option value="Hak guna pakai" >Hak guna pakai</option>' +
+						'<option value="Wakaf" >Wakaf</option>' +
 					'</select>' +
 				'</div>' +
 				'<div class="select-box">' +
-					'<select tabindex="6">' +
+					'<select name="sertifikasi" tabindex="6">' +
 						'<option value="" selected>Sertifikasi - belum</option>' +
+						'<option value="Sudah" >Sudah</option>' +
+						'<option value="Belum" >Belum</option>' +
 					'</select>' +
 				'</div>' +
 				'<div class="hi-box">' +
 					'<div class="input-box half">' +
-						'<input placeholder="Luast tanah" tabindex="6" type="text" value="" />' +
+						'<input name="luasTanah" placeholder="Luast tanah" tabindex="6" type="text" value="" />' +
 					'</div>' +
 					'<div class="select-box half">' +
-						'<select tabindex="6">' +
+						'<select name="satuanT" tabindex="6">' +
 							'<option value="" selected>Satuan</option>' +
+							'<option value="Meter persegi" >Meter Persegi</option>' +
+							'<option value="Hektar" >Hektar</option>' +
 						'</select>' +
 					'</div>' +
 				'</div>' +
 				'<div class="hi-box">' +
 					'<div class="input-box half">' +
-						'<input placeholder="Luast bangunan" tabindex="6" type="text" value="" />' +
+						'<input name="luasBangun" placeholder="Luast bangunan" tabindex="6" type="text" value="" />' +
 					'</div>' +
 					'<div class="select-box half">' +
-						'<select tabindex="6">' +
+						'<select name="satuanB" tabindex="6">' +
 							'<option value="" selected>Satuan</option>' +
+							'<option value="Meter Persegi" >Meter persegi</option>' +
+							'<option value="Hektar" >Hektar</option>' +
 						'</select>' +
 					'</div>' +
 				'</div>' +
@@ -2104,16 +2134,20 @@ function r_f1FormKelembagaan(packet){
 			body = body +
 			'<div class="col-md-6">' +
 				'<div class="select-box">' +
-					'<select tabindex="7">' +
+					'<select name="kondisiBangunan" tabindex="7">' +
 						'<option value="" selected>Kondisi bangunan</option>' +
+						'<option value="Baik" >Baik</option>' +
+						'<option value="Rusak" >Rusak</option>' +
 					'</select>' +
 				'</div>' +
 				'<div class="input-box">' +
-					'<input placeholder="Jumlah bangunan" tabindex="7" class="half" type="text" value="" />' +
+					'<input name="jumlahBangunan" placeholder="Jumlah bangunan" tabindex="7" class="half" type="text" value="" />' +
 				'</div>' +
 				'<div class="select-box">' +
-					'<select tabindex="7">' +
+					'<select name="saranaPrasarana" tabindex="7">' +
 						'<option value="" selected>Sarana / Prasarana - Tidak ada</option>' +
+						'<option value="Ada" >Ada</option>' +
+						'<option value="Tidak ada" >Tidak ada</option>' +
 					'</select>' +
 				'</div>' +
 				'<div class="empty-box">&nbsp;</div>' +
@@ -2124,7 +2158,7 @@ function r_f1FormKelembagaan(packet){
 					'<div class="icon-box both">' +
 						'<label class="browser-box" id="s-org">' +
 							'<p class="placeholder">berkas belum diunggah...</p>' +
-							'<input type="file" tabindex="5" />' +
+							'<input name="imageUrl" type="file" tabindex="5" />' +
 						'</label>' +
 						'<button type="button" browser-id="s-org" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
 						'<span class="left fa fa-paperclip text-purple"></span>' +
@@ -2136,37 +2170,45 @@ function r_f1FormKelembagaan(packet){
 			body = body +
 			'<div class="col-md-6">' +
 				'<div class="input-box">' +
-					'<input placeholder="Bahasa pengantar" tabindex="8" type="text" value="" />' +
+					'<input name="bahasa" placeholder="Bahasa pengantar" tabindex="8" type="text" value="" />' +
 				'</div>' +
 				'<div class="select-box">' +
-					'<select tabindex="8">' +
+					'<select name="sensus" tabindex="8">' +
 						'<option value="" selected>Sensus - belum</option>' +
+						'<option value="Sudah" >Sudah</option>' +
+						'<option value="Belum" >Belum</option>' +
 					'</select>' +
 				'</div>' +
 				'<div class="select-box">' +
-					'<select tabindex="8">' +
+					'<select name="bantuan" tabindex="8">' +
 						'<option value="" selected>Bantuan pemerintah - belum</option>' +
+						'<option value="Sudah" >Sudah</option>' +
+						'<option value="Belum" >Belum</option>' +
 					'</select>' +
 				'</div>' +
 				'<div class="select-box">' +
-					'<select tabindex="8">' +
+					'<select name="kondisiGeo" tabindex="8">' +
 						'<option value="" selected>Kondisi geografis</option>' +
+						'<option value="Pantai" >Pantai</option>' +
+						'<option value="Daratan rendah" >Daratan rendah</option>' +
+						'<option value="Daratan tinggi" >Daratan tinggi</option>' +
 					'</select>' +
 				'</div>' +
 				'<div class="input-box">' +
-					'<input placeholder="Potensi wilayah" tabindex="8" type="text" value="" />' +
+					'<input name="potensi" placeholder="Potensi wilayah" tabindex="8" type="text" value="" />' +
 				'</div>' +
 				'<div class="input-box">' +
-					'<input placeholder="Jenis Wilayah" tabindex="8" type="text" value="" />' +
+					'<input name="jenisWilayah" placeholder="Jenis Wilayah" tabindex="8" type="text" value="" />' +
 				'</div>' +
 			'</div>' +
-		'</form>'+
+		
 		'<div class="clearfix">&nbsp;</div>' +
 		'<div class="col-md-12">' +
 			'<div class="input-box flush">' +
-				'<input placeholder="Catatan" tabindex="8" type="text" value="" />' +
+				'<input name="catatan" placeholder="Catatan" tabindex="8" type="text" value="" />' +
 			'</div>' +
 		'</div>' +
+		'</form>'+
 		'<div class="clearfix">&nbsp;</div>';
 
 		body = body + '</div></div>';
@@ -2187,7 +2229,9 @@ function r_f1FormKelembagaan(packet){
 		body = body + '<div class="col-md-8 col-md-offset-2 tab-container" tab-contentIndex="3">';
 		
 		//left
-		body = body + 
+		body = body +
+		'<form id="f-sarana-create" f-group = "f1" f-target = "f113">'+
+		'<input name="noreg" placeholder="" tabindex="11" type="hidden" value="">' +
 		'<div class="col-md-6">' +
 			'<div class="row default">' +
 				'<div class="cards">' +
@@ -2195,20 +2239,20 @@ function r_f1FormKelembagaan(packet){
 						'<h5>&nbsp;</h5>' +
 						'<div class="btn-collapse right">' +
 							'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
-							'<button class="clear" type="button"><span class="fa fa-check-circle-o"></span></button>' +
+							'<button name="btn" class="clear" type="submit" value="1"><span class="fa fa-check-circle-o"></span></button>' +
 						'</div>' +
 					'</div>' +
 					'<div class="picture-box small">' +
 						'<img class="pic-default" src="img/sources/picture.png" />' +
 					'</div>' +
 					'<div class="input-box">' +
-						'<input placeholder="Keterangan" tabindex="11" type="text" value="" />' +
+						'<input name="keterangan1" placeholder="Keterangan" tabindex="11" type="text" value="" />' +
 					'</div>' +
 					'<div class="input-box">' +
 						'<div class="icon-box both">' +
 							'<label class="browser-box" id="v-sarana1">' +
 								'<p class="placeholder">berkas belum diunggah...</p>' +
-								'<input type="file" tabindex="5" />' +
+								'<input name="imageUrl1" type="file" tabindex="5" />' +
 							'</label>' +
 							'<button type="button" browser-id="v-sarana1" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
 							'<span class="left fa fa-paperclip text-purple"></span>' +
@@ -2227,20 +2271,20 @@ function r_f1FormKelembagaan(packet){
 						'<h5>&nbsp;</h5>' +
 						'<div class="btn-collapse right">' +
 							'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
-							'<button class="clear" type="button"><span class="fa fa-check-circle-o"></span></button>' +
+							'<button name="btn" class="clear" type="submit" value="2"><span class="fa fa-check-circle-o"></span></button>' +
 						'</div>' +
 					'</div>' +
 					'<div class="picture-box small">' +
 						'<img class="pic-default" src="img/sources/picture.png" />' +
 					'</div>' +
 					'<div class="input-box">' +
-						'<input placeholder="Keterangan" tabindex="11" type="text" value="" />' +
+						'<input name="keterangan2" placeholder="Keterangan" tabindex="11" type="text" value="" />' +
 					'</div>' +
 					'<div class="input-box">' +
 						'<div class="icon-box both">' +
 							'<label class="browser-box" id="v-sarana2">' +
 								'<p class="placeholder">berkas belum diunggah...</p>' +
-								'<input type="file" tabindex="5" />' +
+								'<input name="imageUrl2" type="file" tabindex="5" />' +
 							'</label>' +
 							'<button type="button" browser-id="v-sarana2" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
 							'<span class="left fa fa-paperclip text-purple"></span>' +
@@ -2259,20 +2303,20 @@ function r_f1FormKelembagaan(packet){
 						'<h5>&nbsp;</h5>' +
 						'<div class="btn-collapse right">' +
 							'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
-							'<button class="clear" type="button"><span class="fa fa-check-circle-o"></span></button>' +
+							'<button name="btn" class="clear" type="submit" value="3"><span class="fa fa-check-circle-o"></span></button>' +
 						'</div>' +
 					'</div>' +
 					'<div class="picture-box small">' +
 						'<img class="pic-default" src="img/sources/picture.png" />' +
 					'</div>' +
 					'<div class="input-box">' +
-						'<input placeholder="Keterangan" tabindex="11" type="text" value="" />' +
+						'<input name="keterangan3" placeholder="Keterangan" tabindex="11" type="text" value="" />' +
 					'</div>' +
 					'<div class="input-box">' +
 						'<div class="icon-box both">' +
 							'<label class="browser-box" id="v-sarana3">' +
 								'<p class="placeholder">berkas belum diunggah...</p>' +
-								'<input type="file" tabindex="5" />' +
+								'<input name="imageUrl3" type="file" tabindex="5" />' +
 							'</label>' +
 							'<button type="button" browser-id="v-sarana3" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
 							'<span class="left fa fa-paperclip text-purple"></span>' +
@@ -2291,20 +2335,20 @@ function r_f1FormKelembagaan(packet){
 						'<h5>&nbsp;</h5>' +
 						'<div class="btn-collapse right">' +
 							'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
-							'<button class="clear" type="button"><span class="fa fa-check-circle-o"></span></button>' +
+							'<button name="btn" class="clear" type="submit" value="4"><span class="fa fa-check-circle-o"></span></button>' +
 						'</div>' +
 					'</div>' +
 					'<div class="picture-box small">' +
 						'<img class="pic-default" src="img/sources/picture.png" />' +
 					'</div>' +
 					'<div class="input-box">' +
-						'<input placeholder="Keterangan" tabindex="11" type="text" value="" />' +
+						'<input name="keterangan5" placeholder="Keterangan" tabindex="11" type="text" value="" />' +
 					'</div>' +
 					'<div class="input-box">' +
 						'<div class="icon-box both">' +
 							'<label class="browser-box" id="v-sarana4">' +
 								'<p class="placeholder">berkas belum diunggah...</p>' +
-								'<input type="file" tabindex="5" />' +
+								'<input name="imageUrl4" type="file" tabindex="5" />' +
 							'</label>' +
 							'<button type="button" browser-id="v-sarana4" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
 							'<span class="left fa fa-paperclip text-purple"></span>' +
@@ -2312,7 +2356,7 @@ function r_f1FormKelembagaan(packet){
 					'</div>' +
 				'</div>' +
 			'</div>' +
-		'</div>';
+		'</div>'+'</form>';
 		body = body + '</div>';
 		body = body + '<div class="clearfix tab-container" tab-contentIndex="3">&nbsp;</div>';
 		
@@ -2322,13 +2366,14 @@ function r_f1FormKelembagaan(packet){
 		//=======================================================================
 		body = body + '<div class="col-md-8 col-md-offset-2 tab-container" tab-contentIndex="4">';
 		body = body +
+		'<form id="f-kepengurusan-create" f-group = "f1" f-target = "f114">' +
 		'<div class="cards">' +
 			'<div class="cards-header">' +
 				'<h4>Kepengurusan</h4>' +
 				'<p class="offset">informasi personal penangggung jawab lembaga.</p>' +
 				'<div class="btn-collapse right">' +
 					'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
-					'<button class="clear" type="button"><span class="fa fa-check-circle-o"></span></button>' +
+					'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
 				'</div>' +
 			'</div>' +
 		'</div>' +
@@ -2339,36 +2384,41 @@ function r_f1FormKelembagaan(packet){
 		body = body +
 		'<div class="col-md-6">' +
 			'<div class="input-box">' +
-				'<input placeholder="Nama penanggung jawab" tabindex="9" type="text" value="" />' +
+				'<input name="noreg" placeholder="Nama penanggung jawab" tabindex="9" type="hidden" value="" />' +
+				'<input name="penanggungJawab" placeholder="Nama penanggung jawab" tabindex="9" type="text" value="" />' +
 			'</div>' +
 			'<div class="input-box rows-2">' +
-				'<textarea placeholder="Alamat" tabindex="9" class="rows-2"></textarea>' +
+				'<textarea name="alamat" placeholder="Alamat" tabindex="9" class="rows-2"></textarea>' +
 			'</div>' +
 			'<div class="input-box">' +
-				'<input placeholder="RT" tabindex="9" class="half" type="text" value="" />' +
-				'<input placeholder="RW" tabindex="9" class="half" type="text" value="" />' +
+				'<input name="rt" placeholder="RT" tabindex="9" class="half" type="text" value="" />' +
+				'<input name="rw" placeholder="RW" tabindex="9" class="half" type="text" value="" />' +
 			'</div>' +
 			'<div class="input-box">' +
 				'<div class="icon-box left">' +
-					'<input id="tags2" placeholder="Kelurahan" tabindex="9" type="text" value="" />' +
+					'<input id="f114_lingkupArea_kode" name="kodeKelurahan" placeholder="Kelurahan" tabindex="9" type="hidden" value="" />' +
+					'<input id="f114_lingkupArea" name="kelurahan" placeholder="Kelurahan" tabindex="9" type="text" value="" />' +
 					'<span class="fa fa-magic"></span>' +
 				'</div>' +
 			'</div>' +
 			'<div class="input-box">' +
 				'<div class="icon-box left">' +
-					'<input placeholder="Kecamatan" tabindex="9" type="text" value="" disabled />' +
+					'<input id="f114_lingkupArea_kode2" name="kodeKecamatan" placeholder="Kecamatan" tabindex="9" type="hidden" value=""  />' +
+					'<input id="f114_lingkupArea_2" name="kecamatan" placeholder="Kecamatan" tabindex="9" type="text" value="" readonly />' +
 					'<span class="fa fa-repeat"></span>' +
 				'</div>' +
 			'</div>' +
 			'<div class="input-box">' +
 				'<div class="icon-box left">' +
-					'<input placeholder="Wilayah" tabindex="9" type="text" value="" disabled />' +
+					'<input id="f114_lingkupArea_kode3" name="kodeWilayah" placeholder="Wilayah" tabindex="9" type="hidden" value=""  />' +
+					'<input id="f114_lingkupArea_3" name="wilayah" placeholder="Wilayah" tabindex="9" type="text" value="" readonly />' +
 					'<span class="fa fa-repeat"></span>' +
 				'</div>' +
 			'</div>' +
 			'<div class="input-box">' +
 				'<div class="icon-box left">' +
-					'<input placeholder="Provinsi" tabindex="9" type="text" value="" disabled />' +
+					'<input id="f114_lingkupArea_kode4" name="kodeProvinsi" placeholder="Provinsi" tabindex="9" type="hidden" value="" />' +
+					'<input id="f114_lingkupArea_4" name="provinsi" placeholder="Provinsi" tabindex="9" type="text" value="" readonly />' +
 					'<span class="fa fa-repeat"></span>' +
 				'</div>' +
 			'</div>' +
@@ -2378,29 +2428,29 @@ function r_f1FormKelembagaan(packet){
 		body = body +
 		'<div class="col-md-6">' +
 			'<div class="input-box">' +
-				'<input placeholder="Telp" tabindex="9" type="text" value="" />' +
+				'<input name="telp" placeholder="Telp" tabindex="9" type="text" value="" />' +
 			'</div>' +
 			'<div class="select-box">' +
-				'<select tabindex="9">' +
+				'<select name="wargaNegara" tabindex="9">' +
 					'<option value="" selected>WNI</option>' +
 				'</select>' +
 			'</div>' +
 			'<div class="input-box">' +
-				'<input placeholder="Tempat lahir" tabindex="9" type="text" value="" />' +
+				'<input name="tempatLahir" placeholder="Tempat lahir" tabindex="9" type="text" value="" />' +
 			'</div>' +
 			'<div class="input-box">' +
 				'<div class="icon-box left">' +
-					'<input placeholder="Tanggal lahir" tabindex="9" type="text" value="" />' +
+					'<input class="date" name="tanggalLahir" placeholder="Tanggal lahir" tabindex="9" type="text" value="" />' +
 					'<span class="fa fa-calendar"></span>' +
 				'</div>' +
 			'</div>' +
 			'<div class="select-box">' +
-				'<select tabindex="9">' +
+				'<select name="jenisKelamin" tabindex="9">' +
 					'<option value="" selected>Jenis kelamin</option>' +
 				'</select>' +
 			'</div>' +
 			'<div class="select-box">' +
-				'<select tabindex="9">' +
+				'<select name="agama" tabindex="9">' +
 					'<option value="" selected>Agama</option>' +
 				'</select>' +
 			'</div>' +
@@ -2410,23 +2460,24 @@ function r_f1FormKelembagaan(packet){
 		body = body +
 		'<div class="col-md-6">' +
 			'<div class="input-box">' +
-				'<input placeholder="Jabatan lain" tabindex="9" type="text" value="" />' +
+				'<input name="jabatanLain" placeholder="Jabatan lain" tabindex="9" type="text" value="" />' +
 			'</div>' +
 			'<div class="select-box">' +
-				'<select tabindex="9">' +
+				'<select name="pendidikan" tabindex="9">' +
 					'<option value="" selected>Pendidikan</option>' +
 				'</select>' +
 			'</div>' +
 			'<div class="input-box rows-2">' +
-				'<textarea placeholder="Kompetensi" tabindex="9" class="rows-2"></textarea>' +
+				'<textarea name="kompetensi" placeholder="Kompetensi" tabindex="9" class="rows-2"></textarea>' +
 			'</div>' +
 		'</div>' +
 		'<div class="clearfix">&nbsp;</div>' +
 		'<div class="col-md-12">' +
 			'<div class="input-box flush">' +
-				'<input placeholder="Catatan" tabindex="9" type="text" value="" />' +
+				'<input name="catatan" placeholder="Catatan" tabindex="9" type="text" value="" />' +
 			'</div>' +
 		'</div>' +
+		'</form>'+
 		'<div class="clearfix">&nbsp;</div>';
 		
 		body = body + '</div></div>';		
@@ -2439,31 +2490,32 @@ function r_f1FormKelembagaan(packet){
 		//=======================================================================
 		body = body + '<div class="col-md-8 col-md-offset-2 tab-container" tab-contentIndex="5">';
 		body = body +
+		'<form id="f-kegiatanUsaha-create" f-group="f1" f-target="f115">'+
 		'<div class="cards">' +
 			'<div class="cards-header">' +
 				'<h4>Kegiatan Usaha</h4>' +
 				'<p class="offset">informasi mengenai usaha terkait yang dilakukan oleh lembaga.</p>' +
 				'<div class="btn-collapse right">' +
 					'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
-					'<button class="clear" type="button"><span class="fa fa-check-circle-o"></span></button>' +
+					'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
 				'</div>' +
 			'</div>' +
 		'</div>' +
 		'<div class="cards flush">' +
-			'<form id="f-kegiatanUsaha">' +
+			// '<form id="f-kegiatanUsaha">' +
 				'<div class="row default">';
 		
 		//left
 		body = body +
 		'<div class="col-md-6">' +
 			'<div class="input-box">' +
-				'<input placeholder="Nama usaha" tabindex="10" type="text" value="" />' +
+				'<input name="namaUsaha" placeholder="Nama usaha" tabindex="10" type="text" value="" />' +
 			'</div>' +
 			'<div class="input-box">' +
-				'<input placeholder="Jenis usaha" tabindex="10" type="text" value="" />' +
+				'<input name="jenisUsaha" placeholder="Jenis usaha" tabindex="10" type="text" value="" />' +
 			'</div>' +
 			'<div class="input-box">' +
-				'<input placeholder="Jumlah pekerja" tabindex="10" class="half" type="text" value="" />' +
+				'<input name="jumlahPekerja" placeholder="Jumlah pekerja" tabindex="10" class="half" type="text" value="" />' +
 			'</div>' +
 		'</div>';
 		
@@ -2471,10 +2523,10 @@ function r_f1FormKelembagaan(packet){
 		body = body +
 		'<div class="col-md-6">' +
 			'<div class="input-box rows-2">' +
-				'<textarea placeholder="Detail usaha" tabindex="10" class="rows-2"></textarea>' +
+				'<textarea name="detailUsaha" placeholder="Detail usaha" tabindex="10" class="rows-2"></textarea>' +
 			'</div>' +
 			'<div class="input-box">' +
-				'<input placeholder="Catatan" tabindex="10" type="text" value="" />' +
+				'<input name="catatan" placeholder="Catatan" tabindex="10" type="text" value="" />' +
 			'</div>' +
 			'<div class="space-box"></div>' +
 		'</div>' +
@@ -2840,15 +2892,20 @@ function r_f1FormKelembagaan(packet){
 		
 		//--command reactor
 		$(".back-button").unbind().on('click', function(){ r_navigateTo(r_pagePreviousReader()); });
+		// $(".reset").unbind().on('click', function(){ clearTargetForm('f-kelembagaan-create'); });
 		tabActivator();
 		datePickerActivator();
 		fileBrowserActivator();
 		r_navbarReactor();
 		autoCompleteActivator("f111_lingkupArea", sourcesData, sourcesDetailData, "lingkupArea")
+		autoCompleteActivator("f114_lingkupArea", sourcesData, sourcesDetailData, "lingkupArea")
 		//--bottom
 		//form reactor
 		p_formHandler("f-kelembagaan-create" , "addData");
-		p_formHandler("f-sejarah-create" , "addData");			
+		p_formHandler("f-sejarah-create" , "addData");
+		p_formHandler("f-sarana-create" , "addData");
+		p_formHandler("f-kepengurusan-create" , "addData");
+		// clearTargetForm('f-kelembagaan-create');			
 	});
 }
 
