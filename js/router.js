@@ -1817,6 +1817,7 @@ function r_f1FormKelembagaan(packet){
 		
 		dataGrup = [];
 		dataTemp = [];
+		dataLegalitas = [];
 		
 		
 		//-- get data bentuk lembaga
@@ -1835,6 +1836,12 @@ function r_f1FormKelembagaan(packet){
 		sourcesDetailData = dataTemp.feedDataDetail;
 		
 		//-- get data legalitas
+		dataLegalitas = [
+			{ "kodeBentukLembaga": "1", "namaBentukLembaga": "xx" },
+			{ "kodeBentukLembaga": "2", "namaBentukLembaga": "yy" },
+			{ "kodeBentukLembaga": "3", "namaBentukLembaga": "zz" },
+		];
+		
 		
 		//--open
 		head	= 
@@ -1972,15 +1979,15 @@ function r_f1FormKelembagaan(packet){
 					'<p>Lampirkan logo</p>' +
 				'</div>' +
 				'<div class="picture-box">' +
-					'<img class="pic-default" src="img/sources/picture.png" />' +
+					'<img viewer-id="v-logo" class="pic-default" src="img/sources/picture.png" />' +
 				'</div>' +
 				'<div class="input-box">' +
 					'<div class="icon-box both">' +
-						'<label class="browser-box" id="v-usaha1">' +
+						'<label class="browser-box" id="v-logo">' +
 							'<p class="placeholder">berkas belum diunggah...</p>' +
-							'<input name="imageUrl" type="file" tabindex="5" />' +
+							'<input preview-id="v-logo" name="imageUrl" type="file" tabindex="5" />' +
 						'</label>' +
-						'<button type="button" browser-id="v-usaha1" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
+						'<button type="button" browser-id="v-logo" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
 						'<span class="left fa fa-paperclip text-purple"></span>' +
 					'</div>' +
 				'</div>' +
@@ -2009,12 +2016,12 @@ function r_f1FormKelembagaan(packet){
 		
 		//render
 		body = body + '<div class="col-md-8 col-md-offset-2 tab-container" tab-contentIndex="2"><div class="row default">';
-		for(var loop=0; loop<=2; loop++){
+		for(var loop=0; loop<dataLegalitas.length; loop++){
 		body = body + 
 		'<div class="col-md-12">' +
 			'<div class="cards flush ">' +
 				'<div class="cards-header">' +
-					'<h5>Akta Notaris</h5>' +
+					'<h5>' + dataLegalitas[loop].namaBentukLembaga + '</h5>' +
 					'<div class="btn-collapse right">' +
 						'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
 						'<button class="clear" type="button"><span class="fa fa-check-circle-o"></span></button>' +
@@ -2031,11 +2038,11 @@ function r_f1FormKelembagaan(packet){
 				'</div>' +
 				'<div class="input-box">' +
 					'<div class="icon-box both">' +
-						'<label class="browser-box" id="legalitas-1">' +
+						'<label class="browser-box" id="legalitas-' + dataLegalitas[loop].namaBentukLembaga + '">' +
 							'<p class="placeholder">berkas belum diunggah...</p>' +
 							'<input type="file" tabindex="5" />' +
 						'</label>' +
-						'<button type="button" browser-id="legalitas-1" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
+						'<button type="button" browser-id="legalitas-' + dataLegalitas[loop].namaBentukLembaga + '" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
 						'<span class="left fa fa-paperclip text-purple"></span>' +
 					'</div>' +
 				'</div>' +
@@ -2243,7 +2250,7 @@ function r_f1FormKelembagaan(packet){
 						'</div>' +
 					'</div>' +
 					'<div class="picture-box small">' +
-						'<img class="pic-default" src="img/sources/picture.png" />' +
+						'<img viewer-id="v-sarana1" class="pic-default" src="img/sources/picture.png" />' +
 					'</div>' +
 					'<div class="input-box">' +
 						'<input name="keterangan1" placeholder="Keterangan" tabindex="11" type="text" value="" />' +
@@ -2252,7 +2259,7 @@ function r_f1FormKelembagaan(packet){
 						'<div class="icon-box both">' +
 							'<label class="browser-box" id="v-sarana1">' +
 								'<p class="placeholder">berkas belum diunggah...</p>' +
-								'<input name="imageUrl1" type="file" tabindex="5" />' +
+								'<input preview-id="v-sarana1" name="imageUrl1" type="file" tabindex="5" />' +
 							'</label>' +
 							'<button type="button" browser-id="v-sarana1" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
 							'<span class="left fa fa-paperclip text-purple"></span>' +
@@ -2571,7 +2578,7 @@ function r_f1FormKelembagaan(packet){
 						'<div class="icon-box both">' +
 							'<label class="browser-box" id="v-usaha1">' +
 								'<p class="placeholder">berkas belum diunggah...</p>' +
-								'<input type="file" tabindex="5" />' +
+								'<input type="file" tabindex="5"/>' +
 							'</label>' +
 							'<button type="button" browser-id="v-usaha1" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
 							'<span class="left fa fa-paperclip text-purple"></span>' +
@@ -2896,9 +2903,10 @@ function r_f1FormKelembagaan(packet){
 		tabActivator();
 		datePickerActivator();
 		fileBrowserActivator();
+		imagePreviewActivator();
 		r_navbarReactor();
-		autoCompleteActivator("f111_lingkupArea", sourcesData, sourcesDetailData, "lingkupArea")
-		autoCompleteActivator("f114_lingkupArea", sourcesData, sourcesDetailData, "lingkupArea")
+		autoCompleteActivator("f111_lingkupArea", sourcesData, sourcesDetailData, "lingkupArea");
+		autoCompleteActivator("f114_lingkupArea", sourcesData, sourcesDetailData, "lingkupArea");
 		//--bottom
 		//form reactor
 		p_formHandler("f-kelembagaan-create" , "addData");

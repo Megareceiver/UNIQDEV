@@ -198,6 +198,28 @@ function fileRemove(elem){
 	value = "berkas dihapus...<i class='text-orange'>(belum dieksekusi)</i>";
 	$("#" + target + " .placeholder").html(value);
 	$("button[browser-id=" + target + "]").css("display","none");
+	$('img[viewer-id=' + target + ']').removeClass("changed").attr("src", "img/sources/picture.png");
+	$('input[preview-id=' + target + ']').val("");
+}
+
+/* image Preview */
+function imagePreviewActivator(){
+	 $(".browser-box input[type=file]").unbind().on("change", function(){ imagePreview(this, $(this).attr("preview-id")); });
+}
+
+function imagePreview(elem, targetId) {
+	
+	if (elem.files && elem.files[0]) {
+		var reader = new FileReader();
+
+		reader.onload = function (e) {
+			$('img[viewer-id=' + targetId + ']').attr('src', e.target.result);
+			$('img[viewer-id=' + targetId + ']').removeClass("changed").addClass("changed");
+		};
+
+		reader.readAsDataURL(elem.files[0]);
+		return false;
+	}
 }
 
 /* cards detail box */
@@ -277,7 +299,3 @@ function autoCompleteActivator(targetId, sources, sourcesDetail, targetIndex){
 	  }
     });
 }
-
-// function flexform(){
-	
-// }

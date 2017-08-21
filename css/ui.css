@@ -204,6 +204,11 @@ button.main:hover { background-color: #BF245A; color: #FFF !important }
 	height: 20px;
 }
 
+.picture-box img.pic-default.changed{
+	width: 100%;
+	height: 100%;
+}
+
 /* switch box */
 .switch-box { position:relative; display: inline-block; width: 100%; margin: 10px 0 20px 0; padding-top: 5px }
 .switch-box.fixed-position {  
