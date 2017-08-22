@@ -99,6 +99,7 @@ function r_customCallBack(formType, group, target, recentId){
 					$('#f-sarana-create input[name="noreg"]').val(recentId);
 					$('#f-kepengurusan-create input[name="noreg"]').val(recentId);
 					$('#f-kegiatanUsaha-create input[name="noreg"]').val(recentId);
+					$('#f-koleksi-create input[name="noreg"]').val(recentId);
 					$('#f-kelembagaan-create input[name="kelurahan"]').attr('readonly','readonly');
 					p_formHandler("f-kelembagaan-create", "updateData");
 				break;
@@ -110,6 +111,10 @@ function r_customCallBack(formType, group, target, recentId){
 				break;
 				case 'f115' :
 					p_formHandler("f-usaha-create", "updateData");
+				break;
+				case 'f118' :
+					dataKoleksi = p_getData('f1', 'f117',recentId);
+					r_f1KoleksiDataGenerator(dataKoleksi);
 				break;
 			}
 		break;
@@ -1845,8 +1850,13 @@ function r_f1FormKelembagaan(packet){
 			{ "kodeBentukLembaga": "2", "namaBentukLembaga": "yy" },
 			{ "kodeBentukLembaga": "3", "namaBentukLembaga": "zz" },
 		];
-		
-		
+
+		//-- get data koleksi
+		dataKoleksi = p_getData('f1', 'f117','');
+		// if(dataTemp != null){
+		// koleksi = dataKoleksi.feedData	// sourcesData = dataTemp;
+		 	console.log(dataKoleksi);
+
 		//--open
 		head	= 
 		'<div class="row head">' +
@@ -2565,7 +2575,8 @@ function r_f1FormKelembagaan(packet){
 		// VISUALISASI USAHA =======================================================================
 		//=======================================================================
 		//=======================================================================
-		body = body + 
+		body = body +
+		'<form id="f-visualisasiUsaha-create" f-group="f1" f-target="f116">'+
 		'<div class="col-md-8 col-md-offset-2 tab-container" tab-contentIndex="5">' +
 			'<div class="cards-label plus">' +
 				'<p><strong>Visualisasi usaha (0)</strong></p>' +
@@ -2583,7 +2594,7 @@ function r_f1FormKelembagaan(packet){
 						'<h5>&nbsp;</h5>' +
 						'<div class="btn-collapse right">' +
 							'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
-							'<button class="clear" type="button"><span class="fa fa-check-circle-o"></span></button>' +
+							'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
 						'</div>' +
 					'</div>' +
 					'<div class="picture-box small">' +
@@ -2615,7 +2626,7 @@ function r_f1FormKelembagaan(packet){
 						'<h5>&nbsp;</h5>' +
 						'<div class="btn-collapse right">' +
 							'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
-							'<button class="clear" type="button"><span class="fa fa-check-circle-o"></span></button>' +
+							'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
 						'</div>' +
 					'</div>' +
 					'<div class="picture-box small">' +
@@ -2647,7 +2658,7 @@ function r_f1FormKelembagaan(packet){
 						'<h5>&nbsp;</h5>' +
 						'<div class="btn-collapse right">' +
 							'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
-							'<button class="clear" type="button"><span class="fa fa-check-circle-o"></span></button>' +
+							'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
 						'</div>' +
 					'</div>' +
 					'<div class="picture-box small">' +
@@ -2679,7 +2690,7 @@ function r_f1FormKelembagaan(packet){
 						'<h5>&nbsp;</h5>' +
 						'<div class="btn-collapse right">' +
 							'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
-							'<button class="clear" type="button"><span class="fa fa-check-circle-o"></span></button>' +
+							'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
 						'</div>' +
 					'</div>' +
 					'<div class="picture-box small">' +
@@ -2701,14 +2712,16 @@ function r_f1FormKelembagaan(packet){
 				'</div>' +
 			'</div>' +
 		'</div>';
-		body = body + '</div>';
+		body = body + '</div>' + '</form>';
 		body = body + '<div class="clearfix tab-container" tab-contentIndex="5">&nbsp;</div>';
 		
 		
 		// KOLEKSI =======================================================================
 		//=======================================================================
 		//=======================================================================
-		body = body + '<div class="col-md-8 col-md-offset-2 tab-container" tab-contentIndex="6">';
+		body = body + 
+		'<form id="f-koleksi-create" f-group="f1" f-target="f118">'+
+		'<div class="col-md-8 col-md-offset-2 tab-container" tab-contentIndex="6">';
 		body = body +
 		'<div class="cards">' +
 			'<div class="cards-header">' +
@@ -2716,19 +2729,20 @@ function r_f1FormKelembagaan(packet){
 				'<p class="offset">daftar kepemilikan lembaga yang ingin dipublikasikan.</p>' +
 				'<div class="btn-collapse right">' +
 					'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
-					'<button class="clear" type="button"><span class="fa fa-check-circle-o"></span></button>' +
+					'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
 				'</div>' +
 			'</div>' +
 		'</div>' +
 		'<div class="cards flush">' +
-			'<form id="f-koleksi">' +
+			// '<form id="f-koleksi">' +
 				'<div class="row default">';
 		
 		//left
 		body = body +
 		'<div class="col-md-6">' +
 			'<div class="input-box">' +
-				'<input placeholder="Judul koleksi" tabindex="13" type="text" value="" />' +
+				'<input name="noreg" placeholder="Judul koleksi" tabindex="13" type="hidden" value="" />' +
+				'<input name="judulKoleksi" placeholder="Judul koleksi" tabindex="13" type="text" value="" />' +
 			'</div>' +
 		'</div>';
 		
@@ -2736,8 +2750,10 @@ function r_f1FormKelembagaan(packet){
 		body = body +
 		'<div class="col-md-6">' +
 			'<div class="select-box">' +
-				'<select tabindex="13">' +
+				'<select name="jenisKoleksi" tabindex="13">' +
 					'<option value="" selected>Jenis koleksi</option>' +
+					'<option value="Buku" >Buku</option>' +
+					'<option value="Kitab" >Kitab</option>' +
 				'</select>' +
 			'</div>' +
 		'</div>';
@@ -2746,7 +2762,7 @@ function r_f1FormKelembagaan(packet){
 		body = body +
 		'<div class="col-md-6">' +
 			'<div class="input-box">' +
-				'<input placeholder="Keterangan" tabindex="13" type="text" value="" />' +
+				'<input name="deskripsi" placeholder="Keterangan" tabindex="13" type="text" value="" />' +
 			'</div>' +
 			'<div class="space-box"></div>' +
 		'</div>';
@@ -2757,19 +2773,21 @@ function r_f1FormKelembagaan(packet){
 		'<div class="cards-label plus">' +
 			'<p><strong>Daftar koleksi (1)</strong></p>' +
 		'</div>';
-		
-		//data list
-		//render
-		
-		body = body +
-		'<div class="cards">' +
-			'<div class="list-box">' +
-				'<div class="list-icon bg-sky"><span class="fa fa-book"></span></div>' +
-				'<p class="list-text">lorem ipsum dolor sit amet.</p>' +
-				'<div class="list-remove"><span class="fa fa-trash"></span></div>' +
-			'</div>' +
-		'</div>';
-	
+		// r_f1KoleksiDataGenerator();
+		// //data list
+		// //render
+		// counter = 0;
+		// for(counter = 0;counter < 3; counter ++)
+		// {
+		// body = body +
+		// '<div class="cards">' +
+		// 	'<div class="list-box">' +
+		// 		'<div class="list-icon bg-sky"><span class="fa fa-book"></span></div>' +
+		// 		'<p class="list-text">lorem ipsum dolor sit amet.</p>' +
+		// 		'<div class="list-remove"><span class="fa fa-trash"></span></div>' +
+		// 	'</div>' +
+		// '</div>';
+		// }
 		body = body + '</div>';
 		body = body + '<div class="clearfix tab-container" tab-contentIndex="6">&nbsp;</div>';
 		
@@ -2827,81 +2845,81 @@ function r_f1FormKelembagaan(packet){
 		// KOLEKSI =======================================================================
 		//=======================================================================
 		//=======================================================================
-		body = body + '<div class="col-md-8 col-md-offset-2 tab-container" tab-contentIndex="8">';
-		body = body +
-		'<div class="cards">' +
-			'<div class="cards-header">' +
-				'<h4>Hirarki</h4>' +
-				'<p class="offset">kedudukan suatu lembaga terhadap lembaga lainnya.</p>' +
-				'<div class="btn-collapse right">' +
-					'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
-					'<button class="clear" type="button"><span class="fa fa-check-circle-o"></span></button>' +
-				'</div>' +
-			'</div>' +
-		'</div>' +
-		'<div class="cards flush">' +
-			'<form id="f-koleksi">' +
-				'<div class="row default">';
+		// body = body + '<div class="col-md-8 col-md-offset-2 tab-container" tab-contentIndex="8">';
+		// body = body +
+		// '<div class="cards">' +
+		// 	'<div class="cards-header">' +
+		// 		'<h4>Hirarki</h4>' +
+		// 		'<p class="offset">kedudukan suatu lembaga terhadap lembaga lainnya.</p>' +
+		// 		'<div class="btn-collapse right">' +
+		// 			'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
+		// 			'<button class="clear" type="button"><span class="fa fa-check-circle-o"></span></button>' +
+		// 		'</div>' +
+		// 	'</div>' +
+		// '</div>' +
+		// '<div class="cards flush">' +
+		// 	'<form id="f-koleksi">' +
+		// 		'<div class="row default">';
 		
-		//left
-		body = body +
-		'<div class="col-md-6">' +
-			'<div class="select-box">' +
-				'<select tabindex="13">' +
-					'<option value="" selected>Pilih hirarki</option>' +
-					'<option value="" >Induk lembaga</option>' +
-					'<option value="" >Anak lembaga</option>' +
-				'</select>' +
-			'</div>' +
-		'</div>';
+		// //left
+		// body = body +
+		// '<div class="col-md-6">' +
+		// 	'<div class="select-box">' +
+		// 		'<select tabindex="13">' +
+		// 			'<option value="" selected>Pilih hirarki</option>' +
+		// 			'<option value="" >Induk lembaga</option>' +
+		// 			'<option value="" >Anak lembaga</option>' +
+		// 		'</select>' +
+		// 	'</div>' +
+		// '</div>';
 		
-		//right
-		body = body +
-		'<div class="col-md-6">' +
-			'<div class="input-box">' +
-				'<div class="icon-box left">' +
-					'<input placeholder="Lembaga" tabindex="13" type="text" value="" />' +
-					'<span class="fa fa-magic"></span>' +
-				'</div>' +
-			'</div>' +
-		'</div>';
+		// //right
+		// body = body +
+		// '<div class="col-md-6">' +
+		// 	'<div class="input-box">' +
+		// 		'<div class="icon-box left">' +
+		// 			'<input placeholder="Lembaga" tabindex="13" type="text" value="" />' +
+		// 			'<span class="fa fa-magic"></span>' +
+		// 		'</div>' +
+		// 	'</div>' +
+		// '</div>';
 		
-		body = body + '</div></form></div>';
+		// body = body + '</div></form></div>';
 		
-		body = body + 
-		'<div class="cards-label plus">' +
-			'<p><strong>Posisi dalam hirarki</strong></p>' +
-		'</div>';
+		// body = body + 
+		// '<div class="cards-label plus">' +
+		// 	'<p><strong>Posisi dalam hirarki</strong></p>' +
+		// '</div>';
 		
-		//data list
-		//render
+		// //data list
+		// //render
 		
-		body = body +
-		'<div class="cards">' +
-			'<div class="cards-header">' +
-				'<p class="fixed text-purple text-bold">Induk lembaga</p>' +
-			'</div>' +
-		'</div>' +
-		'<div class="cards">' +
-			'<div class="list-box clear">' +
-				'<p class="list-text">lorem ipsum dolor sit amet.</p>' +
-				'<div class="list-remove"><span class="fa fa-trash"></span></div>' +
-			'</div>' +
-		'</div>' +
-		'<div class="cards">' +
-			'<div class="cards-header">' +
-				'<p class="fixed text-yellow text-bold">Anak lembaga</p>' +
-			'</div>' +
-		'</div>' +
-		'<div class="cards">' +
-			'<div class="list-box clear">' +
-				'<p class="list-text">lorem ipsum dolor sit amet.</p>' +
-				'<div class="list-remove"><span class="fa fa-trash"></span></div>' +
-			'</div>' +
-		'</div>';
+		// body = body +
+		// '<div class="cards">' +
+		// 	'<div class="cards-header">' +
+		// 		'<p class="fixed text-purple text-bold">Induk lembaga</p>' +
+		// 	'</div>' +
+		// '</div>' +
+		// '<div class="cards">' +
+		// 	'<div class="list-box clear">' +
+		// 		'<p class="list-text">lorem ipsum dolor sit amet.</p>' +
+		// 		'<div class="list-remove"><span class="fa fa-trash"></span></div>' +
+		// 	'</div>' +
+		// '</div>' +
+		// '<div class="cards">' +
+		// 	'<div class="cards-header">' +
+		// 		'<p class="fixed text-yellow text-bold">Anak lembaga</p>' +
+		// 	'</div>' +
+		// '</div>' +
+		// '<div class="cards">' +
+		// 	'<div class="list-box clear">' +
+		// 		'<p class="list-text">lorem ipsum dolor sit amet.</p>' +
+		// 		'<div class="list-remove"><span class="fa fa-trash"></span></div>' +
+		// 	'</div>' +
+		// '</div>';
 	
-		body = body + '</div>';
-		body = body + '<div class="clearfix tab-container" tab-contentIndex="8">&nbsp;</div>';
+		// body = body + '</div>';
+		// body = body + '<div class="clearfix tab-container" tab-contentIndex="8">&nbsp;</div>';
 		
 		
 		// CLOSING
@@ -2925,12 +2943,14 @@ function r_f1FormKelembagaan(packet){
 		r_navbarReactor();
 		autoCompleteActivator("f111_lingkupArea", sourcesData, sourcesDetailData, "lingkupArea");
 		autoCompleteActivator("f114_lingkupArea", sourcesData, sourcesDetailData, "lingkupArea");
+		//r_f1KoleksiDataGenerator();
 		//--bottom
 		//form reactor
 		p_formHandler("f-kelembagaan-create" , "addData");
 		p_formHandler("f-sejarah-create" , "addData");
 		p_formHandler("f-sarana-create" , "addData");
 		p_formHandler("f-kepengurusan-create" , "addData");
+		p_formHandler("f-koleksi-create" , "addData");
 		// clearTargetForm('f-kelembagaan-create');			
 	});
 }
@@ -5882,7 +5902,86 @@ function r_f4FormInfoPersonal() {
 		r_navbarReactor();
 	});
 }
+function r_f1KoleksiDataGenerator(data){
+	var genHtml = "";
+	// // if(data.length > 0){
+	// genHtml = genHtml + 
+	// 	'<div class="cards-label plus">' +
+	// 		'<p><strong>Daftar koleksi (1)</strong></p>' +
+	// 	'</div>';
+		
+	// 	//data list
+	// 	//render
+		// -- get data koleksi
+		// dataKoleksi = p_getData('f1', 'f117','');
+		// if(dataTemp != null){
+			// sourcesData = dataTemp;
+			console.log(dataKoleksi.feedData.length);
+		// }
+		
+		for(counter=0; counter < dataKoleksi.feedData.length; counter++){
+		body = body +
+		'<div class="cards">' +
+			'<div class="list-box">' +
+				'<div class="list-icon bg-sky"><span class="fa fa-book"></span></div>' +
+				'<p class="list-text">'+dataKoleksi.feedData[counter].judulKoleksi+'</p>' +
+				'<div class="list-remove"><span class="fa fa-trash"></span></div>' +
+			'</div>' +
+		'</div>';
+		}
+		
+	// // }else{
+	// 	genHtml = genHtml +
+	// 	'<div class="cards emptyList">' +
+	// 		'<div class="row default">' +
+	// 			'<div class="col-xs-12">' +
+	// 				'<div class="list-box text-center clear">' +
+	// 					'<p class="list-text">Data tidak ditemukan</p>' +
+	// 				'</div>' +
+	// 			'</div>' +
+	// 		'</div>' +
+	// 	'</div>';
+	// }
 
+	// if(formType == "addData"){
+	// 	$("#" + sectionId + ' .emptyList').remove();
+	// 	$("#" + sectionId).append(genHtml);
+	// }else if (formType == "updateData"){
+	// 	$("#" + pContainer).replaceWith(genHtml);
+	// }
+	
+	// //reactor
+	// $(".click-option").unbind().on("click", function(){ 
+	// 	//packet session
+	// 	clearPacket();
+	// 	pGroup 		= $(this).attr('p-group');
+	// 	pTarget		= $(this).attr('p-target')
+	// 	pId			= $(this).attr('p-id');
+	// 	pLabel		= $(this).attr('p-label');
+	// 	pContainer		= $(this).attr('p-container');
+	// 	pReferences		= $(this).attr('p-references');
+	// 	pReferencesKey	= $(this).attr('p-referencesKey');
+	// 	showOptionList(); 
+		
+	// 	//-- option activator
+	// 	$("#edit-card").unbind().on("click", function(){ 
+	// 		hideOptionList(); 
+	// 		r_f4LingkupAreaEditor(pTarget, pId, pLabel, pReferences); 
+	// 	});
+
+	// 	$("#delete-card").unbind().on("click", function(){ 
+	// 		hideOptionList(); 
+	// 		showOptionConfirm('delete');
+	// 		$(".option-yes").unbind().on("click", function(){ 
+	// 			hideOptionList(); 
+	// 			if(p_removeData(pGroup, pTarget, pId) == 'success'){ 
+	// 				$('#' + pContainer).remove(); 
+	// 				clearPacket();
+	// 			}; 
+	// 		});
+	// 	});
+	// });
+}
 
 /* maintance */
 function clearPacket(){

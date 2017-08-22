@@ -1,5 +1,35 @@
 <?php
 	require_once('protected/config.php');
+	function getData($data, $target){
+		/* initial condition */
+		$resultList = array();
+		$table 		= "";
+		$field 		= array();
+		$rows		= 0;
+		$condition 	= "";
+		$orderBy	= "";
+		$error		= 0;
+		$errorType  = "";
+		$errorMsg	= "";
+	
+		/* refferences */
+		// f411 : provinsi
+		// f412 : wilayah
+		// f413 : kecamatan
+		// f414 : kelurahan
+		
+		switch($target){
+			case "f117": $resultList = getKoleksiSection($data); break;
+			
+			default	   : $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Terjadi kesalahan fatal, proses dibatalkan!", "feedData" => array()); break;
+		}
+		
+		/* result fetch */
+		$json = $resultList;
+		
+		return $json;
+	}
+
 	function createData($data, $target){
 		/* initial condition */
 		$resultList = array();
@@ -21,7 +51,8 @@
 			case "f114": $resultList = createKepengurusanSection($target, $data); break;
 			case "f115": $resultList = createKegiatanUsahaSection($target, $data); break;
 			case "f116": $resultList = createVisualisasiUsahaSection($target, $data); break;
-			case "f121": $resultList = getLegalitasSection(); break;
+			case "f118": $resultList = createKoleksiSection($target, $data); break;
+			// case "f121": $resultList = getLegalitasSection(); break;
 			default	   : $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Terjadi kesalahan fatal, proses dibatalkan!"); break;
 		}
 		
@@ -48,6 +79,72 @@
 			case "f112": $resultList = changeSejarahSection($target, $data); break;
 			case "f114": $resultList = changeKepengurusanSection($target, $data); break;
 			default	   : $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Terjadi kesalahan fatal, proses dibatalkan!"); break;
+		}
+		
+		/* result fetch */
+		$json = $resultList;
+		
+		return $json;
+	}
+	function getKoleksiSection($data){
+		/* initial condition */
+		$resultList = array();
+		$table 		= "";
+		$field 		= array();
+		$rows		= 0;
+		$condition 	= "";
+		$orderBy	= "";
+		$error		= 0;
+		$errorType  = "";
+		$errorMsg	= "";
+	
+		/* open connection */ 
+		$gate = openGate();
+		if($gate){		
+			// connection = true
+			$sql = 	
+			"
+			SELECT * FROM dplega_005_koleksi_temp WHERE noRegistrasi = '".$data['keyword']."'
+			";
+						
+			$result = mysqli_query($gate, $sql);
+			if($result){
+				$record    = array();  
+				$fetch 	   = array(); 
+				if(mysqli_num_rows($result) > 0) {
+					// output data of each row 
+					while($row = mysqli_fetch_assoc($result)) {
+						$fetch = array(
+									"idData"   		=> $row['idData'],
+									"noreg" 		=> $row['noRegistrasi'],
+									"jenisKoleksi" 	=> $row['jenisKoleksi'],
+									"judulKoleksi" 	=> $row['judulKoleksi'],
+									"deskripsi"		=> $row['deskripsi']
+								);
+						
+						array_push($record, $fetch); 
+						unset($fetch); 
+						$fetch = array();
+					}
+					
+					$resultList = array( "feedStatus" => "succes", "feedMessage" => "Data ditemukan!", "feedData" => $record);
+				}else {
+					$resultList = array( "feedStatus" => "succes", "feedMessage" => "Data tidak ditemukan!", "feedData" => null);
+				}
+			}			
+				
+			closeGate($gate);
+		}else {
+			//error state
+			$error		= 1;
+			$errorType  = "danger";
+			$errorMsg	= "Terjadi kesalahan, tidak dapat terhubung ke server!";
+		}
+		
+		
+		if($error == 1){
+			//error state
+			$resultList = array( "feedStatus" => "failed", "feedType" => $errorType, "feedMessage" => $errorMsg);
 		}
 		
 		/* result fetch */
@@ -1311,6 +1408,101 @@
 		
 		return $json;
 	}
+	function createKoleksiSection($target, $data){
+		/* initial condition */
+		$resultList = array();
+		$table 		= "";
+		$field 		= array();
+		$rows		= 0;
+		$condition 	= "";
+		$orderBy	= "";
+		$error		= 0;
+		$resultType = "";
+		$resultMsg	= "";
+		$counter	= "";
+		$idRecent	= "";
+		$idTemp		= "";
+		
+		/* validation 
+		if($target == "f411"){
+			if(
+				!isset($data['kode']) || $data['kode']==""
+				|| !isset($data['nama']) || $data['nama']==""
+			){ $error = 1; }
+		}elseif($target == "f412" || $target == "f413" || $target == "f414"){
+			if(
+				!isset($data['kode']) || $data['kode']==""
+				|| !isset($data['nama']) || $data['nama']==""
+				|| !isset($data['referensi']) || $data['referensi']==""
+			){ $error = 1; }
+		}*/
+			if($error != 1){
+			/* open connection */
+				$gate = openGate();
+				if($gate){
+				// connection = true
+					if($data['noreg'] != ''){
+						$sql = " INSERT INTO dplega_005_koleksi_temp
+							(
+								noRegistrasi,
+								jenisKoleksi,
+								judulKoleksi,
+								deskripsi,
+								createdBy
+							)
+							VALUES
+							(
+								'".$data['noreg']."',
+								'".$data['jenisKoleksi']."',
+								'".$data['judulKoleksi']."',
+								'".$data['deskripsi']."',
+								'TESTSESSION'
+							)
+						";
+					}else{
+						$sql = 'error';
+					}
+				$result	  = mysqli_query($gate, $sql);
+				$eresult  = mysqli_error($gate);
+				$idRecent = $data["noreg"];
+				if($result){	
+					$error	    = 0;
+					$resultType = "success";
+					$resultMsg  = "Input berhasil disimpan.";
+				}else{
+					//error state
+					$error		= 1;
+					$resultType = "danger";
+					$resultMsg	= "Terjadi kesalahan fatal, input gagal disimpan! ".$eresult;
+				}
+				
+				closeGate($gate);
+			}else{
+				//error state
+				$error		= 1;
+				$resultType = "danger";
+				$resultMsg	= "Terjadi kesalahan, tidak dapat terhubung ke server!";
+			}
+		}else{
+			//error state
+			$error		= 1;
+			$resultType = "danger";
+			$resultMsg	= "Terjadi kesalahan, mandatory tidak boleh kosong!";
+		}
+		
+		if($error == 1){
+			//error state
+			$resultList = array( "feedStatus" => "failed", "feedType" => $resultType, "feedMessage" => $resultMsg);
+		}else{
+			$resultList = array( "feedStatus" => "success", "feedType" => $resultType, "feedMessage" => $resultMsg, "feedId" => $idRecent);
+		}
+		
+		/* result fetch */
+		$json = $resultList;
+		
+		return $json;
+	}
+
 
 	function getLegalitasSection(){
 		/* initial condition */
