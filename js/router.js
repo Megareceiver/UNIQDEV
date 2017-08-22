@@ -1046,16 +1046,9 @@ function r_f1Kelembagaan() {
 		body  	= '';
 		part	= ['',''];
 		content = '';
-		data 	= [
-			{'idFilter': '1', 'bentukLembaga':'Yayasan', 'jumlahData': '4', 'picture': 'icon-1.png', 'deskripsi': 'Suatu badan hukum yang mempunyai maksud dan tujuan bersifat sosial, keagamaan dan kemanusiaan, didirikan dengan memperhatikan persyaratan formal yang ditentukan dalam undang-undang.'},
-			{'idFilter': '2', 'bentukLembaga':'Perkumpulan', 'jumlahData': '2', 'picture': 'icon-2.png', 'deskripsi': 'Suatu badan hukum yang merupakan kumpulan orang, didirikan untuk mewujudkan kesamaan maksud dan tujuan tertentu dibidang sosial, kegamaan, dan kemanusiaan dan tidak membagikan keuntungan kepada anggotanya.'},
-			{'idFilter': '3', 'bentukLembaga':'Pondok Pesantren', 'jumlahData': '2', 'picture': 'icon-3.png', 'deskripsi': 'Sebuah pendidikan tradisional yang para siswanya tinggal bersama dan belajar dibawah bimbingan guru yang lebih dikenal dengan sebutan kiai dan mempunyai asrama untuk tempat menginap santri.'},
-			{'idFilter': '4', 'bentukLembaga':'Madrasah Ibtidaiyah', 'jumlahData': '2', 'picture': 'icon-4.png', 'deskripsi': 'Jenjang paling dasar pada pendidikan formal di Indonesia, setara dengan Sekolah Dasar, yang pengelolaannya dilakukan oleh Kementrian Agama.'},
-			{'idFilter': '5', 'bentukLembaga':'Madrasah Tsanawiyah', 'jumlahData': '2', 'picture': 'icon-6.png', 'deskripsi': 'Jenjang dasar pada pendidikan formal di Indonesia , setara dengan Sekolah Menengah Pertama, yang pengelolaannya dilakukan oleh Departemen Agama.'},
-			{'idFilter': '5', 'bentukLembaga':'Madrasah Aliyah', 'jumlahData': '2', 'picture': 'icon-7.png', 'deskripsi': 'Jenjang pendidikan menengah pada pendidikan formal di Indonesia, setara dengan Sekolah Menengah Atas, yang pengelolaannya dilakukan oleh Kementrian Agama.'},
-			{'idFilter': '6', 'bentukLembaga':'Perguruan Tinggi', 'jumlahData': '2', 'picture': 'icon-5.png', 'deskripsi': 'Satuan pendidikan penyelengara pendidikan tinggi. Peserta didik perguruan tinggi disebut Mahasiswa, sedangkan pendidik perguruan tinggi disebut Dosen.'},
-			{'idFilter': '7', 'bentukLembaga':'RA', 'jumlahData': '2', 'picture': 'icon-3.png', 'deskripsi': 'Jenjang pendidikan anak usia dini (yakni usia 6 tahun atau dibawahnya) dalam bentuk pendidikan formal, dibawah Kementrian Agama.'},
-		];
+		data 	= p_getData('f4', 'f431'); 
+		data 	= data.feedData; 
+		
 		
 		//--open
 		head	= '';
@@ -1087,28 +1080,20 @@ function r_f1Kelembagaan() {
 			part[0] = part[0] +
 			'<div class="cards">' +
 				'<div class="cards-header">' +
-					'<p class="fixed offset text-black">' + data[loop].bentukLembaga + '</p>' +
+					'<p class="fixed offset text-black">' + data[loop].caption + '</p>' +
 					'<div class="btn-collapse right">' +
-						'<span id="counter-select">' + data[loop].jumlahData + '</span>' +
+						'<span id="counter-select">' + data[loop].counter + '</span>' +
 					'</div>' +
 				'</div>' +
-				'<!--div class="summary-box">' +
-					'<div class="caption">' +
-						'<span>' + data[loop].bentukLembaga + '</span>' +
-					'</div>' +
-					'<div class="counter">' +
-						'<span>' + data[loop].jumlahData + '</span>' +
-					'</div>' +
-				'</div-->' +
 			'</div>';
 			
 			//--right
 			part[1] = part[1] +
 			'<div class="cards clear">' +
-				'<div class="description-box click-frame group-click" p-id="' + data[loop].idFilter + '">' +
+				'<div class="description-box click-frame group-click" p-id="' + data[loop].noreg + '" p-caption="' + data[loop].caption + '">' +
 					'<img class="icon-set" src="img/sources/' + data[loop].picture + '"/>' +
-					'<p class="title-set">' + data[loop].bentukLembaga + '</p>' +
-					'<p class="text-set">' + data[loop].deskripsi + '</p>' +
+					'<p class="title-set">' + data[loop].caption + '</p>' +
+					'<p class="text-set">' + data[loop].description + '</p>' +
 				'</div>' +
 			'</div>';
 			
@@ -1128,13 +1113,33 @@ function r_f1Kelembagaan() {
 		
 		//--command reactor
 		$(".back-button").unbind().on('click', function(){ r_navigateTo(0); });
-		$(".group-click").unbind().on('click', function(){ r_navigateTo(11, $(this).attr('p-id')); });
+		$(".group-click").unbind().on('click', function(){ r_navigateTo(11, [$(this).attr('p-id'), $(this).attr('p-caption')]); });
 		searchBoxActivator();
 		r_navbarReactor();
 	});
 }
 
 function r_f1DaftarLembaga(packet) {
+	
+	//-- get direct load
+	var kodeBentukLembagaState = null;
+	var namaBentukLembagaState = null;
+	var dumbBentukLembagaState = null;
+	
+	if(Array.isArray(packet) == true){
+		kodeBentukLembagaState = packet[0];
+		namaBentukLembagaState = packet[1];
+	}
+	
+	if(kodeBentukLembagaState == "" || kodeBentukLembagaState == null || kodeBentukLembagaState == "start"){
+		dumbBentukLembagaState = r_bentukLembagaReader();
+		console.log(dumbBentukLembagaState);
+		kodeBentukLembagaState = dumbBentukLembagaState[0];
+		namaBentukLembagaState = dumbBentukLembagaState[1];
+	}
+	
+	r_bentukLembagaSet([kodeBentukLembagaState,namaBentukLembagaState]);
+	
 	$("body").prepend(preload);
 	$('main.parent').animate({'opacity': '0.6'},'fast','linear', function(){
 		mainPage.html('');
@@ -1142,60 +1147,11 @@ function r_f1DaftarLembaga(packet) {
 		body  	= '';
 		part	= ['',''];
 		content = '';
-		data 	= [{
-			'lembaga':[
-				{
-					'group':'Data ajuan', 'collapse': 'y', 'list' : [
-						{ 'id':'1', 'picture': 'avatar-2.jpg', 'nama': 'xx', 'noreg': '001', 'telp':'123', 'email':'a@e.c', 'alamat': 'jkl' },
-						{ 'id':'2', 'picture': 'avatar-4.jpg', 'nama': 'yy', 'noreg': '002', 'telp':'456', 'email':'b@e.c', 'alamat': 'mno' },
-					]
-				},
-				{
-					'group':'Data perubahan', 'collapse': 'y', 'list' : [
-						{ 'id':'5', 'picture': 'avatar-1.jpg', 'nama': 'dd', 'noreg': '005', 'telp':'666', 'email':'d@e.c', 'alamat': 'fgh' },
-					]
-				},
-				{
-					'group':'Data sudah verifikasi', 'collapse': 'n', 'list' : [
-						{ 'id':'3', 'picture': 'avatar-7.jpg', 'nama': 'aa', 'noreg': '000', 'telp':'789', 'email':'c@e.c', 'alamat': 'pqr' },
-						{ 'id':'4', 'picture': 'avatar-3.jpg', 'nama': 'bb', 'noreg': '004', 'telp':'234', 'email':'d@e.c', 'alamat': 'stu' },
-					]
-				},
-			],
-			'option': [
-				{'selector': 'download-card', 		'icon': 'download',  'label': 'Unduh (.pdf)'},
-				{'selector': 'view-card', 			'icon': 'search', 'label': 'Lihat selengkapnya'},
-				{'selector': 'verification-card', 	'icon': 'check',  'label': 'Verifikasi'},
-				{'selector': 'edit-card', 			'icon': 'pencil', 'label': 'Ubah profil'},
-				{'selector': 'delete-card', 		'icon': 'trash',  'label': 'Hapus lembaga'},
-			] 
-		}];
+		data = p_getData('f1', 'f1110', kodeBentukLembagaState);
+		data = data.feedData;
 		
 		//-- set option list on a session
-		optionBatch = data[0].option;
-		
-		//--filter render data
-		var provinsiHtml  = '';
-		var wilayahHtml   = '';
-		var kecamatanHtml = '';
-		var kelurahanHtml = '';
-		var look = 0;
-		
-		// for(look = 0; look < optionD[0].provinsi.length; look++){
-			// provinsiHtml = provinsiHtml + '<option value="' + optionD[0].provinsi[look].id + '">' + optionD[0].provinsi[look].caption + '</option>';
-		// }
-		
-		// for(look = 0; look < optionD[0].wilayah.length; look++){
-			// wilayahHtml = wilayahHtml + '<option value="' + optionD[0].wilayah[look].id + '">' + optionD[0].wilayah[look].caption + '</option>';
-		// }
-		
-		// for(look = 0; look < optionD[0].kecamatan.length; look++){
-			// kecamatanHtml = kecamatanHtml + '<option value="' + optionD[0].kecamatan[look].id + '">' + optionD[0].kecamatan[look].caption + '</option>';
-		// }
-		
-		// for(look = 0; look < optionD[0].kelurahan.length; look++){
-			// kelurahanHtml = kelurahanHtml + '<option value="' + optionD[0].kelurahan[look].id + '">' + optionD[0].kelurahan[look].caption + '</option>';
-		// }
+		optionBatch = (data != null) ? data.option : [];
 		
 		//--open
 		head	= '';
@@ -1219,25 +1175,25 @@ function r_f1DaftarLembaga(packet) {
 				'<div class="select-box">' +
 					'<select>' +
 						'<option value="" selected>Provinsi</option>' +
-						provinsiHtml +
+						r_optionDHtml('provinsi') +
 					'</select>' +
 				'</div>' +
 				'<div class="select-box">' +
 					'<select>' +
 						'<option value="" selected>Wilayah</option>' +
-						wilayahHtml +
+						r_optionDHtml('wilayah') +
 					'</select>' +
 				'</div>' +
 				'<div class="select-box">' +
 					'<select>' +
 						'<option value="" selected>Kecamatan</option>' +
-						kecamatanHtml +
+						r_optionDHtml('kecamatan') +
 					'</select>' +
 				'</div>' +
 				'<div class="select-box">' +
 					'<select>' +
 						'<option value="" selected>Kelurahan</option>' +
-						kelurahanHtml +
+						r_optionDHtml('kelurahan') +
 					'</select>' +
 				'</div>' +
 				'<div class="space-box"></div>' +
@@ -1246,52 +1202,55 @@ function r_f1DaftarLembaga(packet) {
 			
 		//--render data
 		var tempP = "";
-		var tempB = "";
-		for(var loop = 0; loop < data[0].lembaga.length; loop++){	
-			if(loop > 0){ tempP = "plus"; }
-			if(data[0].lembaga[loop].collapse == 'y') { tempB = '<span class="btn-collapse">Lihat semua</span>'; } else { tempB = ""; }
-			
-			//--right
-			part[1] = part[1] +
-			'<div class="cards-label ' + tempP + '">' +
-				'<p>' +
-					'<strong>' + data[0].lembaga[loop].group + ' (' +  data[0].lembaga[loop].list.length + ')</strong>' +
-					tempB +
-				'</p>' +
-			'</div>';
-			
-			for(var loopY = 0; loopY < data[0].lembaga[loop].list.length; loopY++){	
+		var tempB = ""; 
+		
+		if(data != null){
+			for(var loop = 0; loop < data.lembaga.length; loop++){	
+				if(loop > 0){ tempP = "plus"; }
+				if(data.lembaga[loop].collapse == 'y') { tempB = '<span class="btn-collapse">Lihat semua</span>'; } else { tempB = ""; }
+
+				//--right
 				part[1] = part[1] +
-				'<div id="' + data[0].lembaga[loop].list[loopY].id + '" class="cards clear">' +
-					'<div class="description-box">' +
-						'<div class="click-frame">' +
-							'<img class="icon-set" src="img/avatar/' + data[0].lembaga[loop].list[loopY].picture + '"/>' +
-							'<p class="title-set">' + data[0].lembaga[loop].list[loopY].nama + '</p>' +
-							'<div class="text-set">' +
-								'<span class="id-set">' + data[0].lembaga[loop].list[loopY].noreg + '</span>' +
-								'<span class="desc-text">' + data[0].lembaga[loop].list[loopY].telp + ' | ' + data[0].lembaga[loop].list[loopY].email + '</span>' +
+				'<div class="cards-label ' + tempP + '">' +
+					'<p>' +
+						'<strong>' + data.lembaga[loop].group + ' (' +  data.lembaga[loop].list.length + ')</strong>' +
+						tempB +
+					'</p>' +
+				'</div>';
+				
+				for(var loopY = 0; loopY < data.lembaga[loop].list.length; loopY++){	
+					part[1] = part[1] +
+					'<div id="' + data.lembaga[loop].list[loopY].id + '" class="cards clear">' +
+						'<div class="description-box">' +
+							'<div class="click-frame">' +
+								'<img class="icon-set" src="img/avatar/' + data.lembaga[loop].list[loopY].picture + '"/>' +
+								'<p class="title-set">' + data.lembaga[loop].list[loopY].nama + '</p>' +
+								'<div class="text-set">' +
+									'<span class="id-set">' + data.lembaga[loop].list[loopY].noreg + '</span>' +
+									'<span class="desc-text">' + data.lembaga[loop].list[loopY].telp + ' | ' + data.lembaga[loop].list[loopY].email + '</span>' +
+								'</div>' +
+							'</div>' +
+							'<button type="button" class="click-option btn-set" p-id="' + data.lembaga[loop].list[loopY].id + '" p-label="' + data.lembaga[loop].list[loopY].nama + '"><span class="fa fa-ellipsis-v"></span></button>' +
+						'</div>' +
+						'<div class="detail-box">' +
+							'<div class="list-box">' +
+								'<div class="list-icon"><span class="fa fa-phone"></span></div>' +
+								'<p class="list-text">' + data.lembaga[loop].list[loopY].telp + '</p>' +
+							'</div>' +
+							'<div class="list-box">' +
+								'<div class="list-icon"><span class="fa fa-envelope"></span></div>' +
+								'<p class="list-text">' + data.lembaga[loop].list[loopY].email + '</p>' +
+							'</div>' +
+							'<div class="list-box">' +
+								'<div class="list-icon"><span class="fa fa-map-marker"></span></div>' +
+								'<p class="list-text">' + data.lembaga[loop].list[loopY].alamat + '</p>' +
+							'</div>' +
+							'<div class="list-box foot">' +
+								'<button type="button" class="clear list-text btn-link detail-click" p-id="' + data.lembaga[loop].list[loopY].id + '">Lihat selengkapnya</button>' +
 							'</div>' +
 						'</div>' +
-						'<button type="button" class="click-option btn-set" p-id="' + data[0].lembaga[loop].list[loopY].id + '" p-label="' + data[0].lembaga[loop].list[loopY].nama + '"><span class="fa fa-ellipsis-v"></span></button>' +
-					'</div>' +
-					'<div class="detail-box">' +
-						'<div class="list-box">' +
-							'<div class="list-icon"><span class="fa fa-phone"></span></div>' +
-							'<p class="list-text">' + data[0].lembaga[loop].list[loopY].telp + '</p>' +
-						'</div>' +
-						'<div class="list-box">' +
-							'<div class="list-icon"><span class="fa fa-envelope"></span></div>' +
-							'<p class="list-text">' + data[0].lembaga[loop].list[loopY].email + '</p>' +
-						'</div>' +
-						'<div class="list-box">' +
-							'<div class="list-icon"><span class="fa fa-map-marker"></span></div>' +
-							'<p class="list-text">' + data[0].lembaga[loop].list[loopY].alamat + '</p>' +
-						'</div>' +
-						'<div class="list-box foot">' +
-							'<button type="button" class="clear list-text btn-link detail-click" p-id="' + data[0].lembaga[loop].list[loopY].id + '">Lihat selengkapnya</button>' +
-						'</div>' +
-					'</div>' +
-				'</div>';
+					'</div>';
+				}
 			}
 		}
 		
@@ -1302,7 +1261,7 @@ function r_f1DaftarLembaga(packet) {
 		//--close
 		
 		//--gen
-		headPage.html(r_headPageHtml(4, 'Yayasan'));
+		headPage.html(r_headPageHtml(4, namaBentukLembagaState));
 		footPage.html(r_footPageHtml('add'));
 		mainPage.html(content).animate({'opacity': '1'},'fast','linear');
 		$("#preload").remove();
@@ -3300,31 +3259,6 @@ function r_f4LingkupArea() {
 			{'idFilter': '3', 'area':'Kecamatan', 'jumlahData': '5'},
 			{'idFilter': '4', 'area':'Kelurahan', 'jumlahData': '6'},
 		];
-		
-		data=[{
-			'provinsi': [
-				{'noreg': '01', 'group': 'provinsi', 'caption': 'lorem dolor sit amet 1.'},
-			],	
-			'wilayah': [
-				{'noreg': '01', 'group': 'wilayah', 'caption': 'lorem dolor sit amet 2.'},
-				{'noreg': '02', 'group': 'wilayah', 'caption': 'lorem dolor sit amet 3.'},
-				{'noreg': '03', 'group': 'wilayah', 'caption': 'lorem dolor sit amet 4.'},
-			],
-			'kecamatan': [
-				{'noreg': '01', 'group': 'kecamatan', 'caption': 'lorem dolor sit amet 5.'},
-				{'noreg': '02', 'group': 'kecamatan', 'caption': 'lorem dolor sit amet 6.'},
-				{'noreg': '03', 'group': 'kecamatan', 'caption': 'lorem dolor sit amet 7.'},
-				{'noreg': '04', 'group': 'kecamatan', 'caption': 'lorem dolor sit amet 8.'},
-			],
-			'kelurahan': [
-				{'noreg': '01', 'group': 'kelurahan', 'caption': 'lorem dolor sit amet 9.'},
-				{'noreg': '02', 'group': 'kelurahan', 'caption': 'lorem dolor sit amet 10.'},
-				{'noreg': '03', 'group': 'kelurahan', 'caption': 'lorem dolor sit amet 11.'},
-				{'noreg': '04', 'group': 'kelurahan', 'caption': 'lorem dolor sit amet 12.'},
-				{'noreg': '05', 'group': 'kelurahan', 'caption': 'lorem dolor sit amet 13.'},
-				{'noreg': '06', 'group': 'kelurahan', 'caption': 'lorem dolor sit amet 14.'},
-			],
-		}];
 		
 		data = optionD; // updatting global variable
 		optionBatch = [
@@ -6101,6 +6035,21 @@ function r_tabReader(){
 	return tab;
 }
 
+function r_bentukLembagaSet(data){ 
+	r_setCookie('kodeBentukLembaga', data[0], 1); 
+	r_setCookie('namaBentukLembaga', data[1], 1); 
+}
+function r_bentukLembagaReader(){	
+	var code = null;	
+	var caption = null;
+	var data = null;
+	if(r_getCookie('kodeBentukLembaga') != '' && r_getCookie('kodeBentukLembaga') != undefined) { code = r_getCookie('kodeBentukLembaga'); }
+	if(r_getCookie('namaBentukLembaga') != '' && r_getCookie('namaBentukLembaga') != undefined) { caption = r_getCookie('namaBentukLembaga'); }
+	
+	data = [code, caption];
+	return data;
+}
+
 // function profile_look_set(id){ r_setCookie('profile_look', id, 1); }
 // function profile_look_reader(){	return String(r_getCookie('profile_look'));}
 // function post_look_set(id){ r_setCookie('post_look', id, 1); }
@@ -6146,6 +6095,8 @@ function r_clearCookies(){
 	r_setCookie('page','',0.1);
 	r_setCookie('pagePrevious','',0.1);
 	r_setCookie('tab','',0.1);
+	r_setCookie('kodeBentukLembaga','',0.1);
+	r_setCookie('namaBentukLembaga','',0.1);
 	// r_setCookie('profile_look','',1);
 	// r_setCookie('header_log','',1);
 }
