@@ -388,12 +388,17 @@
 			if($target == "f431"){
 				$sql = 	
 				"SELECT 
-					kodeBentukLembaga as `noreg`,
-					namaBentukLembaga as `caption`,
-					deskripsi as `description`
+					b.kodeBentukLembaga as `noreg`,
+					b.namaBentukLembaga as `caption`,
+					b.deskripsi as `description`,
+					COALESCE(b.urlGambar, 'icon-1.png') as `picture`,
+					(
+						(SELECT COUNT(noRegistrasi) FROM dplega_000_lembaga l WHERE l.kodeBentukLembaga = b.kodeBentukLembaga) +
+						(SELECT COUNT(noRegistrasi) FROM dplega_000_lembaga_temp lt WHERE lt.kodeBentukLembaga = b.kodeBentukLembaga)
+					) as `counter`
 				 FROM
-					dplega_200_bentukLembaga
-				 ORDER BY caption ASC";
+					dplega_200_bentukLembaga b
+				 ORDER BY noreg ASC";
 			}elseif($target == "f432"){
 				$sql = 	
 				"SELECT 
@@ -430,7 +435,9 @@
 							$fetch = array(
 								"noreg"   		=> $row['noreg'],
 								"caption" 		=> $row['caption'],
-								"description" 	=> $row['description']
+								"description" 	=> $row['description'],
+								"picture" 		=> $row['picture'],
+								"counter" 		=> $row['counter']
 							);
 						}elseif($target == "f432"){
 							$fetch = array(

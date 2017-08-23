@@ -19,6 +19,7 @@
 		// f414 : kelurahan
 		
 		switch($target){
+			case "f1110": $resultList = getListLembagaan($data); break;
 			case "f117": $resultList = getKoleksiSection($data); break;
 			
 			default	   : $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Terjadi kesalahan fatal, proses dibatalkan!", "feedData" => array()); break;
@@ -86,6 +87,173 @@
 		
 		return $json;
 	}
+	
+	function getListLembagaan($data){
+		/* initial condition */
+		$resultList = array();
+		$table 		= "";
+		$field 		= array();
+		$rows		= 0;
+		$condition 	= "";
+		$orderBy	= "";
+		$error		= 0;
+		$errorType  = "";
+		$errorMsg	= "";
+	
+		//validation 
+		if(isset($data['keyword']) && $data['keyword'] != ""){	
+			/* open connection */ 
+			$gate = openGate();
+			if($gate){		
+				// connection = true
+				$sql = 	
+				"
+					SELECT * FROM (
+						SELECT  
+							'ajuan' as `group`,
+							`noRegistrasi` as id,
+							`noRegistrasi` as noreg,
+							`nama` as nama,
+							`noTelp` as telp,
+							`email` as email,
+							CONCAT_WS(' ', `alamat`, 'RT.',`noRt`, '/', 'RW.', `noRw`, `namaKelurahan`, `namaKecamatan`, `namaWilayah`, `namaProvinsi`) as alamat,
+							COALESCE(`urlGambarLogo`, 'avatar-default.jpg') as picture
+						FROM 
+							dplega_000_lembaga_temp l 
+						JOIN
+							dplega_100_provinsi p ON l.kodeProvinsi = p.kodeProvinsi
+						JOIN
+							dplega_101_wilayah w ON l.kodeWilayah = w.kodeWilayah
+						JOIN
+							dplega_102_kecamatan kc ON l.kodeKecamatan = kc.kodeKecamatan
+						JOIN
+							dplega_103_kelurahan kl ON l.kodeKelurahan = kl.kodeKelurahan
+						WHERE l.kodeBentukLembaga = '".$data['keyword']."' AND l.statusAktif = '1' ) as table_1
+					UNION
+					SELECT * FROM (
+						SELECT  
+							'perubahan' as `group`,
+							`noRegistrasi` as id,
+							`noRegistrasi` as noreg,
+							`nama` as nama,
+							`noTelp` as telp,
+							`email` as email,
+							CONCAT_WS(' ', `alamat`, 'RT.',`noRt`, '/', 'RW.', `noRw`, `namaKelurahan`, `namaKecamatan`, `namaWilayah`, `namaProvinsi`) as alamat,
+							COALESCE(`urlGambarLogo`, 'avatar-default.jpg') as picture
+						FROM 
+							dplega_000_lembaga_temp l 
+						JOIN
+							dplega_100_provinsi p ON l.kodeProvinsi = p.kodeProvinsi
+						JOIN
+							dplega_101_wilayah w ON l.kodeWilayah = w.kodeWilayah
+						JOIN
+							dplega_102_kecamatan kc ON l.kodeKecamatan = kc.kodeKecamatan
+						JOIN
+							dplega_103_kelurahan kl ON l.kodeKelurahan = kl.kodeKelurahan
+						WHERE l.kodeBentukLembaga = '".$data['keyword']."' AND l.statusAktif = '2' ) as table_2
+					UNION
+					SELECT * FROM (
+						SELECT  
+							'valid' as `group`,
+							`noRegistrasi` as id,
+							`noRegistrasi` as noreg,
+							`nama` as nama,
+							`noTelp` as telp,
+							`email` as email,
+							CONCAT_WS(' ', `alamat`, 'RT.',`noRt`, '/', 'RW.', `noRw`, `namaKelurahan`, `namaKecamatan`, `namaWilayah`, `namaProvinsi`) as alamat,
+							COALESCE(`urlGambarLogo`, 'avatar-default.jpg') as picture
+						FROM 
+							dplega_000_lembaga l 
+						JOIN
+							dplega_100_provinsi p ON l.kodeProvinsi = p.kodeProvinsi
+						JOIN
+							dplega_101_wilayah w ON l.kodeWilayah = w.kodeWilayah
+						JOIN
+							dplega_102_kecamatan kc ON l.kodeKecamatan = kc.kodeKecamatan
+						JOIN
+							dplega_103_kelurahan kl ON l.kodeKelurahan = kl.kodeKelurahan
+						WHERE l.kodeBentukLembaga = '".$data['keyword']."' AND l.statusAktif = '1') as table_3
+				";
+							
+				$result = mysqli_query($gate, $sql);
+				if($result){
+					$package    = array();  
+					$packageDumb= array();  
+					$record		= array();  
+					$fetch 	   = array(); 
+					$statLoop  = 0;
+					$counter   = mysqli_num_rows($result);
+					$fetch 	   = array();
+					if(mysqli_num_rows($result) > 0) {
+						// output data of each row 
+						while($row = mysqli_fetch_assoc($result)) {
+							unset($fetch); $fetch = array();
+							
+							if($statLoop == 0) { $next  = $row['group']; }
+							
+							if($next != $row['group']){
+								$packageDumb = array("group" => $row['group'], "collapse" => "n", "list" => $record);
+								unset($record); 
+								$record = array();
+								$next   = $row['group'];
+							}
+							
+							$fetch = array(
+										"id"   		=> $row['id'],
+										"noreg" 	=> $row['noreg'],
+										"nama" 		=> $row['nama'],
+										"telp" 		=> $row['telp'],
+										"email"		=> $row['email'],
+										"alamat"	=> $row['alamat'],
+										"picture"	=> $row['picture']
+									);
+							
+							array_push($record, $fetch); 
+							$statLoop++;
+							if($statLoop == $counter){
+								$packageDumb = array("group" => $row['group'], "collapse" => "n", "list" => $record);
+								unset($record); 
+								$record = array();
+							}
+						}
+						
+						$package = array(
+							"lembaga" => array($packageDumb),
+							"option" => array(
+								array("selector" => "download-card", "icon" => "download", "label" => "Unduh (.pdf)"),
+								array("selector" => "view-card", "icon" => "search", "label" => "Lihat selengkapnya"),
+								array("selector" => "verification-card", "icon" => "check", "label" => "Verifikasi"),
+								array("selector" => "edit-card", "icon" => "pencil", "label" => "Ubah profil"),
+								array("selector" => "delete-card", "icon" => "trash", "label" => "Hapus lembaga")
+							)
+						);
+						
+						$resultList = array( "feedStatus" => "succes", "feedMessage" => "Data ditemukan!", "feedData" => $package);
+					}else {
+						$resultList = array( "feedStatus" => "succes", "feedMessage" => "Data tidak ditemukan!", "feedData" => null);
+					}
+				}			
+					
+				closeGate($gate);
+			}else {
+				//error state
+				$error		= 1;
+				$errorType  = "danger";
+				$errorMsg	= "Terjadi kesalahan, tidak dapat terhubung ke server!";
+			}
+		} // return empty of array
+		
+		if($error == 1){
+			//error state
+			$resultList = array( "feedStatus" => "failed", "feedType" => $errorType, "feedMessage" => $errorMsg);
+		}
+		
+		/* result fetch */
+		$json = $resultList;
+		
+		return $json;
+	}
+	
 	function getKoleksiSection($data){
 		/* initial condition */
 		$resultList = array();
