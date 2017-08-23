@@ -300,10 +300,18 @@
 		$gate = openGate();
 		if($gate){		
 			// connection = true
-			$sql = 	
-			"
-			SELECT * FROM dplega_005_koleksi_temp WHERE noRegistrasi = '".$data['keyword']."'
-			";
+			if($data['keyword'] ==''){
+				$sql = 	
+				"SELECT b.judulKoleksi, a.nama, c.namaBentukLembaga
+				FROM dplega_005_koleksi_temp as b 
+				JOIN  dplega_000_lembaga_temp as a ON b.noRegistrasi = a.noRegistrasi
+				JOIN dplega_200_bentuklembaga as c	ON c.kodeBentukLembaga = a.kodeBentukLembaga";
+			}else{
+				$sql = 	
+				"
+				SELECT * FROM dplega_005_koleksi_temp WHERE noRegistrasi = '".$data['keyword']."'
+				";
+			}
 						
 			$result = mysqli_query($gate, $sql);
 			if($result){
@@ -312,6 +320,14 @@
 				if(mysqli_num_rows($result) > 0) {
 					// output data of each row 
 					while($row = mysqli_fetch_assoc($result)) {
+						if($data['keyword'] == ''){
+							$fetch = array(
+									"title"   		=> $row['judulKoleksi'],
+									"group" 		=> $row['namaBentukLembaga'],
+									"owner"		 	=> $row['nama']
+								);
+						}else{
+
 						$fetch = array(
 									"idData"   		=> $row['idData'],
 									"noreg" 		=> $row['noRegistrasi'],
@@ -319,6 +335,7 @@
 									"judulKoleksi" 	=> $row['judulKoleksi'],
 									"deskripsi"		=> $row['deskripsi']
 								);
+						}
 						
 						array_push($record, $fetch); 
 						unset($fetch); 

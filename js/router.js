@@ -1725,31 +1725,32 @@ function r_f1KoleksiLembaga() {
 		body  	= '';
 		part	= ['',''];
 		content = '';
-		data 	= [
-			{'title': 'Kitab suci sun go kong [FULL VERSION]', 'group': 'Yayasan', 'owner': 'Manuk dadali'},
-			{'title': 'Buku sakti cupat kai', 'group': 'Yayasan', 'owner': 'Manuk dadali'},
-			{'title': 'Buku petapa langka vol.2', 'group': 'Yayasan', 'owner': 'Manuk dadali'},
-		];
-		
+		// data 	= [
+		// 	{'title': 'Kitab suci sun go kong [FULL VERSION]', 'group': 'Yayasan', 'owner': 'Manuk dadali'},
+		// 	{'title': 'Buku sakti cupat kai', 'group': 'Yayasan', 'owner': 'Manuk dadali'},
+		// 	{'title': 'Buku petapa langka vol.2', 'group': 'Yayasan', 'owner': 'Manuk dadali'},
+		// ];
+		data = p_getData('f1','f117','');
+		console.log(data.feedData);
 		//--open
 		head	= '';
 		body	= '<div class="row no-head"><div class="container">';
 		body	= body + '<div class="col-md-8 col-md-offset-2">';
 
 		//--render data
-		for(var loop = 0; loop < data.length; loop++){	
+		for(var loop = 0; loop < data.feedData.length; loop++){	
 			body = body +
 			'<div class="cards">' +
 				'<div class="row default">' +
 					'<div class="col-xs-7">' +
 						'<div class="list-box">' +
 							'<div class="list-icon bg-green"><span class="fa fa-book"></span></div>' +
-							'<p class="list-text"><strong>' + data[loop].title + '</strong></p>' +
+							'<p class="list-text"><strong>' + data.feedData[loop].title + '</strong></p>' +
 						'</div>' +
 					'</div>' +
 					'<div class="col-xs-5">' +
 						'<div class="list-box clear-small">' +
-							'<p class="list-text">(' + data[loop].group + ') &nbsp; ' + data[loop].owner + '</p>' +
+							'<p class="list-text">(' + data.feedData[loop].group + ') &nbsp; ' + data.feedData[loop].owner + '</p>' +
 						'</div>' +
 					'</div>' +
 					'<div class="clearfix"></div>' +
