@@ -117,6 +117,15 @@ function r_customCallBack(formType, group, target, recentId){
 					// $("#isiSectionKoleksi").remove();
 					$("#daftarSectionKoleksi").remove();
 					r_f1KoleksiDataGenerator(dataKoleksi);
+
+					$(".list-remove").unbind().on("click", function(){
+						pId = $(this).attr('id');
+						if(p_removeData("f1", "f118", pId) == 'success'){ 
+							$("#isiSectionKoleksi"+$(this).attr('id')).remove();
+						}; 
+						console.log(pId);
+					// console.log("isiSectionKoleksi"+$(this).attr('id'));
+					}); 
 				break;
 			}
 		break;
@@ -2895,6 +2904,7 @@ function r_f1FormKelembagaan(packet){
 		
 		//--command reactor
 		$(".back-button").unbind().on('click', function(){ r_navigateTo(r_pagePreviousReader()); });
+		
 		// $(".reset").unbind().on('click', function(){ clearTargetForm('f-kelembagaan-create'); });
 		tabActivator();
 		datePickerActivator();
@@ -5849,11 +5859,12 @@ function r_f1KoleksiDataGenerator(data){
 		for(counter = 0; counter < dataKoleksi.feedData.length; counter++){
 		genHtml = genHtml+
 			// '<div id="isiSectionKoleksi">'+
-			'<div class="cards">' +
+			'<div id="isiSectionKoleksi'+dataKoleksi.feedData[counter].idData+'" class="cards">' +
 				'<div class="list-box">' +
+					'<input name="idData" value="'+dataKoleksi.feedData[counter].idData+'" type="hidden">'+
 					'<div class="list-icon bg-sky"><span class="fa fa-book"></span></div>' +
 					'<p class="list-text">'+dataKoleksi.feedData[counter].judulKoleksi+'</p>' +
-					'<div class="list-remove"><span class="fa fa-trash"></span></div>' +
+					'<div id="'+dataKoleksi.feedData[counter].idData+'" class="list-remove"><span class="fa fa-trash"></span></div>' +
 				'</div>' +
 			'</div>';
 		}

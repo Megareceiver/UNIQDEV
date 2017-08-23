@@ -62,6 +62,7 @@
 		
 		return $json;
 	}
+
 	function changeData($data, $target){
 		/* initial condition */
 		$resultList = array();
@@ -88,6 +89,35 @@
 		return $json;
 	}
 	
+	function deleteData($data, $target){
+		/* initial condition */
+		$resultList = array();
+		$table 		= "";
+		$field 		= array();
+		$rows		= 0;
+		$condition 	= "";
+		$orderBy	= "";
+		$error		= 0;
+		$errorType  = "";
+		$errorMsg	= "";
+	
+		/* refferences */
+		// f41 : provinsi
+		// f42 : wilayah
+		// f43 : kecamatan
+		// f44 : kelurahan
+		
+		switch($target){
+			case "f118": $resultList = deleteKoleksiSection($target, $data); break;
+			default	  : $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Terjadi kesalahan fatal, proses dibatalkan!"); break;
+		}
+		
+		/* result fetch */
+		$json = $resultList;
+		
+		return $json;
+	}
+
 	function getListLembagaan($data){
 		/* initial condition */
 		$resultList = array();
@@ -1576,6 +1606,7 @@
 		
 		return $json;
 	}
+
 	function createKoleksiSection($target, $data){
 		/* initial condition */
 		$resultList = array();
@@ -1671,6 +1702,70 @@
 		return $json;
 	}
 
+	function deleteKoleksiSection($target, $data){
+		/* initial condition */
+		$resultList = array();
+		$table 		= "";
+		$field 		= array();
+		$rows		= 0;
+		$condition 	= "";
+		$orderBy	= "";
+		$error		= 0;
+		$resultType = "";
+		$resultMsg	= "";
+		$counter	= "";
+		
+		/* validation */
+		if(	$data['pId']!="")
+		{
+			
+			/* open connection */ 
+			$gate = openGate();
+			if($gate){		
+				// connection = true
+				$sql = "";
+
+				$sql = "DELETE FROM dplega_005_koleksi_temp WHERE idData ='".$data['pId']."'";
+				
+					
+				$result = mysqli_query($gate, $sql);
+				if($result){	
+					$error	    = 0;
+					$resultType = "success";
+					$resultMsg  = "data berhasil dihapus.";		
+				}else{
+					//error state
+					$error		= 1;
+					$resultType = "danger";
+					$resultMsg	= "Terjadi kesalahan fatal, data gagal dihapus! ";
+				}
+				
+				closeGate($gate);
+			}else{
+				//error state
+				$error		= 1;
+				$resultType = "danger";
+				$resultMsg	= "Terjadi kesalahan, tidak dapat terhubung ke server!";
+			}
+		}else{
+			//error state
+			$error		= 1;
+			$resultType = "danger";
+			$resultMsg	= "Terjadi kesalahan, ID tidak ditemukan!";
+		}
+		
+		if($error == 1){
+			//error state
+			$resultList = array( "feedStatus" => "failed", "feedType" => $resultType, "feedMessage" => $resultMsg);
+		}else{
+			$resultList = array( "feedStatus" => "success", "feedType" => $resultType, "feedMessage" => $resultMsg, "feedId" => $data['pId']);
+		}
+		
+		/* result fetch */
+		$json = $resultList;
+		
+		return $json;
+	}
 
 	function getLegalitasSection(){
 		/* initial condition */
