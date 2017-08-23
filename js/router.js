@@ -1733,39 +1733,40 @@ function r_f1KoleksiLembaga() {
 		//--open
 		head	= '';
 		body	= '<div class="row no-head"><div class="container">';
-		body	= body + '<div class="col-md-8 col-md-offset-2">';
+		body	= body + '<div id ="koleksi" class="col-md-8 col-md-offset-2">';
 		// ];
 		
-			if($('.search-input').value == null){
-				data = p_getData('f1','f117','');
-				console.log('ga ada');
-			}
-			else{
-				$(".search-input").unbind().on("keyup", function(){
-					data = p_getData('f1','f117',$('.search-input').val());
-				});
-			}
-		console.log(data.feedData);
-		//--render data
-		for(var loop = 0; loop < data.feedData.length; loop++){	
-			body = body +
-			'<div class="cards">' +
-				'<div class="row default">' +
-					'<div class="col-xs-7">' +
-						'<div class="list-box">' +
-							'<div class="list-icon bg-green"><span class="fa fa-book"></span></div>' +
-							'<p class="list-text"><strong>' + data.feedData[loop].title + '</strong></p>' +
-						'</div>' +
-					'</div>' +
-					'<div class="col-xs-5">' +
-						'<div class="list-box clear-small">' +
-							'<p class="list-text">(' + data.feedData[loop].group + ') &nbsp; ' + data.feedData[loop].owner + '</p>' +
-						'</div>' +
-					'</div>' +
-					'<div class="clearfix"></div>' +
-				'</div>' +
-			'</div>';
-		}
+		// 	if($('.search-input').value == null){
+		// 		data = p_getData('f1','f117','');
+		// 		console.log('ga ada');
+		// 	}
+		// 	else{
+		// 		$(".search-input").unbind().on("keyup", function(){
+		// 			data = p_getData('f1','f117',$('.search-input').val());
+		// 			console.log(data.feedData)
+		// 		});
+		// 	}
+		// console.log(data.feedData);
+		// //--render data
+		// for(var loop = 0; loop < data.feedData.length; loop++){	
+		// 	body = body +
+		// 	'<div class="cards">' +
+		// 		'<div class="row default">' +
+		// 			'<div class="col-xs-7">' +
+		// 				'<div class="list-box">' +
+		// 					'<div class="list-icon bg-green"><span class="fa fa-book"></span></div>' +
+		// 					'<p class="list-text"><strong>' + data.feedData[loop].title + '</strong></p>' +
+		// 				'</div>' +
+		// 			'</div>' +
+		// 			'<div class="col-xs-5">' +
+		// 				'<div class="list-box clear-small">' +
+		// 					'<p class="list-text">(' + data.feedData[loop].group + ') &nbsp; ' + data.feedData[loop].owner + '</p>' +
+		// 				'</div>' +
+		// 			'</div>' +
+		// 			'<div class="clearfix"></div>' +
+		// 		'</div>' +
+		// 	'</div>';
+		// }
 		
 		body	= body + '</div></div></div>';
 		content = '<section id="">' + head + body + '</section>';
@@ -1778,6 +1779,11 @@ function r_f1KoleksiLembaga() {
 		//--command reactor
 		$(".back-button").unbind().on('click', function(){ r_navigateTo(0); });
 		searchBoxActivator();
+		r_f1KoleksiGenerator();
+		$(".search-input").unbind().on("keyup", function(){ 
+			r_f1KoleksiGenerator($(this).val()); 
+			console.log($(this).val());
+		});
 		r_navbarReactor();
 	});
 }
@@ -5881,6 +5887,43 @@ function r_f1KoleksiDataGenerator(data){
 		// $("#section-koleksi").append(genHtml2);
 		
 	
+}
+function r_f1KoleksiGenerator(keyword){
+	genHtml = "";
+	
+	if(keyword == null || keyword == ''){
+		data = p_getData('f1','f141','');
+		$('#daftarKoleksi').remove();
+	}else{
+		// keyword = $('.search-input').value;
+		 data = p_getData('f1','f141',keyword);
+		$('#daftarKoleksi').remove();
+		console.log(keyword);
+	}
+		genHtml = genHtml +
+		'<div id = daftarKoleksi>';
+		for(var loop = 0; loop < data.feedData.length; loop++){	
+			genHtml = genHtml +
+			'<div class=" cards">' +
+				'<div class="row default">' +
+					'<div class="col-xs-7">' +
+						'<div class="list-box">' +
+							'<div class="list-icon bg-green"><span class="fa fa-book"></span></div>' +
+							'<p class="list-text"><strong>' + data.feedData[loop].title + '</strong></p>' +
+						'</div>' +
+					'</div>' +
+					'<div class="col-xs-5">' +
+						'<div class="list-box clear-small">' +
+							'<p class="list-text">(' + data.feedData[loop].group + ') &nbsp; ' + data.feedData[loop].owner + '</p>' +
+						'</div>' +
+					'</div>' +
+					'<div class="clearfix"></div>' +
+				'</div>' +
+			'</div>';
+		}
+		genHtml = genHtml + '</div>';
+	
+	$("#koleksi").append(genHtml);
 }
 
 /* maintance */

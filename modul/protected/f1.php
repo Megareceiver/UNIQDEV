@@ -21,6 +21,7 @@
 		switch($target){
 			case "f1110": $resultList = getListLembagaan($data); break;
 			case "f117": $resultList = getKoleksiSection($data); break;
+			case "f141": $resultList = getKoleksi($data); break;
 			
 			default	   : $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Terjadi kesalahan fatal, proses dibatalkan!", "feedData" => array()); break;
 		}
@@ -334,6 +335,91 @@
 									"jenisKoleksi" 	=> $row['jenisKoleksi'],
 									"judulKoleksi" 	=> $row['judulKoleksi'],
 									"deskripsi"		=> $row['deskripsi']
+								);
+						}
+						
+						array_push($record, $fetch); 
+						unset($fetch); 
+						$fetch = array();
+					}
+					
+					$resultList = array( "feedStatus" => "succes", "feedMessage" => "Data ditemukan!", "feedData" => $record);
+				}else {
+					$resultList = array( "feedStatus" => "succes", "feedMessage" => "Data tidak ditemukan!", "feedData" => null);
+				}
+			}			
+				
+			closeGate($gate);
+		}else {
+			//error state
+			$error		= 1;
+			$errorType  = "danger";
+			$errorMsg	= "Terjadi kesalahan, tidak dapat terhubung ke server!";
+		}
+		
+		
+		if($error == 1){
+			//error state
+			$resultList = array( "feedStatus" => "failed", "feedType" => $errorType, "feedMessage" => $errorMsg);
+		}
+		
+		/* result fetch */
+		$json = $resultList;
+		
+		return $json;
+	}
+
+	function getKoleksi($data){
+		/* initial condition */
+		$resultList = array();
+		$table 		= "";
+		$field 		= array();
+		$rows		= 0;
+		$condition 	= "";
+		$orderBy	= "";
+		$error		= 0;
+		$errorType  = "";
+		$errorMsg	= "";
+	
+		/* open connection */ 
+		$gate = openGate();
+		if($gate){		
+			// connection = true
+			if($data['keyword'] ==''){
+				$sql = 	
+				"SELECT b.judulKoleksi, a.nama, c.namaBentukLembaga
+				FROM dplega_005_koleksi_temp as b 
+				JOIN  dplega_000_lembaga_temp as a ON b.noRegistrasi = a.noRegistrasi
+				JOIN dplega_200_bentuklembaga as c	ON c.kodeBentukLembaga = a.kodeBentukLembaga";
+			}else{
+			$sql = 	
+				"SELECT b.judulKoleksi, a.nama, c.namaBentukLembaga
+				FROM dplega_005_koleksi_temp as b 
+				JOIN  dplega_000_lembaga_temp as a ON b.noRegistrasi = a.noRegistrasi
+				JOIN dplega_200_bentuklembaga as c	ON c.kodeBentukLembaga = a.kodeBentukLembaga
+				WHERE b.judulKoleksi like '%".$data['keyword']."%'
+				";
+			}
+						
+			$result = mysqli_query($gate, $sql);
+			if($result){
+				$record    = array();  
+				$fetch 	   = array(); 
+				if(mysqli_num_rows($result) > 0) {
+					// output data of each row 
+					while($row = mysqli_fetch_assoc($result)) {
+						if($data['keyword'] == ''){
+							$fetch = array(
+									"title"   		=> $row['judulKoleksi'],
+									"group" 		=> $row['namaBentukLembaga'],
+									"owner"		 	=> $row['nama']
+								);
+						}else{
+
+						$fetch = array(
+									"title"   		=> $row['judulKoleksi'],
+									"group" 		=> $row['namaBentukLembaga'],
+									"owner"		 	=> $row['nama']
 								);
 						}
 						
