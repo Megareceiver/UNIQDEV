@@ -1729,14 +1729,23 @@ function r_f1KoleksiLembaga() {
 		// 	{'title': 'Kitab suci sun go kong [FULL VERSION]', 'group': 'Yayasan', 'owner': 'Manuk dadali'},
 		// 	{'title': 'Buku sakti cupat kai', 'group': 'Yayasan', 'owner': 'Manuk dadali'},
 		// 	{'title': 'Buku petapa langka vol.2', 'group': 'Yayasan', 'owner': 'Manuk dadali'},
-		// ];
-		data = p_getData('f1','f117','');
-		console.log(data.feedData);
+		
 		//--open
 		head	= '';
 		body	= '<div class="row no-head"><div class="container">';
 		body	= body + '<div class="col-md-8 col-md-offset-2">';
-
+		// ];
+		
+			if($('.search-input').value == null){
+				data = p_getData('f1','f117','');
+				console.log('ga ada');
+			}
+			else{
+				$(".search-input").unbind().on("keyup", function(){
+					data = p_getData('f1','f117',$('.search-input').val());
+				});
+			}
+		console.log(data.feedData);
 		//--render data
 		for(var loop = 0; loop < data.feedData.length; loop++){	
 			body = body +
@@ -1766,7 +1775,6 @@ function r_f1KoleksiLembaga() {
 		headPage.html(r_headPageHtml(4, 'Koleksi'));
 		mainPage.html(content).animate({'opacity': '1'},'fast','linear');
 		$("#preload").remove();
-		
 		//--command reactor
 		$(".back-button").unbind().on('click', function(){ r_navigateTo(0); });
 		searchBoxActivator();
