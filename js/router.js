@@ -114,6 +114,8 @@ function r_customCallBack(formType, group, target, recentId){
 				break;
 				case 'f118' :
 					dataKoleksi = p_getData('f1', 'f117',recentId);
+					// $("#isiSectionKoleksi").remove();
+					$("#daftarSectionKoleksi").remove();
 					r_f1KoleksiDataGenerator(dataKoleksi);
 				break;
 			}
@@ -1746,7 +1748,7 @@ function r_f1VerifikasiLembaga(packet) {
 		r_navbarReactor();
 	});
 }
-
+// menu koleksi lembaga
 function r_f1KoleksiLembaga() {
 	$("body").prepend(preload);
 	$('main.parent').animate({'opacity': '0.6'},'fast','linear', function(){
@@ -2768,11 +2770,10 @@ function r_f1FormKelembagaan(packet){
 		'</div>';
 		
 		body = body + '</div></form></div>';
+
+		body = body +
+		'<div id="section-koleksi">';
 		
-		body = body + 
-		'<div class="cards-label plus">' +
-			'<p><strong>Daftar koleksi (1)</strong></p>' +
-		'</div>';
 		// r_f1KoleksiDataGenerator();
 		// //data list
 		// //render
@@ -2788,7 +2789,7 @@ function r_f1FormKelembagaan(packet){
 		// 	'</div>' +
 		// '</div>';
 		// }
-		body = body + '</div>';
+		body = body + '</div></div>';
 		body = body + '<div class="clearfix tab-container" tab-contentIndex="6">&nbsp;</div>';
 		
 		
@@ -5904,83 +5905,28 @@ function r_f4FormInfoPersonal() {
 }
 function r_f1KoleksiDataGenerator(data){
 	var genHtml = "";
-	// // if(data.length > 0){
-	// genHtml = genHtml + 
-	// 	'<div class="cards-label plus">' +
-	// 		'<p><strong>Daftar koleksi (1)</strong></p>' +
-	// 	'</div>';
-		
-	// 	//data list
-	// 	//render
-		// -- get data koleksi
-		// dataKoleksi = p_getData('f1', 'f117','');
-		// if(dataTemp != null){
-			// sourcesData = dataTemp;
+	var genHtml2 = "";
 			console.log(dataKoleksi.feedData.length);
-		// }
-		
-		for(counter=0; counter < dataKoleksi.feedData.length; counter++){
-		body = body +
-		'<div class="cards">' +
-			'<div class="list-box">' +
-				'<div class="list-icon bg-sky"><span class="fa fa-book"></span></div>' +
-				'<p class="list-text">'+dataKoleksi.feedData[counter].judulKoleksi+'</p>' +
-				'<div class="list-remove"><span class="fa fa-trash"></span></div>' +
-			'</div>' +
+		genHtml = 
+		'<div id="daftarSectionKoleksi">'+ 
+		'<div class="cards-label plus">' +
+			'<p><strong>Daftar koleksi ('+dataKoleksi.feedData.length+')</strong></p>' +
 		'</div>';
+		for(counter = 0; counter < dataKoleksi.feedData.length; counter++){
+		genHtml = genHtml+
+			// '<div id="isiSectionKoleksi">'+
+			'<div class="cards">' +
+				'<div class="list-box">' +
+					'<div class="list-icon bg-sky"><span class="fa fa-book"></span></div>' +
+					'<p class="list-text">'+dataKoleksi.feedData[counter].judulKoleksi+'</p>' +
+					'<div class="list-remove"><span class="fa fa-trash"></span></div>' +
+				'</div>' +
+			'</div>';
 		}
+		$("#section-koleksi").append(genHtml);
+		// $("#section-koleksi").append(genHtml2);
 		
-	// // }else{
-	// 	genHtml = genHtml +
-	// 	'<div class="cards emptyList">' +
-	// 		'<div class="row default">' +
-	// 			'<div class="col-xs-12">' +
-	// 				'<div class="list-box text-center clear">' +
-	// 					'<p class="list-text">Data tidak ditemukan</p>' +
-	// 				'</div>' +
-	// 			'</div>' +
-	// 		'</div>' +
-	// 	'</div>';
-	// }
-
-	// if(formType == "addData"){
-	// 	$("#" + sectionId + ' .emptyList').remove();
-	// 	$("#" + sectionId).append(genHtml);
-	// }else if (formType == "updateData"){
-	// 	$("#" + pContainer).replaceWith(genHtml);
-	// }
 	
-	// //reactor
-	// $(".click-option").unbind().on("click", function(){ 
-	// 	//packet session
-	// 	clearPacket();
-	// 	pGroup 		= $(this).attr('p-group');
-	// 	pTarget		= $(this).attr('p-target')
-	// 	pId			= $(this).attr('p-id');
-	// 	pLabel		= $(this).attr('p-label');
-	// 	pContainer		= $(this).attr('p-container');
-	// 	pReferences		= $(this).attr('p-references');
-	// 	pReferencesKey	= $(this).attr('p-referencesKey');
-	// 	showOptionList(); 
-		
-	// 	//-- option activator
-	// 	$("#edit-card").unbind().on("click", function(){ 
-	// 		hideOptionList(); 
-	// 		r_f4LingkupAreaEditor(pTarget, pId, pLabel, pReferences); 
-	// 	});
-
-	// 	$("#delete-card").unbind().on("click", function(){ 
-	// 		hideOptionList(); 
-	// 		showOptionConfirm('delete');
-	// 		$(".option-yes").unbind().on("click", function(){ 
-	// 			hideOptionList(); 
-	// 			if(p_removeData(pGroup, pTarget, pId) == 'success'){ 
-	// 				$('#' + pContainer).remove(); 
-	// 				clearPacket();
-	// 			}; 
-	// 		});
-	// 	});
-	// });
 }
 
 /* maintance */
