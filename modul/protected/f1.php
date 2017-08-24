@@ -402,7 +402,9 @@
 						dplega_000_lembaga_temp l
 					ON 	p.noRegistrasi = l.noRegistrasi
 					WHERE 
-						p.noRegistrasi = '".$data['keyword']."'
+						p.deskripsi like '%".$data['keyword']."%'
+					OR
+						l.nama like '%".$data['keyword']."%'
 				";
 			}else{
 				$sql = 
