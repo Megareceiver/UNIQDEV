@@ -1511,9 +1511,13 @@ function r_f1DetailLembaga(packet) {
 				{'selector': 'delete-card', 		'icon': 'trash',  	 'label': 'Hapus lembaga'},
 			]
 		}];
+
+		// data = p_getData('f1', 'f1111', '', '12121300001');
+		data = p_getData('f1', 'f1111', '', '00030200109');
+		data = data.feedData;
 		
 		//-- set option list on a session
-		optionBatch = data[0].option;
+		optionBatch = data.option;
 		
 		//--open
 		head	= '';
@@ -1526,97 +1530,97 @@ function r_f1DetailLembaga(packet) {
 		'<div class="cards clear">' +
 			'<div class="cards-banner-blank long smalltron-ground">' +
 				'<div class="user-frame">' +
-					'<img src="img/avatar/' + data[0].profile[0].avatar + '">' +
+					'<img src="img/avatar/' + data.profile[0].avatar + '">' +
 					'<p class="caption">' +
-						'<span class="big">' + data[0].profile[0].nama + '</span>' +
+						'<span class="big">' + data.profile[0].nama + '</span>' +
 						'<span>Yayasan</span>' +
 					'</p>' +
-					'<button class="btn-option btn-default click-option" p-id="' + data[0].profile[0].noreg + '" p-label="' + data[0].profile[0].nama + '"><i class="fa fa-ellipsis-h"></i></button>' +
+					'<button class="btn-option btn-default click-option" p-id="' + data.profile[0].noreg + '" p-label="' + data.profile[0].nama + '"><i class="fa fa-ellipsis-h"></i></button>' +
 				'</div>' +
 			'</div>' +
 		'</div>' +
 		'<div class="cards flush">' +
 			'<div class="desc-frame">' +
 				'<div class="desc-box flush">' +
-					'<p class="text-set">' + data[0].profile[0].catatan + '</p>' +
+					'<p class="text-set">' + data.profile[0].catatan + '</p>' +
 				'</div>' +
 				'<div class="desc-box i-left">' +
 					'<div class="icon-set"><span class="fa fa-phone"></span></div>' +
-					'<p class="text-set">' + data[0].profile[0].telp + '</p>' +
+					'<p class="text-set">' + data.profile[0].telp + '</p>' +
 				'</div>' +
 				'<div class="desc-box i-left">' +
 					'<div class="icon-set"><span class="fa fa-envelope"></span></div>' +
-					'<p class="text-set">' + data[0].profile[0].email + '</p>' +
+					'<p class="text-set">' + data.profile[0].email + '</p>' +
 				'</div>' +
 				'<div class="desc-box i-left">' +
 					'<div class="icon-set"><span class="fa fa-globe"></span></div>' +
-					'<p class="text-set">' + data[0].profile[0].sosialMedia + '</p>' +
+					'<p class="text-set">' + data.profile[0].sosialMedia + '</p>' +
 				'</div>' +
 				'<div class="desc-box i-left">' +
 					'<div class="icon-set"><span class="fa fa-map-marker"></span></div>' +
-					'<p class="text-set">' + data[0].profile[0].alamat + '</p>' +
+					'<p class="text-set">' + data.profile[0].alamat + '</p>' +
 				'</div>' +
 			'</div>' +
 		'</div>';
 			
 		//--render data
-		for(var loop = 0; loop < data[0].detail.length; loop++){
+		for(var loop = 0; loop < data.detail.length; loop++){
 			//--right
-			if(data[0].detail[loop].group == 'card'){
+			if(data.detail[loop].group == 'card'){
 				part[1] = part[1] +
 				'<div class="cards">' +
 					'<div class="cards-header">' +
-						'<p class="fixed">' + data[0].detail[loop].groupName + '</p>' +
+						'<p class="fixed">' + data.detail[loop].groupName + '</p>' +
 						'<div class="btn-collapse right">' +
-							'<button class="toggle-click clear" toggle-target="' + data[0].detail[loop].groupId+ '-group" type="button"><span class="fa fa-chevron-down"></span></button>' +
+							'<button class="toggle-click clear" toggle-target="' + data.detail[loop].groupId+ '-group" type="button"><span class="fa fa-chevron-down"></span></button>' +
 						'</div>' +
 					'</div>' +
 				'</div>';
 				
 				var endLoopY = 0;
-				switch(data[0].detail[loop].type){
-					case 'table'		: part[1] = part[1] + '<div class="cards flush toggle-content ' + data[0].detail[loop].groupId + '-group">' + '<div class="desc-frame">';  endLoopY = data[0].detail[loop].items.length; break;
-					case 'list'			: part[1] = part[1] + '<div class="cards flush toggle-content ' + data[0].detail[loop].groupId + '-group">' + '<div class="row">'; endLoopY = data[0].detail[loop].items.length; break;
-					case 'table-list'	: part[1] = part[1] + '<div class="cards flush toggle-content ' + data[0].detail[loop].groupId + '-group">' + '<div class="row default">'; endLoopY = data[0].detail[loop].items[0].set.length;  break;
+				switch(data.detail[loop].type){
+					case 'table'		: part[1] = part[1] + '<div class="cards flush toggle-content ' + data.detail[loop].groupId + '-group">' + '<div class="desc-frame">';  endLoopY = data.detail[loop].items.length; break;
+					case 'list'			: part[1] = part[1] + '<div class="cards flush toggle-content ' + data.detail[loop].groupId + '-group">' + '<div class="row">'; endLoopY = data.detail[loop].items.length; break;
+					case 'table-list'	: part[1] = part[1] + '<div class="cards flush toggle-content ' + data.detail[loop].groupId + '-group">' + '<div class="row default">'; endLoopY = data.detail[loop].items[0].set.length;  break;
 				}
 				
 				
 				for(var loopY = 0; loopY < endLoopY; loopY++){	
-					switch(data[0].detail[loop].type){
+					switch(data.detail[loop].type){
 						case 'table'	:
 							part[1] = part[1] +
 							'<div class="desc-box">' +
-								'<div class="labels"><p class="text-set">' + data[0].detail[loop].items[loopY].label + '</p></div>' +
-								'<div class="divider"><p class="text-set">' + data[0].detail[loop].items[loopY].text + '</p></div>' +
+								'<div class="labels"><p class="text-set">' + data.detail[loop].items[loopY].label + '</p></div>' +
+								'<div class="divider"><p class="text-set">' + data.detail[loop].items[loopY].text + '</p></div>' +
 							'</div>';
 						break;
 						case 'list'	:
 							part[1] = part[1] +
 							'<div class="list-box">' +
-								'<div class="list-icon bg-' + data[0].detail[loop].items[loopY].color + '"><span class="fa fa-' + data[0].detail[loop].items[loopY].icon + '"></span></div>' +
-								'<p class="list-text">' + data[0].detail[loop].items[loopY].text + '</p>' +
+								'<div class="list-icon bg-' + data.detail[loop].items[loopY].color + '"><span class="fa fa-' + data.detail[loop].items[loopY].icon + '"></span></div>' +
+								'<p class="list-text">' + data.detail[loop].items[loopY].text + '</p>' +
 							'</div>';
 						break;
 						case 'table-list'	:
-								 if(data[0].detail[loop].items[0].set[loopY].size == "large") { part[1] = part[1] + '<div class="col-md-4">'; }
-							else if(data[0].detail[loop].items[0].set[loopY].size == "medium"){ part[1] = part[1] + '<div class="col-md-3">'; }
-							else if(data[0].detail[loop].items[0].set[loopY].size == "small") { part[1] = part[1] + '<div class="col-md-2">'; }
+								 if(data.detail[loop].items[0].set[loopY].size == "large") { part[1] = part[1] + '<div class="col-md-4">'; }
+							else if(data.detail[loop].items[0].set[loopY].size == "medium"){ part[1] = part[1] + '<div class="col-md-3">'; }
+							else if(data.detail[loop].items[0].set[loopY].size == "small") { part[1] = part[1] + '<div class="col-md-2">'; }
 							
 							var classAdd = "";
 							if(loopY > 0){ classAdd = "clear"; }
 							part[1] = part[1] +
 							'<div class="list-box ' + classAdd + '">';
 							
-							if(data[0].detail[loop].items[0].set[loopY].form == "text-icon"){ 
+							if(data.detail[loop].items[0].set[loopY].form == "text-icon"){ 
 								part[1] = part[1] +
-								'<div class="list-icon bg-' + data[0].detail[loop].items[0].set[loopY].color + '"><span class="fa fa-' + data[0].detail[loop].items[0].set[loopY].icon + '"></span></div>' +
-								'<p class="list-text"><strong>' + data[0].detail[loop].items[0].set[loopY].text + '</strong></p>';
-							}else if(data[0].detail[loop].items[0].set[loopY].form == "text"){
+								'<div class="list-icon bg-' + data.detail[loop].items[0].set[loopY].color + '"><span class="fa fa-' + data.detail[loop].items[0].set[loopY].icon + '"></span></div>' +
+								'<p class="list-text"><strong>' + data.detail[loop].items[0].set[loopY].text + '</strong></p>';
+							}else if(data.detail[loop].items[0].set[loopY].form == "text"){
 								part[1] = part[1] +
-								'<p class="list-text">' + data[0].detail[loop].items[0].set[loopY].text + '</p>';
-							}else if(data[0].detail[loop].items[0].set[loopY].form == "button"){
+								'<p class="list-text">' + data.detail[loop].items[0].set[loopY].text + '</p>';
+							}else if(data.detail[loop].items[0].set[loopY].form == "button"){
 								part[1] = part[1] +
-								'<button type="button" class="clear list-text btn-link">' + data[0].detail[loop].items[0].set[loopY].text + '</button>';
+								'<button type="button" class="clear list-text btn-link">' + data.detail[loop].items[0].set[loopY].text + '</button>';
 							}
 							
 							part[1] = part[1] + 
@@ -1630,23 +1634,23 @@ function r_f1DetailLembaga(packet) {
 					'</div>' +
 				'</div>';
 				
-			}else if(data[0].detail[loop].group == "img-viewer"){
+			}else if(data.detail[loop].group == "img-viewer"){
 				part[1] = part[1] +
 				'<div class="cards-label plus">' +
 					'<p>' +
-						'<strong>' + data[0].detail[loop].groupName + ' (' + data[0].detail[loop].items.length + ')</strong>' +
+						'<strong>' + data.detail[loop].groupName + ' (' + data.detail[loop].items.length + ')</strong>' +
 					'</p>' +
 				'</div>' +
 				'<div class="row default">';
-				for(var loopY = 0; loopY < data[0].detail[loop].items.length; loopY++){	
+				for(var loopY = 0; loopY < data.detail[loop].items.length; loopY++){	
 					part[1] = part[1] +
 					'<div class="col-md-3">' +
 						'<div class="tumb-cards">' +
 							'<div class="picture-box">' +
-								'<img class="pic-default" src="img/' + data[0].detail[loop].items[loopY].picture + '" />' +
+								'<img class="pic-default" src="img/' + data.detail[loop].items[loopY].picture + '" />' +
 							'</div>' +
 							'<div class="desc-box">' +
-								'<p>' + data[0].detail[loop].items[loopY].desc + '</p>' +
+								'<p>' + data.detail[loop].items[loopY].desc + '</p>' +
 							'</div>' +
 						'</div>' +
 					'</div>';
