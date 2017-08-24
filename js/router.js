@@ -132,9 +132,9 @@ function r_customCallBack(formType, group, target, recentId){
 				break;
 				case 'f119' :
 					dataPrestasi = p_getData('f1', 'f119', recentId);
+					var minus = 0;
 					$("#isiSectionPrestasi").remove();
 					r_f1PrestasiGenerator(dataPrestasi);
-
 
 					$(".list-remove").unbind().on("click", function(){
 						pId = $(this).attr('id');	
@@ -143,14 +143,12 @@ function r_customCallBack(formType, group, target, recentId){
 						$(".option-yes").unbind().on("click", function(){ 
 							hideOptionList(); 
 							if(p_removeData("f1", "f119", pId) == 'success'){ 
-								// hideOptionList();
-								$("#isiSectionPrestasi").remove();
+								minus = minus + 1;
+								$("#prestasi"+pId).remove();
+								result = dataPrestasi.feedData.length - minus;
+								$("#counter").html(result);
 							};
-							dataPrestasi = p_getData('f1', 'f119', recentId);
-							r_f1PrestasiGenerator(dataPrestasi); 
 						});
-					// console.log(pId);
-					// console.log("isiSectionKoleksi"+$(this).attr('id'));
 					}); 
 			}
 		break;
@@ -2239,11 +2237,61 @@ function r_f1FormKelembagaan(packet){
 				'<input name="catatan" placeholder="Catatan" tabindex="8" type="text" value="" />' +
 			'</div>' +
 		'</div>' +
+		
 		'</form>'+
 		'<div class="clearfix">&nbsp;</div>';
 
 		body = body + '</div></div>';
 		body = body + '</div>';
+		
+		//--sejarah ext
+
+		body = body + 
+		'<form id="f-bantuan-create" f-group="f1" f-target="">'+
+		'<div class="col-md-8 col-md-offset-2 tab-container" tab-contentIndex="3">';
+		body = body +
+		'<div class="cards">' +
+			'<div class="cards-header">' +
+				'<h4>Bantuan</h4>' +
+				'<p class="offset">daftar bantuan yang telah diterima.</p>' +
+				'<div class="btn-collapse right">' +
+					'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
+					'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
+				'</div>' +
+			'</div>' +
+		'</div>' +
+		'<div class="cards flush">' +
+			// '<form id="f-koleksi">' +
+		'<div class="row default">';
+		
+		//left
+		body = body +
+		'<div class="col-md-6">' +
+			'<div class="input-box">' +
+				'<input name="noreg" placeholder="" tabindex="13" type="hidden" value="" />' +
+				'<input name="bantuanDari" placeholder="bantuan dari" tabindex="13" type="text" value="" />' +
+			'</div>' +
+		'</div>';
+		
+		//center		
+		//right
+		body = body +
+		'<div class="col-md-6">' +
+			'<div class="input-box">' +
+				'<input name="tahun" placeholder="Tahun" tabindex="13" type="text" value="" />' +
+			'</div>' +
+			'<div class="space-box"></div>' +
+		'</div>';
+		
+		body = body + '</div></form></div>';
+
+		body = body +
+		'<div id="section-bantuan">';
+		body = body + '</div></div>';
+		body = body + '<div class="clearfix tab-container" tab-contentIndex="6">&nbsp;</div>';
+
+		//--
+
 		//body = body + '<div class="clearfix tab-container" tab-contentIndex="3">&nbsp;</div>';
 		
 		
@@ -2745,7 +2793,7 @@ function r_f1FormKelembagaan(packet){
 		'</div>' +
 		'<div class="cards flush">' +
 			// '<form id="f-koleksi">' +
-				'<div class="row default">';
+		'<div class="row default">';
 		
 		//left
 		body = body +
@@ -5879,28 +5927,25 @@ function r_f4FormInfoPersonal() {
 }
 function r_f1KoleksiDataGenerator(data){
 	var genHtml = "";
-	var genHtml2 = "";
-			console.log(dataKoleksi.feedData.length);
-		genHtml = 
-		'<div id="daftarSectionKoleksi">'+ 
-		'<div class="cards-label plus">' +
-			'<p><strong>Daftar koleksi ('+dataKoleksi.feedData.length+')</strong></p>' +
+			
+	genHtml = 
+	'<div id="daftarSectionKoleksi">'+ 
+	'<div class="cards-label plus">' +
+		'<p><strong>Daftar koleksi ('+feedData.length+')</strong></p>' +
+	'</div>';
+	for(counter = 0; counter < feedData.length; counter++){
+	genHtml = genHtml+
+		// '<div id="isiSectionKoleksi">'+
+		'<div id="isiSectionKoleksi'+feedData[counter].idData+'" class="cards">' +
+			'<div class="list-box">' +
+				'<input name="idData" value="'+feedData[counter].idData+'" type="hidden">'+
+				'<div class="list-icon bg-sky"><span class="fa fa-book"></span></div>' +
+				'<p class="list-text">'+feedData[counter].judulKoleksi+'</p>' +
+				'<div id="'+feedData[counter].idData+'" class="list-remove"><span class="fa fa-trash"></span></div>' +
+			'</div>' +
 		'</div>';
-		for(counter = 0; counter < dataKoleksi.feedData.length; counter++){
-		genHtml = genHtml+
-			// '<div id="isiSectionKoleksi">'+
-			'<div id="isiSectionKoleksi'+dataKoleksi.feedData[counter].idData+'" class="cards">' +
-				'<div class="list-box">' +
-					'<input name="idData" value="'+dataKoleksi.feedData[counter].idData+'" type="hidden">'+
-					'<div class="list-icon bg-sky"><span class="fa fa-book"></span></div>' +
-					'<p class="list-text">'+dataKoleksi.feedData[counter].judulKoleksi+'</p>' +
-					'<div id="'+dataKoleksi.feedData[counter].idData+'" class="list-remove"><span class="fa fa-trash"></span></div>' +
-				'</div>' +
-			'</div>';
-		}
-		$("#section-koleksi").append(genHtml);
-		// $("#section-koleksi").append(genHtml2);
-		
+	}
+	$("#section-koleksi").append(genHtml);		
 	
 }
 function r_f1PrestasiGenerator(data){
@@ -5910,7 +5955,7 @@ function r_f1PrestasiGenerator(data){
 		genHtml = genHtml +
 			'<div id = "isiSectionPrestasi">' +	
 			'<div class="cards-label plus">' +
-				'<p><strong>Daftar koleksi ('+dataPrestasi.feedData.length+')</strong></p>' +
+				'<p><strong>Daftar koleksi (<span id = "counter">'+dataPrestasi.feedData.length+'</span>)</strong></p>' +
 			'</div>';
 			//data list
 			//render
