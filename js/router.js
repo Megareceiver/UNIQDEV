@@ -5987,24 +5987,8 @@ function r_f1KoleksiDataGenerator(data){
 function r_f1PrestasiGenerator(data, type){
 	var genHtml = "";
 	if(data.feedData != null){
-		genHtml = genHtml +
-<<<<<<< HEAD
-			'<div id = "isiSectionPrestasi">' +	
-			'<div class="cards-label plus">' +
-				'<p><strong>Daftar koleksi (<span id = "counter">'+dataPrestasi.feedData.length+'</span>)</strong></p>' +
-			'</div>';
-			//data list
-			//render
-		for(counter = 0; counter < dataPrestasi.feedData.length; counter++){
-=======
-		'<div id = "isiSectionPrestasi">' +	
-		'<div class="cards-label plus">' +
-			'<p><strong>Daftar koleksi ('+dataPrestasi.feedData.length+')</strong></p>' +
-		'</div>';
-
 		//render
 		for(counter = 0; counter < data.feedData.length; counter++){
->>>>>>> 227154e11c7d09a837421d53552fb8d210b9927c
 			genHtml = genHtml +
 			'<div id=prestasi'+data.feedData[counter].idData+' class="cards">' +
 				'<div class="list-box">' +
