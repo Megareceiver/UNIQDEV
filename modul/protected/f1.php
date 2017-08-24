@@ -388,10 +388,37 @@
 		$gate = openGate();
 		if($gate){		
 			// connection = true
-			$sql = 	
-			"
-			SELECT * FROM dplega_006_prestasi_temp WHERE noRegistrasi = '".$data['keyword']."'
-			";
+			if(isset($data['keyword']) && $data['keyword'] != ""){
+				$sql = 
+				"
+					SELECT 
+						p.idData,
+						p.noRegistrasi,
+						l.nama,
+						p.deskripsi 
+					FROM 
+						dplega_006_prestasi_temp p
+					JOIN
+						dplega_000_lembaga_temp l
+					ON 	p.noRegistrasi = l.noRegistrasi
+					WHERE 
+						p.noRegistrasi = '".$data['keyword']."'
+				";
+			}else{
+				$sql = 
+				"
+					SELECT 
+						p.idData,
+						p.noRegistrasi,
+						l.nama,
+						p.deskripsi 
+					FROM 
+						dplega_006_prestasi_temp p
+					JOIN
+						dplega_000_lembaga_temp l
+					ON 	p.noRegistrasi = l.noRegistrasi
+				";
+			}
 						
 			$result = mysqli_query($gate, $sql);
 			if($result){
@@ -403,6 +430,7 @@
 						$fetch = array(
 							"idData"   		=> $row['idData'],
 							"noreg" 		=> $row['noRegistrasi'],
+							"nama" 			=> $row['nama'],
 							"deskripsi"		=> $row['deskripsi']
 						);
 				
