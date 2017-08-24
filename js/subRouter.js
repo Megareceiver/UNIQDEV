@@ -51,7 +51,7 @@ function r_navigateTo(index, packet) {
 		case 12 : r_f1DetailLembaga(packet); 		break;
 		case 13 : r_f1VerifikasiLembaga(packet);	break;
 		case 14 : r_f1KoleksiLembaga(); 			break;
-		case 15 : r_f1PrestasiLembaga(); 			break;
+		case 16 : r_f1PrestasiLembaga(); 			break;
 		case 15 : r_f1FormKelembagaan(packet);		break;
 		
 		case 3  : r_f3Autentikasi(); 				break;
@@ -759,50 +759,53 @@ function r_fNotification() {
 		body  	= '';
 		part	= ['','','',''];
 		content = '';
-		data    = [
-			{
-				'group': 'Baru', 'list':[
-					{'noreg': '1', 'time': '2017/06/1 10:15', 'caption': 'lorem dolor sit amet 2.'},
-					{'noreg': '2', 'time': '2017/05/30 10:15', 'caption': 'lorem dolor sit amet 3.'},
-					{'noreg': '3', 'time': '2017/05/29 10:15', 'caption': 'lorem dolor sit amet 4.'},
-				]
-			},
-			{
-				'group': 'Riwayat', 'list':[
-					{'noreg': '4', 'time': '2017/05/11 10:15', 'caption': 'lorem dolor sit amet 6.'},
-					{'noreg': '5', 'time': '2017/05/14 10:15', 'caption': 'lorem dolor sit amet 7.'},
-					{'noreg': '6', 'time': '2017/05/15 10:15', 'caption': 'lorem dolor sit amet 8.'},
-					{'noreg': '7', 'time': '2017/05/20 10:15', 'caption': 'lorem dolor sit amet 9.'},
-				]
-			},
-		];
+		data	= p_getData('fNotification', 'f110', '');
+		// data2 = 'adaan';
+		console.log(data); 
+		// data    = [
+		// 	{
+		// 		'group': 'Baru', 'list':[
+		// 			{'noreg': '1', 'time': '2017/06/1 10:15', 'caption': 'lorem dolor sit amet 2.'},
+		// 			{'noreg': '2', 'time': '2017/05/30 10:15', 'caption': 'lorem dolor sit amet 3.'},
+		// 			{'noreg': '3', 'time': '2017/05/29 10:15', 'caption': 'lorem dolor sit amet 4.'},
+		// 		]
+		// 	},
+		// 	{
+		// 		'group': 'Riwayat', 'list':[
+		// 			{'noreg': '4', 'time': '2017/05/11 10:15', 'caption': 'lorem dolor sit amet 6.'},
+		// 			{'noreg': '5', 'time': '2017/05/14 10:15', 'caption': 'lorem dolor sit amet 7.'},
+		// 			{'noreg': '6', 'time': '2017/05/15 10:15', 'caption': 'lorem dolor sit amet 8.'},
+		// 			{'noreg': '7', 'time': '2017/05/20 10:15', 'caption': 'lorem dolor sit amet 9.'},
+		// 		]
+		// 	},
+		// ];
 		
 		//--open
 		head = '';
 		body = '<div class="row"><div class="container"><div class="col-md-8 col-md-offset-2">';
 		
-		for(var loop = 0; loop < data.length; loop++){
+		for(var loop = 0; loop < data.feedData.length; loop++){
 			//--group
 			body = body + 
 			'<div class="cards-label plus">' +
 				'<p>' +
-					'<strong>' + data[loop].group + ' (' + data[loop].list.length + ')</strong>' +
+					'<strong>' + data.feedData[loop].group + ' (' + data.feedData[loop].list.length + ')</strong>' +
 				'</p>' +
 			'</div>';
 			
-			for(var look = 0; look < data[loop].list.length; look++){
+			for(var look = 0; look < data.feedData[loop].list.length; look++){
 				body = body + 
 				'<div class="cards bakcup-list">' +
 					'<div class="row default">' +
 						'<div class="col-xs-10">' +
 							'<div class="list-box">' +
 								'<div class="list-icon bg-yellow"><span class="fa fa-bell"></span></div>' +
-								'<p class="list-text">' + data[loop].list[look].caption + '</p>' +
+								'<p class="list-text">' + data.feedData[loop].list[look].deskripsi + '</p>' +
 							'</div>' +
 						'</div>' +
 						'<div class="col-xs-2">' +
 							'<div class="list-box clear">' +
-								'<p class="list-text">' + timeSince(new Date(Date.parse(data[loop].list[look].time))) + '</p>' +
+								'<p class="list-text">' + timeSince(new Date(Date.parse(data.feedData[loop].list[look].waktu))) + '</p>' +
 							'</div>' +
 						'</div>' +
 						'<div class="clearfix"></div>' +
@@ -5987,24 +5990,8 @@ function r_f1KoleksiDataGenerator(data){
 function r_f1PrestasiGenerator(data, type){
 	var genHtml = "";
 	if(data.feedData != null){
-		genHtml = genHtml +
-<<<<<<< HEAD
-			'<div id = "isiSectionPrestasi">' +	
-			'<div class="cards-label plus">' +
-				'<p><strong>Daftar koleksi (<span id = "counter">'+dataPrestasi.feedData.length+'</span>)</strong></p>' +
-			'</div>';
-			//data list
-			//render
-		for(counter = 0; counter < dataPrestasi.feedData.length; counter++){
-=======
-		'<div id = "isiSectionPrestasi">' +	
-		'<div class="cards-label plus">' +
-			'<p><strong>Daftar koleksi ('+dataPrestasi.feedData.length+')</strong></p>' +
-		'</div>';
-
 		//render
 		for(counter = 0; counter < data.feedData.length; counter++){
->>>>>>> 227154e11c7d09a837421d53552fb8d210b9927c
 			genHtml = genHtml +
 			'<div id=prestasi'+data.feedData[counter].idData+' class="cards">' +
 				'<div class="list-box">' +
@@ -6166,7 +6153,7 @@ function r_navbarReactor(){
 	$("#option.syncnav .dashboard")  .unbind().on("click", function(){ r_navigateTo(0); });
 	$("#option.syncnav .kelembagaan").unbind().on("click", function(){ r_navigateTo(1); });
 	$("#option.syncnav .koleksi")	 .unbind().on("click", function(){ r_navigateTo(14); });
-	$("#option.syncnav .prestasi")	 .unbind().on("click", function(){ r_navigateTo(15); });
+	$("#option.syncnav .prestasi")	 .unbind().on("click", function(){ r_navigateTo(16); });
 	$("#option.syncnav .autentikasi").unbind().on("click", function(){ r_navigateTo(3); });
 	$("#option.syncnav .pengaturan") .unbind().on("click", function(){ r_navigateTo(4); });
 	$("#option.syncnav .bantuan") 	 .unbind().on("click", function(){ r_navigateTo(0.1); });
