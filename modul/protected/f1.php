@@ -482,6 +482,12 @@
 							array_push($items, array("label" => 'Visi', "text" => $row['visiLembaga'])); 
 							array_push($items, array("label" => 'Misi', "text" => $row['misiLembaga'])); 
 						}
+					}else{
+						array_push($items, array("label" => 'Bergerak dalam bidang', "text" => '')); 
+						array_push($items, array("label" => 'Jumlah pengurus', "text" => '')); 
+						array_push($items, array("label" => 'Afiliasi', "text" => '')); 
+						array_push($items, array("label" => 'Visi', "text" => '')); 
+						array_push($items, array("label" => 'Misi', "text" => '')); 
 					}
 
 					array_push($group, array(
@@ -526,15 +532,42 @@
 							$items = array();
 						}
 					}else{
-						array_push($items, array('color' => '', 'icon' => '', 'size' => 'large', 'form' => 'text-icon', 'text' => '')); 
-						array_push($items, array('color' => '', 'icon' => '', 'size' => 'medium', 'form' => 'text', 'text' => '')); 
-						array_push($items, array('color' => '', 'icon' => '', 'size' => 'small', 'form' => 'text', 'text' => '')); 
-						array_push($items, array('color' => '', 'icon' => '', 'size' => 'medium', 'form' => 'button', 'text' => '')); 
 
-						array_push($itemsPack, array("set" => $items));
+						$sql = 	"
+							SELECT 
+								namaPersyaratan
+							FROM
+								dplega_000_lembaga".$dumbTable." l
+							JOIN
+								dplega_201_persyaratan p ON l.kodeBentukLembaga = p.kodeBentukLembaga
+							WHERE
+								l.noRegistrasi = '".$noreg."'
+						";
 
-						unset($items); 
-						$items = array();
+						$result = mysqli_query($gate, $sql);
+						if($result){
+							if(mysqli_num_rows($result) > 0) {
+								while($row = mysqli_fetch_assoc($result)) {
+									array_push($items, array('color' => 'purple', 'icon' => 'file-text', 'size' => 'large', 'form' => 'text-icon', 'text' => $row['namaPersyaratan'])); 
+									array_push($items, array('color' => '', 'icon' => '', 'size' => 'large', 'form' => 'text', 'text' => '(Data tidak ditemukan)')); 
+									array_push($items, array('color' => '', 'icon' => '', 'size' => 'large', 'form' => 'button', 'text' => ''));
+									array_push($itemsPack, array("set" => $items));
+
+									unset($items); 
+									$items = array();
+								}
+							}else{
+								array_push($items, array('color' => '', 'icon' => '', 'size' => 'large', 'form' => 'text-icon', 'text' => '(Data tidak ditemukan)')); 
+								array_push($items, array('color' => '', 'icon' => '', 'size' => 'large', 'form' => 'text', 'text' => '')); 
+								array_push($items, array('color' => '', 'icon' => '', 'size' => 'large', 'form' => 'text', 'text' => '')); 
+
+								array_push($itemsPack, array("set" => $items));
+
+								unset($items); 
+								$items = array();
+							}
+						}
+						
 					}
 
 					array_push($group, array(
@@ -671,6 +704,18 @@
 							array_push($items, array("label" => 'Kompetensi', "text" => $row['kompetensi'])); 
 							array_push($items, array("label" => 'Catatan', "text" => $row['catatanLain'])); 
 						}
+					}else{
+						array_push($items, array("label" => 'Penanggung jawab', "text" => '')); 
+						array_push($items, array("label" => 'Alamat', "text" => '')); 
+						array_push($items, array("label" => 'Telp', "text" => '')); 
+						array_push($items, array("label" => 'Kewarganegaraan', "text" => '')); 
+						array_push($items, array("label" => 'Tempat, tanggal lahir', "text" => '')); 
+						array_push($items, array("label" => 'Jenis kelamin', "text" => '')); 
+						array_push($items, array("label" => 'Agama', "text" => '')); 
+						array_push($items, array("label" => 'Jabatan lain', "text" => '')); 
+						array_push($items, array("label" => 'Pendidikan', "text" => '')); 
+						array_push($items, array("label" => 'Kompetensi', "text" => '')); 
+						array_push($items, array("label" => 'Catatan', "text" => '')); 
 					}
 
 					array_push($group, array(
@@ -708,6 +753,12 @@
 							array_push($items, array("label" => 'Jumlah pekerja', "text" => $row['jumlahPekerja'])); 
 							array_push($items, array("label" => 'Catatan', "text" => $row['catatanLain'])); 
 						}
+					}else{
+						array_push($items, array("label" => 'Nama usaha', "text" => '')); 
+						array_push($items, array("label" => 'Detail usaha', "text" => '')); 
+						array_push($items, array("label" => 'Jenis usaha', "text" => '')); 
+						array_push($items, array("label" => 'Jumlah pekerja', "text" => '')); 
+						array_push($items, array("label" => 'Catatan', "text" => '')); 
 					}
 
 					array_push($group, array(

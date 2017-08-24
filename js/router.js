@@ -776,39 +776,50 @@ function r_fNotification() {
 				]
 			},
 		];
+
+		data = p_getData('fNotification', 'f110', '');
 		
 		//--open
 		head = '';
 		body = '<div class="row"><div class="container"><div class="col-md-8 col-md-offset-2">';
 		
-		for(var loop = 0; loop < data.length; loop++){
-			//--group
-			body = body + 
-			'<div class="cards-label plus">' +
-				'<p>' +
-					'<strong>' + data[loop].group + ' (' + data[loop].list.length + ')</strong>' +
-				'</p>' +
-			'</div>';
-			
-			for(var look = 0; look < data[loop].list.length; look++){
+		if(data != null){
+			for(var loop = 0; loop < data.length; loop++){
+				//--group
 				body = body + 
-				'<div class="cards bakcup-list">' +
-					'<div class="row default">' +
-						'<div class="col-xs-10">' +
-							'<div class="list-box">' +
-								'<div class="list-icon bg-yellow"><span class="fa fa-bell"></span></div>' +
-								'<p class="list-text">' + data[loop].list[look].caption + '</p>' +
-							'</div>' +
-						'</div>' +
-						'<div class="col-xs-2">' +
-							'<div class="list-box clear">' +
-								'<p class="list-text">' + timeSince(new Date(Date.parse(data[loop].list[look].time))) + '</p>' +
-							'</div>' +
-						'</div>' +
-						'<div class="clearfix"></div>' +
-					'</div>' +
+				'<div class="cards-label plus">' +
+					'<p>' +
+						'<strong>' + data[loop].group + ' (' + data[loop].list.length + ')</strong>' +
+					'</p>' +
 				'</div>';
-			}
+				
+				for(var look = 0; look < data[loop].list.length; look++){
+					body = body + 
+					'<div class="cards bakcup-list">' +
+						'<div class="row default">' +
+							'<div class="col-xs-10">' +
+								'<div class="list-box">' +
+									'<div class="list-icon bg-yellow"><span class="fa fa-bell"></span></div>' +
+									'<p class="list-text">' + data[loop].list[look].caption + '</p>' +
+								'</div>' +
+							'</div>' +
+							'<div class="col-xs-2">' +
+								'<div class="list-box clear">' +
+									'<p class="list-text">' + timeSince(new Date(Date.parse(data[loop].list[look].time))) + '</p>' +
+								'</div>' +
+							'</div>' +
+							'<div class="clearfix"></div>' +
+						'</div>' +
+					'</div>';
+				}
+			}	
+		}else{
+			body = body +
+			'<div class="cards">' +
+				'<div class="cards-header">' +
+					'<p class="fixed offset text-black">Tidak ada pemberitahuan.</p>' +
+				'</div>' +
+			'</div>';
 		}	
 		
 		body	= body + '</div></div></div>';
@@ -1305,9 +1316,9 @@ function r_f1LembagaEventctivator(){
 		pLabel			= $(this).attr('p-label');
 		showOptionList(); 
 		//-- popup
-		$("#view-card").unbind().on("click", function(){ hideOptionList(); r_navigateTo(12, $(this).attr('p-id')); });
-		$("#verification-card").unbind().on("click", function(){ hideOptionList(); r_navigateTo(13, $(this).attr('p-id')); });
-		$("#edit-card").unbind().on("click", function(){ hideOptionList(); r_navigateTo(15, $(this).attr('p-id')); });
+		$("#view-card").unbind().on("click", function(){ hideOptionList(); r_navigateTo(12, pId); });
+		$("#verification-card").unbind().on("click", function(){ hideOptionList(); r_navigateTo(13, pId); });
+		$("#edit-card").unbind().on("click", function(){ hideOptionList(); r_navigateTo(15, pId); });
 	});
 
 	detailBoxActivator();
@@ -1385,135 +1396,16 @@ function r_f1DetailLembaga(packet) {
 		body  	= '';
 		part	= ['',''];
 		content = '';
-		data 	= [{
-			'profile':[{
-				'avatar'		: 'avatar-default.jpg',
-				'noreg'			: '001',
-				'nama'			: 'xx',
-				'bentukLembaga' : 'Yayasan',
-				'catatan' 		: '... ',
-				'telp' 			: '123',
-				'email' 		: 'a@e.c',
-				'sosialMedia'	: 'a@e.c',
-				'alamat'		: 'jkl',
-			}],
-			'detail':[
-				{ 
-					'groupId': 'kelembagaan', 'groupName': 'Kelembagaan', 'group': 'card', 'type': 'table',
-					'items': [
-						{'label': 'Bergerak dalam bidang', 'text': 'Pendidikan Agama'},
-						{'label': 'Jumlah pengurus', 'text': '5 Orang'},
-						{'label': 'Afiliasi', 'text': ''},
-						{'label': 'Visi', 'text': ''},
-						{'label': 'Misi', 'text': ''},
-					],
-				},
-				{ 
-					'groupId': 'legalitas', 'groupName': 'Legalitas', 'group': 'card', 'type': 'table-list',
-					'items': [{
-						'set': [
-							{'color' : 'purple', 'icon' : 'file-text', 'size' : 'large', 'form' : 'text-icon', 'text' : 'Akta notaris'},
-							{'color' : '', 'icon' : '', 'size' : 'medium', 'form' : 'text', 'text' : '094950409539'},
-							{'color' : '', 'icon' : '', 'size' : 'small', 'form' : 'text', 'text' : '10/05/1999'},
-							{'color' : '', 'icon' : '', 'size' : 'medium', 'form' : 'button', 'text' : '23123920001_01_legalitas'},
-						],
-						'set': [
-							{'color' : 'purple', 'icon' : 'file-text', 'size' : 'large', 'form' : 'text-icon', 'text' : 'SK Kemenhukam'},
-							{'color' : '', 'icon' : '', 'size' : 'medium', 'form' : 'text', 'text' : '094952309559'},
-							{'color' : '', 'icon' : '', 'size' : 'small', 'form' : 'text', 'text' : '14/05/1999'},
-							{'color' : '', 'icon' : '', 'size' : 'medium', 'form' : 'button', 'text' : ''},
-						],
-					}],
-				},
-				{ 
-					'groupId': 'sejarah', 'groupName': 'Sejarah', 'group': 'card', 'type': 'table',
-					'items': [
-						{'label': 'Sejarah singkat', 'text': ''},
-						{'label': 'Tanggal didirikan', 'text': ''},
-						{'label': 'Kepemilikan', 'text': 'Pribadi'},
-						{'label': 'Sertifikasi', 'text': ''},
-						{'label': 'Luas tanah', 'text': ''},
-						{'label': 'Luas bangunan', 'text': ''},
-						{'label': 'Kondisi bangunan', 'text': ''},
-						{'label': 'Jumlah bangunan', 'text': ''},
-						{'label': 'Sarana / Prasarana', 'text': 'Ada'},
-						{'label': 'Struktur organisasi', 'text': 'Ada'},
-						{'label': 'Bahasa pengantar', 'text': 'Bahasa Indonesia'},
-						{'label': 'Sensus', 'text': 'Sudah'},
-						{'label': 'Bantuan pemerintah', 'text': 'Pernah'},
-						{'label': 'Kondisi geografis', 'text': ''},
-						{'label': 'Potensi wilayah', 'text': ''},
-						{'label': 'Jenis wilayah', 'text': ''},
-						{'label': 'Catatan', 'text': ''},
-					],
-				},
-				{ 
-					'groupId': 'kepengurusan', 'groupName': 'Kepengurusan', 'group': 'card', 'type': 'table',
-					'items': [
-						{'label': 'Penanggung jawab', 'text': ''},
-						{'label': 'Alamat', 'text': ''},
-						{'label': 'Telp', 'text': ''},
-						{'label': 'Kewarganegaraan', 'text': ''},
-						{'label': 'Tempat, tanggal lahir', 'text': ''},
-						{'label': 'Jenis kelamin', 'text': ''},
-						{'label': 'Agama', 'text': ''},
-						{'label': 'Jabatan lain', 'text': ''},
-						{'label': 'Pendidikan', 'text': ''},
-						{'label': 'Kompetensi', 'text': ''},
-						{'label': 'Catatan', 'text': ''},
-					],
-				},
-				{ 
-					'groupId': 'kegiatan-usaha', 'groupName': 'Kegiatan usaha', 'group': 'card', 'type': 'table',
-					'items': [
-						{'label': 'Nama usaha', 'text': ''},
-						{'label': 'Detail usaha', 'text': ''},
-						{'label': 'Jenis usaha', 'text': ''},
-						{'label': 'Jumlah pekerja', 'text': ''},
-						{'label': 'Catatan', 'text': ''},
-					],
-				},
-				{ 
-					'groupId': 'koleksi', 'groupName': 'Koleksi', 'group': 'card', 'type': 'list',
-					'items': [
-						{'color': 'sky', 'icon': 'book', 'text': 'lorem ipsum dolor sit amet.'},	
-					],
-				},
-				{ 
-					'groupId': 'prestasi', 'groupName': 'Prestasi', 'group': 'card', 'type': 'list',
-					'items': [
-						{'color': 'yellow', 'icon': 'trophy', 'text': 'lorem ipsum dolor sit amet.'},	
-					],
-				},
-				{ 
-					'groupId': 'saranaPrasarana', 'groupName': 'Sarana / prasarana', 'group': 'img-viewer', 'type': '',
-					'items': [
-						{'picture': 'saranaPrasarana/picture.png', 'desc': 'Lorem ipsum dolor sit amet.'},	
-						{'picture': 'saranaPrasarana/picture.png', 'desc': 'Lorem ipsum dolor sit amet.'},	
-						{'picture': 'saranaPrasarana/picture.png', 'desc': 'Lorem ipsum dolor sit amet.'},	
-						{'picture': 'saranaPrasarana/picture.png', 'desc': 'Lorem ipsum dolor sit amet.'},	
-					],
-				},
-				{ 
-					'groupId': 'kegiatanUsaha', 'groupName': 'Kegiatan usaha', 'group': 'img-viewer', 'type': '',
-					'items': [
-						{'picture': 'kegiatanUsaha/picture.png', 'desc': 'Lorem ipsum dolor sit amet.'},	
-						{'picture': 'kegiatanUsaha/picture.png', 'desc': 'Lorem ipsum dolor sit amet.'},	
-						{'picture': 'kegiatanUsaha/picture.png', 'desc': 'Lorem ipsum dolor sit amet.'},	
-						{'picture': 'kegiatanUsaha/picture.png', 'desc': 'Lorem ipsum dolor sit amet.'},	
-					],
-				},
-			],
-			'option': [
-				{'selector': 'download-card', 		'icon': 'download',  'label': 'Unduh (.pdf)'},
-				{'selector': 'verification-card', 	'icon': 'check',  	 'label': 'Verifikasi'},
-				{'selector': 'edit-card', 			'icon': 'pencil', 	 'label': 'Ubah profil'},
-				{'selector': 'delete-card', 		'icon': 'trash',  	 'label': 'Hapus lembaga'},
-			]
-		}];
+		
+		if(packet == undefined || packet == "" || packet == null || packet == "start"){
+			packet = profile_look_reader();
+			
+		}
 
+		profile_look_set(packet);
+		
 		// data = p_getData('f1', 'f1111', '', '12121300001');
-		data = p_getData('f1', 'f1111', '', '00030200109');
+		data = p_getData('f1', 'f1111', '', packet);
 		data = data.feedData;
 		
 		//-- set option list on a session
@@ -1673,7 +1565,12 @@ function r_f1DetailLembaga(packet) {
 		//--command reactor
 		$(".back-button").unbind().on('click', function(){ r_navigateTo(11); });
 		$(".click-option").unbind().on("click", function(){ 
-			showOptionList($(this).attr("p-id"), $(this).attr("p-label"), optionBatch); 
+			//packet session
+			clearPacket();
+			pId				= $(this).attr('p-id');
+			pLabel			= $(this).attr('p-label');
+			showOptionList(); 
+			
 			//-- popup
 			$("#verification-card").unbind().on("click", function(){ hideOptionList(); r_navigateTo(13, $(this).attr('p-id')); });
 			$("#edit-card").unbind().on("click", function(){ hideOptionList(); r_navigateTo(15, $(this).attr('p-id')); });
@@ -6104,10 +6001,10 @@ function showOptionList(){
 			'<ul>' +
 				'<li class="head">' + pLabel + '</li>';
 				
-	for(var loop=0; loop < optionBatch.length; loop++){
-		optionHtml = optionHtml +
-		'<li id="' + optionBatch[loop].selector + '"><button type="button" class="clear btn-icon"><span class="fa fa-' + optionBatch[loop].icon + '"></span>' + optionBatch[loop].label + '</button></li>';
-	}
+				for(var loop=0; loop < optionBatch.length; loop++){
+					optionHtml = optionHtml +
+					'<li id="' + optionBatch[loop].selector + '" p-id=""><button type="button" class="clear btn-icon"><span class="fa fa-' + optionBatch[loop].icon + '"></span>' + optionBatch[loop].label + '</button></li>';
+				}
 	
 	optionHtml = optionHtml +
 			'</ul>' +
@@ -6215,10 +6112,8 @@ function r_bentukLembagaReader(){
 	return data;
 }
 
-// function profile_look_set(id){ r_setCookie('profile_look', id, 1); }
-// function profile_look_reader(){	return String(r_getCookie('profile_look'));}
-// function post_look_set(id){ r_setCookie('post_look', id, 1); }
-// function post_look_reader(){ return String(r_getCookie('post_look'));}
+function profile_look_set(id){ r_setCookie('profile_look', id, 1); }
+function profile_look_reader(){	return String(r_getCookie('profile_look'));}
 
 // function r_initCookie(){
 	//r_setCookie('profile_look', '', 1);
@@ -6262,6 +6157,6 @@ function r_clearCookies(){
 	r_setCookie('tab','',0.1);
 	r_setCookie('kodeBentukLembaga','',0.1);
 	r_setCookie('namaBentukLembaga','',0.1);
-	// r_setCookie('profile_look','',1);
+	r_setCookie('profile_look','',1);
 	// r_setCookie('header_log','',1);
 }
