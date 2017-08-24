@@ -21,6 +21,7 @@
 		switch($target){
 			case "f1110": $resultList = getListLembagaan($data); break;
 			case "f117": $resultList = getKoleksiSection($data); break;
+			case "f119": $resultList = getPrestasiSection($data); break;
 			case "f141": $resultList = getKoleksi($data); break;
 			
 			default	   : $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Terjadi kesalahan fatal, proses dibatalkan!", "feedData" => array()); break;
@@ -54,6 +55,7 @@
 			case "f115": $resultList = createKegiatanUsahaSection($target, $data); break;
 			case "f116": $resultList = createVisualisasiUsahaSection($target, $data); break;
 			case "f118": $resultList = createKoleksiSection($target, $data); break;
+			case "f119": $resultList = createPrestasiSection($target, $data); break;
 			// case "f121": $resultList = getLegalitasSection(); break;
 			default	   : $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Terjadi kesalahan fatal, proses dibatalkan!"); break;
 		}
@@ -110,6 +112,7 @@
 		
 		switch($target){
 			case "f118": $resultList = deleteKoleksiSection($target, $data); break;
+			case "f119": $resultList = deletePrestasiSection($target, $data); break;
 			default	  : $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Terjadi kesalahan fatal, proses dibatalkan!"); break;
 		}
 		
@@ -338,6 +341,71 @@
 								);
 						}
 						
+						array_push($record, $fetch); 
+						unset($fetch); 
+						$fetch = array();
+					}
+					
+					$resultList = array( "feedStatus" => "succes", "feedMessage" => "Data ditemukan!", "feedData" => $record);
+				}else {
+					$resultList = array( "feedStatus" => "succes", "feedMessage" => "Data tidak ditemukan!", "feedData" => null);
+				}
+			}			
+				
+			closeGate($gate);
+		}else {
+			//error state
+			$error		= 1;
+			$errorType  = "danger";
+			$errorMsg	= "Terjadi kesalahan, tidak dapat terhubung ke server!";
+		}
+		
+		
+		if($error == 1){
+			//error state
+			$resultList = array( "feedStatus" => "failed", "feedType" => $errorType, "feedMessage" => $errorMsg);
+		}
+		
+		/* result fetch */
+		$json = $resultList;
+		
+		return $json;
+	}
+
+	function getPrestasiSection($data){
+		/* initial condition */
+		$resultList = array();
+		$table 		= "";
+		$field 		= array();
+		$rows		= 0;
+		$condition 	= "";
+		$orderBy	= "";
+		$error		= 0;
+		$errorType  = "";
+		$errorMsg	= "";
+	
+		/* open connection */ 
+		$gate = openGate();
+		if($gate){		
+			// connection = true
+			$sql = 	
+			"
+			SELECT * FROM dplega_006_prestasi_temp WHERE noRegistrasi = '".$data['keyword']."'
+			";
+						
+			$result = mysqli_query($gate, $sql);
+			if($result){
+				$record    = array();  
+				$fetch 	   = array(); 
+				if(mysqli_num_rows($result) > 0) {
+					// output data of each row 
+					while($row = mysqli_fetch_assoc($result)) {
+						$fetch = array(
+							"idData"   		=> $row['idData'],
+							"noreg" 		=> $row['noRegistrasi'],
+							"deskripsi"		=> $row['deskripsi']
+						);
+				
 						array_push($record, $fetch); 
 						unset($fetch); 
 						$fetch = array();
@@ -1945,6 +2013,162 @@
 		if($error == 1){
 			//error state
 			$resultList = array( "feedStatus" => "failed", "feedType" => $errorType, "feedMessage" => $errorMsg);
+		}
+		
+		/* result fetch */
+		$json = $resultList;
+		
+		return $json;
+	}
+
+	function createPrestasiSection($target, $data){
+		/* initial condition */
+		$resultList = array();
+		$table 		= "";
+		$field 		= array();
+		$rows		= 0;
+		$condition 	= "";
+		$orderBy	= "";
+		$error		= 0;
+		$resultType = "";
+		$resultMsg	= "";
+		$counter	= "";
+		$idRecent	= "";
+		$idTemp		= "";
+		
+		/* validation 
+		if($target == "f411"){
+			if(
+				!isset($data['kode']) || $data['kode']==""
+				|| !isset($data['nama']) || $data['nama']==""
+			){ $error = 1; }
+		}elseif($target == "f412" || $target == "f413" || $target == "f414"){
+			if(
+				!isset($data['kode']) || $data['kode']==""
+				|| !isset($data['nama']) || $data['nama']==""
+				|| !isset($data['referensi']) || $data['referensi']==""
+			){ $error = 1; }
+		}*/
+			if($error != 1){
+			/* open connection */
+				$gate = openGate();
+				if($gate){
+				// connection = true
+					if($data['noreg'] != ''){
+						$sql = " INSERT INTO dplega_006_prestasi_temp
+							(
+								noRegistrasi,
+								deskripsi,
+								createdBy
+							)
+							VALUES
+							(
+								'".$data['noreg']."',
+								'".$data['deskripsi']."',
+								'TESTSESSION'
+							)
+						";
+					}else{
+						$sql = 'error';
+					}
+				$result	  = mysqli_query($gate, $sql);
+				$eresult  = mysqli_error($gate);
+				$idRecent = $data["noreg"];
+				if($result){	
+					$error	    = 0;
+					$resultType = "success";
+					$resultMsg  = "Input berhasil disimpan.";
+				}else{
+					//error state
+					$error		= 1;
+					$resultType = "danger";
+					$resultMsg	= "Terjadi kesalahan fatal, input gagal disimpan! ".$eresult;
+				}
+				
+				closeGate($gate);
+			}else{
+				//error state
+				$error		= 1;
+				$resultType = "danger";
+				$resultMsg	= "Terjadi kesalahan, tidak dapat terhubung ke server!";
+			}
+		}else{
+			//error state
+			$error		= 1;
+			$resultType = "danger";
+			$resultMsg	= "Terjadi kesalahan, mandatory tidak boleh kosong!";
+		}
+		
+		if($error == 1){
+			//error state
+			$resultList = array( "feedStatus" => "failed", "feedType" => $resultType, "feedMessage" => $resultMsg);
+		}else{
+			$resultList = array( "feedStatus" => "success", "feedType" => $resultType, "feedMessage" => $resultMsg, "feedId" => $idRecent);
+		}
+		
+		/* result fetch */
+		$json = $resultList;
+		
+		return $json;
+	}
+
+	function deletePrestasiSection($target, $data){
+		/* initial condition */
+		$resultList = array();
+		$table 		= "";
+		$field 		= array();
+		$rows		= 0;
+		$condition 	= "";
+		$orderBy	= "";
+		$error		= 0;
+		$resultType = "";
+		$resultMsg	= "";
+		$counter	= "";
+		
+		/* validation */
+		if(	$data['pId']!="")
+		{
+			
+			/* open connection */ 
+			$gate = openGate();
+			if($gate){		
+				// connection = true
+				$sql = "";
+
+				$sql = "DELETE FROM dplega_006_prestasi_temp WHERE idData ='".$data['pId']."'";
+				
+					
+				$result = mysqli_query($gate, $sql);
+				if($result){	
+					$error	    = 0;
+					$resultType = "success";
+					$resultMsg  = "data berhasil dihapus.";		
+				}else{
+					//error state
+					$error		= 1;
+					$resultType = "danger";
+					$resultMsg	= "Terjadi kesalahan fatal, data gagal dihapus! ";
+				}
+				
+				closeGate($gate);
+			}else{
+				//error state
+				$error		= 1;
+				$resultType = "danger";
+				$resultMsg	= "Terjadi kesalahan, tidak dapat terhubung ke server!";
+			}
+		}else{
+			//error state
+			$error		= 1;
+			$resultType = "danger";
+			$resultMsg	= "Terjadi kesalahan, ID tidak ditemukan!";
+		}
+		
+		if($error == 1){
+			//error state
+			$resultList = array( "feedStatus" => "failed", "feedType" => $resultType, "feedMessage" => $resultMsg);
+		}else{
+			$resultList = array( "feedStatus" => "success", "feedType" => $resultType, "feedMessage" => $resultMsg, "feedId" => $data['pId']);
 		}
 		
 		/* result fetch */
