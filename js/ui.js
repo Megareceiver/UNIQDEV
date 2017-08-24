@@ -155,6 +155,7 @@ function searchBoxActivator(){
 	$("header.parent .search-button").unbind().on("click", function(){ showSearchBox(); });
 	$("header.parent .search-box input").unbind().on("blur", function(){ hideSearchBox(); });
 	$("header.parent .search-box .search-close").unbind().on("click", function(){ hideSearchBox("terminate"); });
+	$("header.parent .search-box").unbind().on("blur", function(){ hideSearchBox("terminate"); });
 }
 
 function showSearchBox(){

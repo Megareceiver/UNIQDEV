@@ -133,13 +133,43 @@
 		$error		= 0;
 		$errorType  = "";
 		$errorMsg	= "";
-	
+		$dumb		= "";
+		$dumbQuery['keyword'] 	= ""; 
+		$dumbQuery['provinsi'] 	= ""; 
+		$dumbQuery['wilayah'] 	= ""; 
+		$dumbQuery['kecamatan'] = ""; 
+		$dumbQuery['kelurahan'] = ""; 
+
 		//validation 
-		if(isset($data['keyword']) && $data['keyword'] != ""){	
+		if(isset($data['refferences']) && $data['refferences'] != ""){	
 			/* open connection */ 
 			$gate = openGate();
 			if($gate){		
 				// connection = true
+
+				$dumb = explode(',', $data['refferences']);
+				if($dumb[0] == 'single') { $data['refferences'] = $dumb[1]; }
+				else {
+					$data['refferences'] 	=  $dumb[1];
+
+					if(isset($dumb[2]) && $dumb[2] != "") { $dumbQuery['provinsi' ]	= "AND l.kodeProvinsi  = '".$dumb[2]."'"; }
+					if(isset($dumb[3]) && $dumb[3] != "") { $dumbQuery['wilayah'  ]	= "AND l.kodeWilayah   = '".$dumb[3]."'"; }
+					if(isset($dumb[4]) && $dumb[4] != "") { $dumbQuery['kecamatan']	= "AND l.kodeKecamatan = '".$dumb[4]."'"; }
+					if(isset($dumb[5]) && $dumb[5] != "") { $dumbQuery['kelurahan']	= "AND l.kodeKelurahan = '".$dumb[5]."'"; }
+				}
+
+
+
+				if(isset($data['keyword']) && $data['keyword'] != ""){	
+					$dumbQuery['keyword'] = "
+					AND
+						( 	
+							l.noRegistrasi		LIKE '%".$data['keyword']."%' OR 
+							l.nama 				LIKE '%".$data['keyword']."%' 
+						)
+					";
+				}
+
 				$sql = 	
 				"
 					SELECT * FROM (
@@ -162,7 +192,15 @@
 							dplega_102_kecamatan kc ON l.kodeKecamatan = kc.kodeKecamatan
 						JOIN
 							dplega_103_kelurahan kl ON l.kodeKelurahan = kl.kodeKelurahan
-						WHERE l.kodeBentukLembaga = '".$data['keyword']."' AND l.statusAktif = '1' ) as table_1
+						WHERE 
+							l.kodeBentukLembaga = '".$data['refferences']."' 
+						AND l.statusAktif = '1'
+						".$dumbQuery['keyword']."
+						".$dumbQuery['provinsi' ]."
+						".$dumbQuery['wilayah'  ]."
+						".$dumbQuery['kecamatan']." 
+						".$dumbQuery['kelurahan']." 
+					) as table_1
 					UNION
 					SELECT * FROM (
 						SELECT  
@@ -184,7 +222,15 @@
 							dplega_102_kecamatan kc ON l.kodeKecamatan = kc.kodeKecamatan
 						JOIN
 							dplega_103_kelurahan kl ON l.kodeKelurahan = kl.kodeKelurahan
-						WHERE l.kodeBentukLembaga = '".$data['keyword']."' AND l.statusAktif = '2' ) as table_2
+						WHERE 
+							l.kodeBentukLembaga = '".$data['refferences']."' 
+						AND l.statusAktif = '2'
+						".$dumbQuery['keyword']."
+						".$dumbQuery['provinsi' ]."
+						".$dumbQuery['wilayah'  ]."
+						".$dumbQuery['kecamatan']." 
+						".$dumbQuery['kelurahan']." 
+					) as table_2
 					UNION
 					SELECT * FROM (
 						SELECT  
@@ -206,9 +252,17 @@
 							dplega_102_kecamatan kc ON l.kodeKecamatan = kc.kodeKecamatan
 						JOIN
 							dplega_103_kelurahan kl ON l.kodeKelurahan = kl.kodeKelurahan
-						WHERE l.kodeBentukLembaga = '".$data['keyword']."' AND l.statusAktif = '1') as table_3
+						WHERE 
+							l.kodeBentukLembaga = '".$data['refferences']."' 
+						AND l.statusAktif = '1'
+						".$dumbQuery['keyword']."
+						".$dumbQuery['provinsi' ]."
+						".$dumbQuery['wilayah'  ]."
+						".$dumbQuery['kecamatan']." 
+						".$dumbQuery['kelurahan']." 
+					) as table_3
 				";
-							
+
 				$result = mysqli_query($gate, $sql);
 				if($result){
 					$package    = array();  
@@ -264,7 +318,7 @@
 						
 						$resultList = array( "feedStatus" => "succes", "feedMessage" => "Data ditemukan!", "feedData" => $package);
 					}else {
-						$resultList = array( "feedStatus" => "succes", "feedMessage" => "Data tidak ditemukan!", "feedData" => null);
+						$resultList = array( "feedStatus" => "succes", "feedMessage" => "Data tidak ditemukan!", "feedData" => array());
 					}
 				}			
 					
@@ -275,6 +329,11 @@
 				$errorType  = "danger";
 				$errorMsg	= "Terjadi kesalahan, tidak dapat terhubung ke server!";
 			}
+		}else {
+			//error state
+			$error		= 1;
+			$errorType  = "danger";
+			$errorMsg	= "Terjadi kesalahan, tidak dapat menentukan refferences key!";
 		} // return empty of array
 		
 		if($error == 1){
