@@ -20,6 +20,7 @@
 		
 		switch($target){
 			case "f1110": $resultList = getListLembagaan($data); break;
+			case "f1111": $resultList = getDetailLembagaan($data); break;
 			case "f117": $resultList = getKoleksiSection($data); break;
 			case "f119": $resultList = getPrestasiSection($data); break;
 			case "f141": $resultList = getKoleksi($data); break;
@@ -133,13 +134,43 @@
 		$error		= 0;
 		$errorType  = "";
 		$errorMsg	= "";
-	
+		$dumb		= "";
+		$dumbQuery['keyword'] 	= ""; 
+		$dumbQuery['provinsi'] 	= ""; 
+		$dumbQuery['wilayah'] 	= ""; 
+		$dumbQuery['kecamatan'] = ""; 
+		$dumbQuery['kelurahan'] = ""; 
+
 		//validation 
-		if(isset($data['keyword']) && $data['keyword'] != ""){	
+		if(isset($data['refferences']) && $data['refferences'] != ""){	
 			/* open connection */ 
 			$gate = openGate();
 			if($gate){		
 				// connection = true
+
+				$dumb = explode(',', $data['refferences']);
+				if($dumb[0] == 'single') { $data['refferences'] = $dumb[1]; }
+				else {
+					$data['refferences'] 	=  $dumb[1];
+
+					if(isset($dumb[2]) && $dumb[2] != "") { $dumbQuery['provinsi' ]	= "AND l.kodeProvinsi  = '".$dumb[2]."'"; }
+					if(isset($dumb[3]) && $dumb[3] != "") { $dumbQuery['wilayah'  ]	= "AND l.kodeWilayah   = '".$dumb[3]."'"; }
+					if(isset($dumb[4]) && $dumb[4] != "") { $dumbQuery['kecamatan']	= "AND l.kodeKecamatan = '".$dumb[4]."'"; }
+					if(isset($dumb[5]) && $dumb[5] != "") { $dumbQuery['kelurahan']	= "AND l.kodeKelurahan = '".$dumb[5]."'"; }
+				}
+
+
+
+				if(isset($data['keyword']) && $data['keyword'] != ""){	
+					$dumbQuery['keyword'] = "
+					AND
+						( 	
+							l.noRegistrasi		LIKE '%".$data['keyword']."%' OR 
+							l.nama 				LIKE '%".$data['keyword']."%' 
+						)
+					";
+				}
+
 				$sql = 	
 				"
 					SELECT * FROM (
@@ -162,7 +193,15 @@
 							dplega_102_kecamatan kc ON l.kodeKecamatan = kc.kodeKecamatan
 						JOIN
 							dplega_103_kelurahan kl ON l.kodeKelurahan = kl.kodeKelurahan
-						WHERE l.kodeBentukLembaga = '".$data['keyword']."' AND l.statusAktif = '1' ) as table_1
+						WHERE 
+							l.kodeBentukLembaga = '".$data['refferences']."' 
+						AND l.statusAktif = '1'
+						".$dumbQuery['keyword']."
+						".$dumbQuery['provinsi' ]."
+						".$dumbQuery['wilayah'  ]."
+						".$dumbQuery['kecamatan']." 
+						".$dumbQuery['kelurahan']." 
+					) as table_1
 					UNION
 					SELECT * FROM (
 						SELECT  
@@ -184,7 +223,15 @@
 							dplega_102_kecamatan kc ON l.kodeKecamatan = kc.kodeKecamatan
 						JOIN
 							dplega_103_kelurahan kl ON l.kodeKelurahan = kl.kodeKelurahan
-						WHERE l.kodeBentukLembaga = '".$data['keyword']."' AND l.statusAktif = '2' ) as table_2
+						WHERE 
+							l.kodeBentukLembaga = '".$data['refferences']."' 
+						AND l.statusAktif = '2'
+						".$dumbQuery['keyword']."
+						".$dumbQuery['provinsi' ]."
+						".$dumbQuery['wilayah'  ]."
+						".$dumbQuery['kecamatan']." 
+						".$dumbQuery['kelurahan']." 
+					) as table_2
 					UNION
 					SELECT * FROM (
 						SELECT  
@@ -206,9 +253,17 @@
 							dplega_102_kecamatan kc ON l.kodeKecamatan = kc.kodeKecamatan
 						JOIN
 							dplega_103_kelurahan kl ON l.kodeKelurahan = kl.kodeKelurahan
-						WHERE l.kodeBentukLembaga = '".$data['keyword']."' AND l.statusAktif = '1') as table_3
+						WHERE 
+							l.kodeBentukLembaga = '".$data['refferences']."' 
+						AND l.statusAktif = '1'
+						".$dumbQuery['keyword']."
+						".$dumbQuery['provinsi' ]."
+						".$dumbQuery['wilayah'  ]."
+						".$dumbQuery['kecamatan']." 
+						".$dumbQuery['kelurahan']." 
+					) as table_3
 				";
-							
+
 				$result = mysqli_query($gate, $sql);
 				if($result){
 					$package    = array();  
@@ -264,7 +319,7 @@
 						
 						$resultList = array( "feedStatus" => "succes", "feedMessage" => "Data ditemukan!", "feedData" => $package);
 					}else {
-						$resultList = array( "feedStatus" => "succes", "feedMessage" => "Data tidak ditemukan!", "feedData" => null);
+						$resultList = array( "feedStatus" => "succes", "feedMessage" => "Data tidak ditemukan!", "feedData" => array());
 					}
 				}			
 					
@@ -275,8 +330,329 @@
 				$errorType  = "danger";
 				$errorMsg	= "Terjadi kesalahan, tidak dapat terhubung ke server!";
 			}
+		}else {
+			//error state
+			$error		= 1;
+			$errorType  = "danger";
+			$errorMsg	= "Terjadi kesalahan, tidak dapat menentukan refferences key!";
 		} // return empty of array
 		
+		if($error == 1){
+			//error state
+			$resultList = array( "feedStatus" => "failed", "feedType" => $errorType, "feedMessage" => $errorMsg);
+		}
+		
+		/* result fetch */
+		$json = $resultList;
+		
+		return $json;
+	}
+
+	function getDetailLembagaan($noreg){
+		/* initial condition */
+		$resultList = array();
+		$table 		= "";
+		$field 		= array();
+		$rows		= 0;
+		$condition 	= "";
+		$orderBy	= "";
+		$error		= 0;
+		$errorType  = "";
+		$errorMsg	= "";
+		$dumbTable  = "";
+
+		/* open connection */ 
+		$gate = openGate();
+		if($gate){		
+			// connection = true
+			//checking section
+			$sql 	= " SELECT COUNT(noRegistrasi) FROM dplega_000_lembaga WHERE noRegistrasi = '".$noreg."'";
+			$result = mysqli_query($gate, $sql);
+			if(mysqli_num_rows($result) > 0) {
+				$dumbTable = "";
+			}else{
+				$sql 	= " SELECT COUNT(noRegistrasi) FROM dplega_000_lembaga_temp WHERE noRegistrasi = '".$noreg."'";
+				$result = mysqli_query($gate, $sql);
+				if(mysqli_num_rows($result) > 0) {
+					$dumbTable = "_temp";
+				}else{
+					//error state
+					$error		= 1;
+					$errorType  = "danger";
+					$errorMsg	= "Terjadi kesalahan, data tidak dikenal!";
+				}
+			}
+
+			//profile
+			$sql = 	"
+				SELECT 
+					COALESCE(l.`urlGambarLogo`, 'avatar-default.jpg') as avatar, 
+					l.noRegistrasi as noreg, 
+					l.nama,
+					b.namaBentukLembaga,
+					l.catatanLain,
+					l.noTelp as telp,
+					l.email,
+					l.mediaSosial,
+					CONCAT_WS(' ', `alamat`, 'RT.',`noRt`, '/', 'RW.', `noRw`, `namaKelurahan`, `namaKecamatan`, `namaWilayah`, `namaProvinsi`) as alamat
+				FROM
+					dplega_000_lembaga".$dumbTable." l
+				JOIN
+					dplega_200_bentuklembaga b
+				ON l.kodeBentukLembaga = b.kodeBentukLembaga
+				WHERE
+					l.noRegistrasi = '".$noreg."''
+			";
+			
+			$record    = array(); 
+			$fetch 	   = array();  
+			$profile   = array();  
+			$detail    = array();  
+			$option    = array();  
+			$group     = array();  
+			$items     = array();  
+			$itemsPack = array();  
+
+			if($error != 1){
+				$result = mysqli_query($gate, $sql);
+				if($result){
+					if(mysqli_num_rows($result) > 0) {
+						// output data of each row 
+						while($row = mysqli_fetch_assoc($result)) {
+							$fetch = array(
+										"avatar"   		=> $row['avatar'],
+										"noreg" 		=> $row['noreg'],
+										"nama" 			=> $row['nama'],
+										"bentukLembaga" => $row['bentukLembaga'],
+										"catatan"		=> $row['catatan'],
+										"telp"			=> $row['telp'],
+										"email"			=> $row['email'],
+										"sosialMedia"	=> $row['sosialMedia'],
+										"alamat"		=> $row['alamat']
+							);
+						}
+
+						array_push($profile, $fetch); 
+						unset($fetch); 
+						$fetch = array();
+					}
+				}else{
+					//error state
+					$error		= 1;
+					$errorType  = "danger";
+					$errorMsg	= "Terjadi kesalahan, tidak dapat terhubung ke server!";
+				}			
+			}
+
+			if($error != 1){
+				//kelembagaan
+				$sql = 	"
+					SELECT 
+						namaBidangGerak, 
+						jumlahPengurus,
+						organisasiAfiliasi,
+						visi,
+						misi
+					FROM
+						dplega_000_lembaga".$dumbTable." l
+						JOIN
+						dplega_210_bidangGerak b
+					ON l.kodeBidangGerak = b.kodeBidangGerak
+					WHERE
+					l.noRegistrasi = '".$noreg."''
+				";
+
+				$result = mysqli_query($gate, $sql);
+				if($result){
+					if(mysqli_num_rows($result) > 0) {
+						// output data of each row 
+						while($row = mysqli_fetch_assoc($result)) {
+							array_push($items, array("label" => 'Bergerak dalam bidang', "text" => $row['namaBidangGerak'])); 
+							array_push($items, array("label" => 'Jumlah pengurus', "text" => $row['jumlahPengurus'])); 
+							array_push($items, array("label" => 'Afiliasi', "text" => $row['organisasiAfiliasi'])); 
+							array_push($items, array("label" => 'Visi', "text" => $row['visi'])); 
+							array_push($items, array("label" => 'Misi', "text" => $row['misi'])); 
+						}
+
+						array_push($group, array(
+							"groupId" => "kelembagaan", "groupName" => "Kelembagaan", "group" => "card", "type" => "table",
+							"items" => $items
+						));
+
+						unset($items); 
+						$items = array();
+					}
+				}
+
+
+				//legalitas
+				$sql = 	"
+					SELECT 
+						p.namaPersyaratan, 
+						l.noLegalitas,
+						l.tanggalLegalitas,
+						l.urlFile,
+					FROM
+						dplega_009_legalitas".$dumbTable." l
+					JOIN
+						dplega_201_persyaratan p
+					ON l.kodePersyaratan = p.kodePersyaratan
+					WHERE
+						l.noRegistrasi = '".$noreg."''
+				";
+
+				$result = mysqli_query($gate, $sql);
+				if($result){
+					if(mysqli_num_rows($result) > 0) {
+						// output data of each row 
+						while($row = mysqli_fetch_assoc($result)) {
+							array_push($items, array('color' => 'purple', 'icon' => 'file-text', 'size' => 'large', 'form' => 'text-icon', 'text' => $row['namaPersyaratan'])); 
+							array_push($items, array('color' => '', 'icon' => '', 'size' => 'medium', 'form' => 'text', 'text' => $row['noLegalitas'])); 
+							array_push($items, array('color' => '', 'icon' => '', 'size' => 'small', 'form' => 'text', 'text' => $row['tanggalLegalitas'])); 
+							array_push($items, array('color' => '', 'icon' => '', 'size' => 'medium', 'form' => 'button', 'text' => $row['urlFile'])); 
+							 
+							array_push($itemsPack, array("set" => $items));
+
+							unset($items); 
+							$items = array();
+						}
+
+						array_push($group, array(
+							"groupId" => "legalitas", "groupName" => "Legalitas", "group" => "card", "type" => "table-list",
+							"items" => $itemsPack
+						));
+
+						unset($itemsPack); 
+						$itemsPack = array();
+					}
+				}
+
+
+				//sejarah
+				$sql = 	"
+					SELECT 
+						deskripsi, 
+						tanggalDidirikan,
+						kepemilikan,
+						statusSertifikasi,
+						CONCAT_WS(' ', luasTanah, satuanLuasTanah) as `luasTanah`,
+						CONCAT_WS(' ', luasBangunan, SatuanLuasBangunan) as `luasBangunan`,
+						kondisiBangunan,
+						jumlahBangunan,
+						statusSarana,
+						statusStrukturKepengurusan,
+						bahasaPengantar,
+						statusSensus,
+						statusBantuanPemerintah,
+						kondisiGeografis,
+						potensiWilayah,
+						jenisWilayah,
+						catatanLain
+					FROM
+						dplega_001_sejarah".$dumbTable." s
+					WHERE
+					l.noRegistrasi = '".$noreg."''
+				";
+
+				$result = mysqli_query($gate, $sql);
+				if($result){
+					if(mysqli_num_rows($result) > 0) {
+						// output data of each row 
+						while($row = mysqli_fetch_assoc($result)) {
+							array_push($items, array("label" => 'Sejarah singkat', "text" => $row['namaBidangGerak'])); 
+							array_push($items, array("label" => 'Tanggal didirikan', "text" => $row['jumlahPengurus'])); 
+							array_push($items, array("label" => 'Kepemilikan', "text" => $row['kepemilikan'])); 
+							array_push($items, array("label" => 'Sertifikasi', "text" => $row['statusSertifikasi'])); 
+							array_push($items, array("label" => 'Luas tanah', "text" => $row['luasTanah'])); 
+							array_push($items, array("label" => 'Luas bangunan', "text" => $row['luasBangunan'])); 
+							array_push($items, array("label" => 'Kondisi bangunan', "text" => $row['kondisiBangunan'])); 
+							array_push($items, array("label" => 'Jumlah bangunan', "text" => $row['jumlahBangunan'])); 
+							array_push($items, array("label" => 'Sarana / Prasarana', "text" => $row['statusSarana'])); 
+							array_push($items, array("label" => 'Struktur organisasi', "text" => $row['statusStrukturKepengurusan'])); 
+							array_push($items, array("label" => 'Bahasa pengantar', "text" => $row['bahasaPengantar'])); 
+							array_push($items, array("label" => 'Sensus', "text" => $row['statusSarana'])); 
+							array_push($items, array("label" => 'Bantuan pemerintah', "text" => $row['statusBantuanPemerintah'])); 
+							array_push($items, array("label" => 'Kondisi geografis', "text" => $row['statusBantuanPemerintah'])); 
+							array_push($items, array("label" => 'Potensi wilayah', "text" => $row['potensiWilayah'])); 
+							array_push($items, array("label" => 'Jenis wilayah', "text" => $row['jenisWilayah'])); 
+							array_push($items, array("label" => 'Catatan', "text" => $row['catatanLain'])); 
+						}
+
+						array_push($group, array(
+							"groupId" => "sejarah", "groupName" => "Sejarah", "group" => "card", "type" => "table",
+							"items" => $items
+						));
+
+						unset($items); 
+						$items = array();
+					}
+				}
+
+
+				//kepengurusan
+				$sql = 	"
+					SELECT 
+						penanggungJawab, 
+						CONCAT_WS(' ', `alamat`, 'RT.',`noRt`, '/', 'RW.', `noRw`, `namaKelurahan`, `namaKecamatan`, `namaWilayah`, `namaProvinsi`) as alamat,
+						noTelp,
+						kewarganegaraan,
+						CONCAT_WS(' ', tempatLahir, tanggalLahir) as `ttl`,
+						jenisKelamin,
+						agama,
+						jabatanLain,
+						pendidikan,
+						kompetensi,
+						catatanLain
+					FROM
+						dplega_001_sejarah".$dumbTable." s
+					WHERE
+					l.noRegistrasi = '".$noreg."''
+				";
+
+				$result = mysqli_query($gate, $sql);
+				if($result){
+					if(mysqli_num_rows($result) > 0) {
+						// output data of each row 
+						while($row = mysqli_fetch_assoc($result)) {
+							array_push($items, array("label" => 'Penanggung jawab', "text" => $row['penanggungJawab'])); 
+							array_push($items, array("label" => 'Alamat', "text" => $row['alamat'])); 
+							array_push($items, array("label" => 'Telp', "text" => $row['noTelp'])); 
+							array_push($items, array("label" => 'Kewarganegaraan', "text" => $row['kewarganegaraan'])); 
+							array_push($items, array("label" => 'Tempat, tanggal lahir', "text" => $row['ttl'])); 
+							array_push($items, array("label" => 'Jenis kelamin', "text" => $row['jenisKelamin'])); 
+							array_push($items, array("label" => 'Agama', "text" => $row['agama'])); 
+							array_push($items, array("label" => 'Jabatan lain', "text" => $row['jabatanLain'])); 
+							array_push($items, array("label" => 'Pendidikan', "text" => $row['pendidikan'])); 
+							array_push($items, array("label" => 'Kompetensi', "text" => $row['kompetensi'])); 
+							array_push($items, array("label" => 'Catatan', "text" => $row['catatanLain'])); 
+						}
+
+						array_push($group, array(
+							"groupId" => "kepengurusan", "groupName" => "Kepengurusan", "group" => "card", "type" => "table",
+							"items" => $items
+						));
+
+						unset($items); 
+						$items = array();
+					}
+				}
+
+
+				//end
+			}
+
+			closeGate($gate);
+
+			$option = array(
+				array("selector" => "download-card", "icon" => "download", "label" => "Unduh (.pdf)"),
+				array("selector" => "verification-card", "icon" => "check", "label" => "Verifikasi"),
+				array("selector" => "edit-card", "icon" => "pencil", "label" => "Ubah profil"),
+				array("selector" => "delete-card", "icon" => "trash", "label" => "Hapus lembaga")
+			);
+
+			$resultList = array( "feedStatus" => "succes", "feedMessage" => "Data ditemukan!", "feedData" => $record);
+		}
+
 		if($error == 1){
 			//error state
 			$resultList = array( "feedStatus" => "failed", "feedType" => $errorType, "feedMessage" => $errorMsg);

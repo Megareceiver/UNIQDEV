@@ -89,7 +89,7 @@ function doLogout(){
 
 /* request management */
 /* =============================================================================================== */
-function p_getData(group, target, keyword){
+function p_getData(group, target, keyword, refferences){
 	var data = null;
 
 	$.ajax({
@@ -97,7 +97,7 @@ function p_getData(group, target, keyword){
 		type: 'post',
 		dataType: 'json',
 		async: false,
-		data: { keyword : keyword },
+		data: { keyword : keyword, refferences: refferences },
 		success: function(result){
 			data = result;
 			console.log(data);
