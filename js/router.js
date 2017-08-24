@@ -1399,7 +1399,6 @@ function r_f1DetailLembaga(packet) {
 		
 		if(packet == undefined || packet == "" || packet == null || packet == "start"){
 			packet = profile_look_reader();
-			
 		}
 
 		profile_look_set(packet);
@@ -1563,14 +1562,14 @@ function r_f1DetailLembaga(packet) {
 		$("#preload").remove();
 		
 		//--command reactor
-		$(".back-button").unbind().on('click', function(){ r_navigateTo(11); });
+		$(".back-button").unbind().on('click', function(){ r_navigateTo(r_pagePreviousReader()); });
 		$(".click-option").unbind().on("click", function(){ 
 			//packet session
 			clearPacket();
 			pId				= $(this).attr('p-id');
 			pLabel			= $(this).attr('p-label');
 			showOptionList(); 
-			
+
 			//-- popup
 			$("#verification-card").unbind().on("click", function(){ hideOptionList(); r_navigateTo(13, $(this).attr('p-id')); });
 			$("#edit-card").unbind().on("click", function(){ hideOptionList(); r_navigateTo(15, $(this).attr('p-id')); });
@@ -1753,11 +1752,14 @@ function r_f1PrestasiLembaga() {
 		//--command reactor
 		$(".back-button").unbind().on('click', function(){ r_navigateTo(0); });
 		searchBoxActivator();
+		
 		r_f1PrestasiGenerator(data, "list");
-		$(".search-input").unbind().on("keyup", function(){ 
+		$(".search-input").on("keyup", function(){ 
 			$("#section-prestasi").html("");
 			r_f1PrestasiGenerator(p_getData('f1', 'f119', $(this).val()), "list"); 
 		});
+
+		$(".prestasi-list").unbind().on("click", function(){ r_navigateTo(12, $(this).attr("p-id")); });
 		r_navbarReactor();
 	});
 }
@@ -1782,7 +1784,14 @@ function r_f1FormKelembagaan(packet){
 			{'idFilter': '6', 'form':'Koleksi'},
 			{'idFilter': '7', 'form':'Prestasi'},
 		];
-		
+
+		//Cookie set
+		if(packet == undefined || packet == "" || packet == null || packet == "start"){
+			packet = profile_look_reader();
+		}
+
+		profile_look_set(packet);
+	
 		dataGrup = [];
 		dataTemp = [];
 		dataLegalitas = [];
@@ -1812,9 +1821,6 @@ function r_f1FormKelembagaan(packet){
 
 		//-- get data koleksi
 		dataKoleksi = p_getData('f1', 'f117','');
-		// if(dataTemp != null){
-		// koleksi = dataKoleksi.feedData	// sourcesData = dataTemp;
-		 	console.log(dataKoleksi);
 
 		//--open
 		head	= 
@@ -1864,7 +1870,7 @@ function r_f1FormKelembagaan(packet){
 		body = body + 
 		'<div class="col-md-6">' +
 			'<div class="input-box">' +
-				'<input name="noreg" placeholder="Nama lembaga" tabindex="1" type="hidden" value="" />' +
+				'<input name="noreg" tabindex="1" type="hidden" value="" />' +
 				'<input name="nama" placeholder="Nama lembaga" tabindex="1" type="text" value="" />' +
 			'</div>' +
 			'<div class="input-box rows-2">' +
@@ -1918,13 +1924,13 @@ function r_f1FormKelembagaan(packet){
 			'</div>' +
 			'<div class="select-box">' +
 				'<select name="bentukLembaga" tabindex="2">' +
-					'<option value="" selected>Bentuk lembaga</option>' +
+					'<option value="0" selected>Bentuk lembaga</option>' +
 					selectItems['bentukLembaga'] +
 				'</select>' +
 			'</div>' +
 			'<div class="select-box">' +
 				'<select name="bidangGerak" tabindex="2">' +
-					'<option value="" selected>Bidang gerak</option>' +
+					'<option value="0" selected>Bidang gerak</option>' +
 					selectItems['bidangGerak'] +
 				'</select>' +
 			'</div>' +
@@ -1957,7 +1963,7 @@ function r_f1FormKelembagaan(packet){
 				'<div class="input-box">' +
 					'<div class="icon-box both">' +
 						'<label class="browser-box" id="v-logo">' +
-							'<p class="placeholder">berkas belum diunggah...</p>' +
+							'<p name="v-logoName" class="placeholder">berkas belum diunggah...</p>' +
 							'<input preview-id="v-logo" name="imageUrl" type="file" tabindex="5" />' +
 						'</label>' +
 						'<button type="button" browser-id="v-logo" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
@@ -1990,37 +1996,40 @@ function r_f1FormKelembagaan(packet){
 		//render
 		body = body + '<div class="col-md-8 col-md-offset-2 tab-container" tab-contentIndex="2"><div class="row default">';
 		for(var loop=0; loop<dataLegalitas.length; loop++){
-		body = body + 
-		'<div class="col-md-12">' +
-			'<div class="cards flush ">' +
-				'<div class="cards-header">' +
-					'<h5>' + dataLegalitas[loop].namaBentukLembaga + '</h5>' +
-					'<div class="btn-collapse right">' +
-						'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
-						'<button class="clear" type="button"><span class="fa fa-check-circle-o"></span></button>' +
-					'</div>' + 
-				'</div>' +
-				'<div class="input-box">' +
-					'<input placeholder="Nomor" tabindex="5" type="text" value="" />' +
-				'</div>' +
-				'<div class="input-box">' +
-					'<div class="icon-box left">' +
-						'<input class="date" placeholder="Tanggal" tabindex="5" type="text" value="" />' +
-						'<span class="fa fa-calendar"></span>' +
-					'</div>' + 
-				'</div>' +
-				'<div class="input-box">' +
-					'<div class="icon-box both">' +
-						'<label class="browser-box" id="legalitas-' + dataLegalitas[loop].namaBentukLembaga + '">' +
-							'<p class="placeholder">berkas belum diunggah...</p>' +
-							'<input type="file" tabindex="5" />' +
-						'</label>' +
-						'<button type="button" browser-id="legalitas-' + dataLegalitas[loop].namaBentukLembaga + '" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
-						'<span class="left fa fa-paperclip text-purple"></span>' +
+			body = body + 
+			'<form class="f-legalitas-create">' +
+				'<div class="col-md-12">' +
+					'<div class="cards flush ">' +
+						'<div class="cards-header">' +
+							'<h5>' + dataLegalitas[loop].namaBentukLembaga + '</h5>' +
+							'<div class="btn-collapse right">' +
+								'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
+								'<button class="clear" type="button"><span class="fa fa-check-circle-o"></span></button>' +
+							'</div>' + 
+						'</div>' +
+						'<div class="input-box">' +
+							'<input name="noreg" tabindex="5" type="hidden" value="" />' +
+							'<input name="nomor" placeholder="Nomor" tabindex="5" type="text" value="" />' +
+						'</div>' +
+						'<div class="input-box">' +
+							'<div class="icon-box left">' +
+								'<input class="date" placeholder="Tanggal" tabindex="5" type="text" value="" />' +
+								'<span class="fa fa-calendar"></span>' +
+							'</div>' + 
+						'</div>' +
+						'<div class="input-box">' +
+							'<div class="icon-box both">' +
+								'<label class="browser-box" id="legalitas-' + dataLegalitas[loop].namaBentukLembaga + '">' +
+									'<p class="placeholder">berkas belum diunggah...</p>' +
+									'<input type="file" tabindex="5" />' +
+								'</label>' +
+								'<button type="button" browser-id="legalitas-' + dataLegalitas[loop].namaBentukLembaga + '" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
+								'<span class="left fa fa-paperclip text-purple"></span>' +
+							'</div>' +
+						'</div>' +
 					'</div>' +
 				'</div>' +
-			'</div>' +
-		'</div>';
+			'</form>';
 		}
 		body = body + '</div></div>';
 		body = body + '<div class="clearfix tab-container"  tab-contentIndex="2">&nbsp;</div>';
@@ -2136,6 +2145,7 @@ function r_f1FormKelembagaan(packet){
 				'</div>' +
 				'<div class="input-box">' +
 					'<div class="icon-box both">' +
+						'<p name="picName"></p>' +
 						'<label class="browser-box" id="s-org">' +
 							'<p class="placeholder">berkas belum diunggah...</p>' +
 							'<input name="imageUrl" type="file" tabindex="5" />' +
@@ -2239,7 +2249,7 @@ function r_f1FormKelembagaan(packet){
 		body = body +
 		'<div id="section-bantuan">';
 		body = body + '</div></div>';
-		body = body + '<div class="clearfix tab-container" tab-contentIndex="6">&nbsp;</div>';
+		body = body + '<div class="clearfix tab-container" tab-contentIndex="3">&nbsp;</div>';
 
 		//--
 
@@ -2743,7 +2753,6 @@ function r_f1FormKelembagaan(packet){
 			'</div>' +
 		'</div>' +
 		'<div class="cards flush">' +
-			// '<form id="f-koleksi">' +
 		'<div class="row default">';
 		
 		//left
@@ -2781,21 +2790,6 @@ function r_f1FormKelembagaan(packet){
 		body = body +
 		'<div id="section-koleksi">';
 		
-		// r_f1KoleksiDataGenerator();
-		// //data list
-		// //render
-		// counter = 0;
-		// for(counter = 0;counter < 3; counter ++)
-		// {
-		// body = body +
-		// '<div class="cards">' +
-		// 	'<div class="list-box">' +
-		// 		'<div class="list-icon bg-sky"><span class="fa fa-book"></span></div>' +
-		// 		'<p class="list-text">lorem ipsum dolor sit amet.</p>' +
-		// 		'<div class="list-remove"><span class="fa fa-trash"></span></div>' +
-		// 	'</div>' +
-		// '</div>';
-		// }
 		body = body + '</div></div>';
 		body = body + '<div class="clearfix tab-container" tab-contentIndex="6">&nbsp;</div>';
 		
@@ -2824,7 +2818,7 @@ function r_f1FormKelembagaan(packet){
 		'<div class="col-md-12">' +
 			'<div class="input-box">' +
 				'<div class="icon-box left">' +
-					'<input name="noreg" placeholder="Keterangan" tabindex="14" type="hidden" value="" />' +
+					'<input name="noreg" tabindex="14" type="hidden" value="" />' +
 					'<input name="deskripsi" placeholder="Keterangan" tabindex="14" type="text" value="" />' +
 					'<span class="fa fa-pencil"></span>' +
 				'</div>' +
@@ -2844,44 +2838,45 @@ function r_f1FormKelembagaan(packet){
 		//=======================================================================
 		body = body + '<div class="col-md-8 col-md-offset-2 tab-container" tab-contentIndex="8">';
 		body = body +
-		'<div class="cards">' +
-			'<div class="cards-header">' +
-				'<h4>Hirarki</h4>' +
-				'<p class="offset">kedudukan suatu lembaga terhadap lembaga lainnya.</p>' +
-				'<div class="btn-collapse right">' +
-					'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
-					'<button class="clear" type="button"><span class="fa fa-check-circle-o"></span></button>' +
+		'<form id="f-hirarki-create">' +
+			'<div class="cards">' +
+				'<div class="cards-header">' +
+					'<h4>Hirarki</h4>' +
+					'<p class="offset">kedudukan suatu lembaga terhadap lembaga lainnya.</p>' +
+					'<div class="btn-collapse right">' +
+						'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
+						'<button class="clear" type="button"><span class="fa fa-check-circle-o"></span></button>' +
+					'</div>' +
 				'</div>' +
 			'</div>' +
-		'</div>' +
-		'<div class="cards flush">' +
-			'<form id="f-koleksi">' +
+			'<div class="cards flush">' +
 				'<div class="row default">';
-		
-		//left
-		body = body +
-		'<div class="col-md-6">' +
-			'<div class="select-box">' +
-				'<select tabindex="13">' +
-					'<option value="" selected>Pilih hirarki</option>' +
-					'<option value="" >Induk lembaga</option>' +
-					'<option value="" >Anak lembaga</option>' +
-				'</select>' +
-			'</div>' +
-		'</div>';
-		
-		//right
-		body = body +
-		'<div class="col-md-6">' +
-			'<div class="input-box">' +
-				'<div class="icon-box left">' +
-					'<input placeholder="Lembaga" tabindex="13" type="text" value="" />' +
-					'<span class="fa fa-magic"></span>' +
+			
+			//left
+			body = body +
+			'<div class="col-md-6">' +
+				'<div class="select-box">' +
+					'<input name="noreg" tabindex="15" type="hidden" value="" />' +
+					'<select tabindex="15">' +
+						'<option value="" selected>Pilih hirarki</option>' +
+						'<option value="" >Induk lembaga</option>' +
+						'<option value="" >Anak lembaga</option>' +
+					'</select>' +
 				'</div>' +
-			'</div>' +
-		'</div>';
-		
-		body = body + '</div></form></div>';
+			'</div>';
+			
+			//right
+			body = body +
+			'<div class="col-md-6">' +
+				'<div class="input-box">' +
+					'<div class="icon-box left">' +
+						'<input placeholder="Lembaga" tabindex="13" type="text" value="" />' +
+						'<span class="fa fa-magic"></span>' +
+					'</div>' +
+				'</div>' +
+			'</div>';
+			
+			body = body + '</div></div></form>';
 		
 		body = body + 
 		'<div class="cards-label plus">' +
@@ -2941,8 +2936,7 @@ function r_f1FormKelembagaan(packet){
 		r_navbarReactor();
 		autoCompleteActivator("f111_lingkupArea", sourcesData, sourcesDetailData, "lingkupArea");
 		autoCompleteActivator("f114_lingkupArea", sourcesData, sourcesDetailData, "lingkupArea");
-		//r_f1KoleksiDataGenerator();
-		//--bottom
+	
 		//form reactor
 		p_formHandler("f-kelembagaan-create" , "addData");
 		p_formHandler("f-sejarah-create" , "addData");
@@ -2950,7 +2944,9 @@ function r_f1FormKelembagaan(packet){
 		p_formHandler("f-kepengurusan-create" , "addData");
 		p_formHandler("f-koleksi-create" , "addData");
 		p_formHandler("f-prestasi-create" , "addData");
-		// clearTargetForm('f-kelembagaan-create');			
+		
+		//generate data for editing
+		r_f1FormKelembagaanDataGenerator(packet);		
 	});
 }
 
@@ -5905,18 +5901,35 @@ function r_f1PrestasiGenerator(data, type){
 	if(data.feedData != null){
 		//render
 		for(counter = 0; counter < data.feedData.length; counter++){
-			genHtml = genHtml +
-			'<div id=prestasi'+data.feedData[counter].idData+' class="cards">' +
-				'<div class="list-box">' +
-					'<div class="list-icon bg-yellow"><span class="fa fa-trophy"></span></div>' +
-					'<p class="list-text">'+data.feedData[counter].deskripsi+'</p>';
+
 			if(type == "" || type == undefined || type == null){
 				genHtml = genHtml +
-				'<div id='+data.feedData[counter].idData+' class="list-remove"><span class="fa fa-trash"></span></div>';
+				'<div id=prestasi'+data.feedData[counter].idData+' class="cards">' +
+					'<div class="list-box">' +
+						'<div class="list-icon bg-yellow"><span class="fa fa-trophy"></span></div>' +
+						'<p class="list-text">'+data.feedData[counter].deskripsi+'</p>' +
+						'<div id='+data.feedData[counter].idData+' class="list-remove"><span class="fa fa-trash"></span></div>' +
+					'</div>' +
+				'</div>';
+			}else{
+				genHtml = genHtml +
+				'<div class=" cards prestasi-list click" p-id="' + data.feedData[counter].noreg + '">' +
+					'<div class="row default">' +
+						'<div class="col-xs-7">' +
+							'<div class="list-box">' +
+								'<div class="list-icon bg-yellow"><span class="fa fa-trophy"></span></div>' +
+								'<p class="list-text"><strong>' + data.feedData[counter].deskripsi + '</strong></p>' +
+							'</div>' +
+						'</div>' +
+						'<div class="col-xs-5">' +
+							'<div class="list-box clear-small">' +
+								'<p class="list-text">'+ data.feedData[counter].nama + '</p>' +
+							'</div>' +
+						'</div>' +
+						'<div class="clearfix"></div>' +
+					'</div>' +
+				'</div>';
 			}
-			genHtml = genHtml +
-				'</div>' +
-			'</div>';
 		}
 
 		genHtml = genHtml + '</div>';

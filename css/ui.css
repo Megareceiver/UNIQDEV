@@ -682,6 +682,7 @@ footer.parent .author-box img { height: 30px; float: right }
 .cards.clear { padding: 0; border-bottom: 1px solid rgba(0,0,0,0.12); }
 .cards.mop { margin-top: 20px }
 .cards.title { /*height: 70px*/ }
+.cards.click:hover { cursor: pointer; }
 .cards.title.bold { padding-top: 55px; color: #FFF; text-align: center }
 .cards .cards-header { position: relative }
 .cards .cards-header.special { text-align: center }
