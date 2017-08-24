@@ -36,7 +36,9 @@
 		$table 		 = "";
 		$field 		 = array();
 		$readData	 = array();
+		$readData2	 = array();
 		$unReadData	 = array();
+		$unReadData2	 = array();
 		$collectData = array();
 		$rows		 = 0;
 		$condition 	 = "";
@@ -89,6 +91,9 @@
 								"targetUser" 		=> $row['targetUser'],
 								"readStatus" 		=> $row['readStatus']
 							);
+							array_push($unReadData2, $unReadData);
+							unset($unReadData);
+							$unReadData = array();
 						}else{
 							// $group = 'Riwayat';
 							$readData = array(
@@ -98,12 +103,22 @@
 								"targetUser" 		=> $row['targetUser'],
 								"readStatus" 		=> $row['readStatus']
 							);
+							array_push($readData2, $readData);
+							unset($readData);
+							$unReadData = array();
 						}
-							$fetch = array(
-								'group' => '$group',
-								'list'	=> $unReadData
+							
+					}
+					$fetch = array(
+								'group' => 'Baru',
+								'list'	=> $unReadData2
+							);
+					$record = array(
+								'group' => 'Riwayat',
+								'list'	=> $readData2
 							);
 						array_push($collectData, $fetch);
+						array_push($collectData, $record);
 						// unset($unReadData); 
 						// array_push($collectData, $readData); 
 						unset($fetch); 
@@ -111,8 +126,7 @@
 						// $readData = array();
 						$fetch = array();
 						$unReadData = array();
-					}
-					
+
 					$resultList = array( "feedStatus" => "succes", "feedMessage" => "Data ditemukan!", "feedData" => $collectData);
 				}else {
 					$resultList = array( "feedStatus" => "succes", "feedMessage" => "Data tidak ditemukan!", "feedData" => 'gaadaan');
