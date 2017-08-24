@@ -51,7 +51,7 @@ function r_navigateTo(index, packet) {
 		case 12 : r_f1DetailLembaga(packet); 		break;
 		case 13 : r_f1VerifikasiLembaga(packet);	break;
 		case 14 : r_f1KoleksiLembaga(); 			break;
-		case 16 : r_f1PrestasiLembaga(); 			break;
+		case 15 : r_f1PrestasiLembaga(); 			break;
 		case 15 : r_f1FormKelembagaan(packet);		break;
 		
 		case 3  : r_f3Autentikasi(); 				break;
@@ -6166,7 +6166,7 @@ function r_navbarReactor(){
 	$("#option.syncnav .dashboard")  .unbind().on("click", function(){ r_navigateTo(0); });
 	$("#option.syncnav .kelembagaan").unbind().on("click", function(){ r_navigateTo(1); });
 	$("#option.syncnav .koleksi")	 .unbind().on("click", function(){ r_navigateTo(14); });
-	$("#option.syncnav .prestasi")	 .unbind().on("click", function(){ r_navigateTo(16); });
+	$("#option.syncnav .prestasi")	 .unbind().on("click", function(){ r_navigateTo(15); });
 	$("#option.syncnav .autentikasi").unbind().on("click", function(){ r_navigateTo(3); });
 	$("#option.syncnav .pengaturan") .unbind().on("click", function(){ r_navigateTo(4); });
 	$("#option.syncnav .bantuan") 	 .unbind().on("click", function(){ r_navigateTo(0.1); });
