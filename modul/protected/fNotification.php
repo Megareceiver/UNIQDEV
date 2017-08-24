@@ -63,27 +63,8 @@
 				$fetch 	   = array(); 
 				$group;
 				if(mysqli_num_rows($result) > 0) {
-					// output data of each row 
-		// data    = [
-		// 	{
-		// 		'group': 'Baru', 'list':[
-		// 			{'noreg': '1', 'time': '2017/06/1 10:15', 'caption': 'lorem dolor sit amet 2.'},
-		// 			{'noreg': '2', 'time': '2017/05/30 10:15', 'caption': 'lorem dolor sit amet 3.'},
-		// 			{'noreg': '3', 'time': '2017/05/29 10:15', 'caption': 'lorem dolor sit amet 4.'},
-		// 		]
-		// 	},
-		// 	{
-		// 		'group': 'Riwayat', 'list':[
-		// 			{'noreg': '4', 'time': '2017/05/11 10:15', 'caption': 'lorem dolor sit amet 6.'},
-		// 			{'noreg': '5', 'time': '2017/05/14 10:15', 'caption': 'lorem dolor sit amet 7.'},
-		// 			{'noreg': '6', 'time': '2017/05/15 10:15', 'caption': 'lorem dolor sit amet 8.'},
-		// 			{'noreg': '7', 'time': '2017/05/20 10:15', 'caption': 'lorem dolor sit amet 9.'},
-		// 		]
-		// 	},
-		// ];
 					while($row = mysqli_fetch_assoc($result)) {
 						if($row["readStatus"] == 0){
-							// $group = 'Baru';
 							$unReadData = array(
 								"idData"   			=> $row['idData'],
 								"deskripsi" 		=> $row['deskripsi'],
@@ -95,7 +76,6 @@
 							unset($unReadData);
 							$unReadData = array();
 						}else{
-							// $group = 'Riwayat';
 							$readData = array(
 								"idData"   			=> $row['idData'],
 								"deskripsi" 		=> $row['deskripsi'],
@@ -106,26 +86,23 @@
 							array_push($readData2, $readData);
 							unset($readData);
 							$unReadData = array();
-						}
-							
+						}							
 					}
 					$fetch = array(
-								'group' => 'Baru',
-								'list'	=> $unReadData2
-							);
+						'group' => 'Baru',
+						'list'	=> $unReadData2
+					);
 					$record = array(
-								'group' => 'Riwayat',
-								'list'	=> $readData2
-							);
-						array_push($collectData, $fetch);
-						array_push($collectData, $record);
-						// unset($unReadData); 
-						// array_push($collectData, $readData); 
-						unset($fetch); 
-						unset($unReadData); 
-						// $readData = array();
-						$fetch = array();
-						$unReadData = array();
+						'group' => 'Riwayat',
+						'list'	=> $readData2
+					);
+					array_push($collectData, $fetch);
+					array_push($collectData, $record);
+					unset($fetch); 
+					unset($unReadData); 
+					// $readData = array();
+					$fetch = array();
+					$unReadData = array();
 
 					$resultList = array( "feedStatus" => "succes", "feedMessage" => "Data ditemukan!", "feedData" => $collectData);
 				}else {
