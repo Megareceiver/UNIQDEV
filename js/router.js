@@ -51,6 +51,7 @@ function r_navigateTo(index, packet) {
 		case 12 : r_f1DetailLembaga(packet); 		break;
 		case 13 : r_f1VerifikasiLembaga(packet);	break;
 		case 14 : r_f1KoleksiLembaga(); 			break;
+		case 15 : r_f1PrestasiLembaga(); 			break;
 		case 15 : r_f1FormKelembagaan(packet);		break;
 		
 		case 3  : r_f3Autentikasi(); 				break;
@@ -1805,7 +1806,41 @@ function r_f1KoleksiLembaga() {
 		r_f1KoleksiGenerator();
 		$(".search-input").unbind().on("keyup", function(){ 
 			r_f1KoleksiGenerator($(this).val()); 
-			console.log($(this).val());
+		});
+		r_navbarReactor();
+	});
+}
+
+function r_f1PrestasiLembaga() {
+	$("body").prepend(preload);
+	$('main.parent').animate({'opacity': '0.6'},'fast','linear', function(){
+		mainPage.html('');
+		head  	= '';
+		body  	= '';
+		part	= ['',''];
+		content = '';	
+		data 	= p_getData('f1', 'f119');
+		//--open
+		head	= '';
+		body	= '<div class="row no-head"><div class="container">';
+		body	= body + '<div id ="section-prestasi" class="col-md-8 col-md-offset-2">';
+	
+		body	= body + '</div></div></div>';
+
+		content = '<section id="">' + head + body + '</section>';
+		//--close
+		
+		//--gen
+		headPage.html(r_headPageHtml(4, 'Prestasi'));
+		mainPage.html(content).animate({'opacity': '1'},'fast','linear');
+		$("#preload").remove();
+		//--command reactor
+		$(".back-button").unbind().on('click', function(){ r_navigateTo(0); });
+		searchBoxActivator();
+		r_f1PrestasiGenerator(data, "list");
+		$(".search-input").unbind().on("keyup", function(){ 
+			$("#section-prestasi").html("");
+			r_f1PrestasiGenerator(p_getData('f1', 'f119', $(this).val()), "list"); 
 		});
 		r_navbarReactor();
 	});
@@ -5948,11 +5983,12 @@ function r_f1KoleksiDataGenerator(data){
 	$("#section-koleksi").append(genHtml);		
 	
 }
-function r_f1PrestasiGenerator(data){
+
+function r_f1PrestasiGenerator(data, type){
 	var genHtml = "";
-			// console.log(dataPrestasi.feedData.length);
-	if(dataPrestasi.feedData != null){	
+	if(data.feedData != null){
 		genHtml = genHtml +
+<<<<<<< HEAD
 			'<div id = "isiSectionPrestasi">' +	
 			'<div class="cards-label plus">' +
 				'<p><strong>Daftar koleksi (<span id = "counter">'+dataPrestasi.feedData.length+'</span>)</strong></p>' +
@@ -5960,22 +5996,43 @@ function r_f1PrestasiGenerator(data){
 			//data list
 			//render
 		for(counter = 0; counter < dataPrestasi.feedData.length; counter++){
+=======
+		'<div id = "isiSectionPrestasi">' +	
+		'<div class="cards-label plus">' +
+			'<p><strong>Daftar koleksi ('+dataPrestasi.feedData.length+')</strong></p>' +
+		'</div>';
+
+		//render
+		for(counter = 0; counter < data.feedData.length; counter++){
+>>>>>>> 227154e11c7d09a837421d53552fb8d210b9927c
 			genHtml = genHtml +
-			'<div id=prestasi'+dataPrestasi.feedData[counter].idData+' class="cards">' +
+			'<div id=prestasi'+data.feedData[counter].idData+' class="cards">' +
 				'<div class="list-box">' +
 					'<div class="list-icon bg-yellow"><span class="fa fa-trophy"></span></div>' +
-					'<p class="list-text">'+dataPrestasi.feedData[counter].deskripsi+'</p>' +
-					'<div id='+dataPrestasi.feedData[counter].idData+' class="list-remove"><span class="fa fa-trash"></span></div>' +
+					'<p class="list-text">'+data.feedData[counter].deskripsi+'</p>';
+			if(type == "" || type == undefined || type == null){
+				genHtml = genHtml +
+				'<div id='+data.feedData[counter].idData+' class="list-remove"><span class="fa fa-trash"></span></div>';
+			}
+			genHtml = genHtml +
 				'</div>' +
 			'</div>';
 		}
-		genHtml = genHtml + '</div>';	
-			$("#section-prestasi").append(genHtml);
-			// $("#section-koleksi").append(genHtml2);
-	}		
+
+		genHtml = genHtml + '</div>';
+	} else {
+		genHtml = genHtml +
+		'<div class="cards">' +
+			'<div class="cards-header">' +
+				'<p class="fixed offset text-black">Data tidak ditemukan.</p>' +
+			'</div>' +
+		'</div>';
+	}	
+
 		
-	
+	$("#section-prestasi").append(genHtml);	
 }
+
 function r_f1KoleksiGenerator(keyword){
 	genHtml = "";
 	
@@ -5983,13 +6040,12 @@ function r_f1KoleksiGenerator(keyword){
 		data = p_getData('f1','f141','');
 		$('#daftarKoleksi').remove();
 	}else{
-		// keyword = $('.search-input').value;
 		 data = p_getData('f1','f141',keyword);
 		$('#daftarKoleksi').remove();
-		console.log(keyword);
 	}
-		genHtml = genHtml +
-		'<div id = daftarKoleksi>';
+
+	if(data.feedData != null){
+		genHtml = genHtml + '<div id = "daftarKoleksi">';
 		for(var loop = 0; loop < data.feedData.length; loop++){	
 			genHtml = genHtml +
 			'<div class=" cards">' +
@@ -6010,6 +6066,14 @@ function r_f1KoleksiGenerator(keyword){
 			'</div>';
 		}
 		genHtml = genHtml + '</div>';
+	}else{
+		genHtml = genHtml +
+		'<div class="cards">' +
+			'<div class="cards-header">' +
+				'<p class="fixed offset text-black">Data tidak ditemukan.</p>' +
+			'</div>' +
+		'</div>';
+	}
 	
 	$("#koleksi").append(genHtml);
 }
@@ -6102,6 +6166,7 @@ function r_navbarReactor(){
 	$("#option.syncnav .dashboard")  .unbind().on("click", function(){ r_navigateTo(0); });
 	$("#option.syncnav .kelembagaan").unbind().on("click", function(){ r_navigateTo(1); });
 	$("#option.syncnav .koleksi")	 .unbind().on("click", function(){ r_navigateTo(14); });
+	$("#option.syncnav .prestasi")	 .unbind().on("click", function(){ r_navigateTo(15); });
 	$("#option.syncnav .autentikasi").unbind().on("click", function(){ r_navigateTo(3); });
 	$("#option.syncnav .pengaturan") .unbind().on("click", function(){ r_navigateTo(4); });
 	$("#option.syncnav .bantuan") 	 .unbind().on("click", function(){ r_navigateTo(0.1); });
