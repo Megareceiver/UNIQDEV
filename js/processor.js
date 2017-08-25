@@ -132,8 +132,6 @@ function p_formHandler(formId, type){
 	$("#" + formId).unbind().on('submit', function(e) {
 		showNotification('info', 'waiting', 'sedang memproses...', false);
 		e.preventDefault();
-		// alert($(this).attr('f-group'));
-		// alert($(this).attr('f-target'));
 		$.ajax({
 			url: "modul/router.php?session=" + type + "&group=" + $(this).attr('f-group') + "&target=" + $(this).attr('f-target'), // Url to which the request is send
 			type: "POST",             // Type of request to be send, called as method
@@ -148,6 +146,35 @@ function p_formHandler(formId, type){
 				showNotification(data.feedType, 'add', data.feedMessage);
 				if(data.feedStatus == "success"){
 					r_customCallBack(type, $("#" + formId).attr('f-group'), $("#" + formId).attr('f-target'), data.feedId);
+				}
+			}
+		});
+	});		
+}
+
+function p_logIn(formId){	
+	$("#" + formId).unbind().on('submit', function(e) {
+		showNotification('info', 'waiting', 'sedang memproses...', false);
+		e.preventDefault();
+		$.ajax({
+			url: "modul/protected/authentication.php?session=doLogin", // Url to which the request is send
+			type: "POST",             // Type of request to be send, called as method
+			data: new FormData(this), // Data sent to server, a set of key/value pairs (i.e. form fields and values)
+			contentType: false,       // The content type used when sending data to the server.
+			cache: false,             // To unable request pages to be cached
+			processData:false,        // To send DOMDocument or non processed data file it is set to false
+			success: function(data)   // A function to be called if request succeeds
+			{
+				console.log(data);
+				hideNotification('waiting');
+				if(data.feedStatus == "success"){
+					if(data.userLevel == 1){
+						r_navigateTo(20, data.noRegistrasi);
+					}else{
+						r_navigateTo(0);
+					}
+				}else{
+					showNotification("danger", 'error', "username atau password salah, silahkan coba lagi.");
 				}
 			}
 		});

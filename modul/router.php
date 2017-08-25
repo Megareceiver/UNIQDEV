@@ -6,6 +6,7 @@
 		
 		switch($_GET['group']){
 			case "f1": require_once('protected/f1.php');break;
+			case "f3": require_once('protected/f3.php'); break;
 			case "f4": require_once('protected/f4.php'); break;
 			case "fNotification": require_once('protected/fNotification.php'); break;
 			default  : $error = 1; break;
