@@ -840,9 +840,8 @@ function r_f1FormKelembagaan(packet){
 			'<div class="col-md-6">' +
 				'<div class="select-box">' +
 					'<select name="kondisiBangunan" tabindex="7">' +
-						'<option value="" selected>Kondisi bangunan</option>' +
-						'<option value="Baik" >Baik</option>' +
-						'<option value="Rusak" >Rusak</option>' +
+						'<option value="Baik" selected>Kondisi bangunan - Baik</option>' +
+						'<option value="Rusak" >Kondisi bangunan - Rusak</option>' +
 					'</select>' +
 				'</div>' +
 				'<div class="input-box">' +
@@ -1112,8 +1111,8 @@ function r_f1FormKelembagaan(packet){
 			'<div class="select-box">' +
 				'<select name="jenisKelamin" tabindex="9">' +
 					'<option value="" selected>Jenis kelamin</option>' +
-					'<option value="L" >L</option>' +
-					'<option value="P" >P</option>' +
+					'<option value="L" >Laki - laki</option>' +
+					'<option value="P" >Perempuan</option>' +
 				'</select>' +
 			'</div>' +
 			'<div class="select-box">' +
@@ -1123,7 +1122,7 @@ function r_f1FormKelembagaan(packet){
 					'<option value="Kristen" >Kristen</option>' +
 					'<option value="Hindu" >Hindu</option>' +
 					'<option value="Budha" >Budha</option>' +
-					'<option value="Lainnya" >Lainnya</option>' +
+					'<option value="Lainnya" >Agama - Lainnya</option>' +
 				'</select>' +
 			'</div>' +
 		'</div>';
@@ -1141,7 +1140,7 @@ function r_f1FormKelembagaan(packet){
 					'<option value="D3" >D3</option>' +
 					'<option value="S1" >S1</option>' +
 					'<option value="S2" >S2</option>' +
-					'<option value="Lainnya" >Lainnya</option>' +
+					'<option value="Lainnya" >Pendidikan - Lainnya</option>' +
 				'</select>' +
 			'</div>' +
 			'<div class="input-box rows-2">' +
@@ -1168,19 +1167,18 @@ function r_f1FormKelembagaan(packet){
 		body = body + '<div class="col-md-8 col-md-offset-2 tab-container" tab-contentIndex="5">';
 		body = body +
 		'<form id="f-kegiatanUsaha-create" f-group="f1" f-target="f115">'+
-		'<div class="cards">' +
-			'<div class="cards-header">' +
-				'<h4>Kegiatan Usaha</h4>' +
-				'<p class="offset">informasi mengenai usaha terkait yang dilakukan oleh lembaga.</p>' +
-				'<div class="btn-collapse right">' +
-					'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
-					'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
+			'<div class="cards">' +
+				'<div class="cards-header">' +
+					'<h4>Kegiatan Usaha</h4>' +
+					'<p class="offset">informasi mengenai usaha terkait yang dilakukan oleh lembaga.</p>' +
+					'<div class="btn-collapse right">' +
+						'<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
+						'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
+					'</div>' +
 				'</div>' +
 			'</div>' +
-		'</div>' +
-		'<div class="cards flush">' +
-			// '<form id="f-kegiatanUsaha">' +
-				'<div class="row default">';
+			'<div class="cards flush">' +
+					'<div class="row default">';
 		
 		//left
 		body = body +
@@ -1212,14 +1210,12 @@ function r_f1FormKelembagaan(packet){
 		
 		body = body + '</div></form></div>';		
 		body = body + '</div>';
-		//body = body + '<div class="clearfix tab-container" tab-contentIndex="5">&nbsp;</div>';
 		
 		
 		// VISUALISASI USAHA =======================================================================
 		//=======================================================================
 		//=======================================================================
 		body = body +
-		'<form id="f-visualisasiUsaha-create" f-group="f1" f-target="f116">'+
 		'<div class="col-md-8 col-md-offset-2 tab-container" tab-contentIndex="5">' +
 			'<div class="cards-label plus">' +
 				'<p><strong>Visualisasi usaha (0)</strong></p>' +
@@ -1228,134 +1224,46 @@ function r_f1FormKelembagaan(packet){
 		
 		body = body + '<div class="col-md-8 col-md-offset-2 tab-container" tab-contentIndex="5">';
 		
-		//left
-		body = body + 
-		'<div class="col-md-6">' +
-			'<div class="row default">' +
-				'<div class="cards">' +
-					'<div class="cards-header">' +
-						'<h5>&nbsp;</h5>' +
-						'<div class="btn-collapse right">' +
-							'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
-							'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
-						'</div>' +
-					'</div>' +
-					'<div class="picture-box small">' +
-						'<img viewer-id="v-usaha1" class="pic-default" src="img/sources/picture.png" />' +
-					'</div>' +
-					'<div class="input-box">' +
-						'<input name="keterangan1" placeholder="Keterangan" tabindex="11" type="text" value="" />' +
-					'</div>' +
-					'<div class="input-box">' +
-						'<div class="icon-box both">' +
-							'<label class="browser-box" id="v-usaha1">' +
-								'<p class="placeholder">berkas belum diunggah...</p>' +
-								'<input preview-id="v-usaha1" name="imageUrl1" type="file" tabindex="5"/>' +
-							'</label>' +
-							'<button type="button" browser-id="v-usaha1" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
-							'<span class="left fa fa-paperclip text-purple"></span>' +
-						'</div>' +
-					'</div>' +
-				'</div>' +
-			'</div>' +
-		'</div>';
-		
-		//center
-		body = body + 
-		'<div class="col-md-6">' +
-			'<div class="row default">' +
-				'<div class="cards">' +
-					'<div class="cards-header">' +
-						'<h5>&nbsp;</h5>' +
-						'<div class="btn-collapse right">' +
-							'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
-							'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
-						'</div>' +
-					'</div>' +
-					'<div class="picture-box small">' +
-						'<img viewer-id="v-usaha2" class="pic-default" src="img/sources/picture.png" />' +
-					'</div>' +
-					'<div class="input-box">' +
-						'<input name="keterangan2" placeholder="Keterangan" tabindex="11" type="text" value="" />' +
-					'</div>' +
-					'<div class="input-box">' +
-						'<div class="icon-box both">' +
-							'<label class="browser-box" id="v-usaha2">' +
-								'<p class="placeholder">berkas belum diunggah...</p>' +
-								'<input preview-id="v-usaha2" name="imageUrl2" type="file" tabindex="5" />' +
-							'</label>' +
-							'<button type="button" browser-id="v-usaha2" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
-							'<span class="left fa fa-paperclip text-purple"></span>' +
+		//form render
+		for(loop=0; loop<maxForm; loop++){
+			body = body + 
+			'<form id="f-usaha-create-' + loop + '" f-group="f1" f-target="f116">'+
+				'<div class="col-md-6">' +
+					'<div class="row default">' +
+						'<div class="cards">' +
+							'<div class="cards-header">' +
+								'<h5>&nbsp;</h5>' +
+								'<div class="btn-collapse right">' +
+									'<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
+									'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
+								'</div>' +
+							'</div>' +
+							'<div class="picture-box small">' +
+								'<img viewer-id="v-usaha' + loop + '" class="pic-default" src="img/sources/picture.png" />' +
+							'</div>' +
+							'<div class="input-box">' +
+								'<input name="noreg" type="hidden" value="" />' +
+								'<input name="p-id" type="hidden" value="" />' +
+								'<input name="keterangan" placeholder="Keterangan (*)" tabindex="11" type="text" value="" />' +
+							'</div>' +
+							'<div class="input-box">' +
+								'<div class="icon-box both">' +
+									'<label class="browser-box" id="v-usaha' + loop + '">' +
+										'<p class="placeholder" name="imageName">berkas belum diunggah...</p>' +
+										'<input preview-id="v-usaha' + loop + '" name="imageUrl" accept="image/*" type="file" tabindex="11"/>' +
+										'<input browser-state="fileState" name="fileState" type="hidden" tabindex="11" value="add" />' +
+									'</label>' +
+									'<button type="button" browser-id="v-usaha' + loop + '" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
+									'<span class="left fa fa-paperclip text-purple"></span>' +
+								'</div>' +
+							'</div>' +
 						'</div>' +
 					'</div>' +
 				'</div>' +
-			'</div>' +
-		'</div>';
-		
-		//center
-		body = body + 
-		'<div class="col-md-6">' +
-			'<div class="row default">' +
-				'<div class="cards">' +
-					'<div class="cards-header">' +
-						'<h5>&nbsp;</h5>' +
-						'<div class="btn-collapse right">' +
-							'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
-							'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
-						'</div>' +
-					'</div>' +
-					'<div class="picture-box small">' +
-						'<img viewer-id="v-usaha3" class="pic-default" src="img/sources/picture.png" />' +
-					'</div>' +
-					'<div class="input-box">' +
-						'<input name="keterangan3" placeholder="Keterangan" tabindex="11" type="text" value="" />' +
-					'</div>' +
-					'<div class="input-box">' +
-						'<div class="icon-box both">' +
-							'<label class="browser-box" id="v-usaha3">' +
-								'<p class="placeholder">berkas belum diunggah...</p>' +
-								'<input preview-id="v-usaha3" name="imageUrl3" type="file" tabindex="5" />' +
-							'</label>' +
-							'<button type="button" browser-id="v-usaha3" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
-							'<span class="left fa fa-paperclip text-purple"></span>' +
-						'</div>' +
-					'</div>' +
-				'</div>' +
-			'</div>' +
-		'</div>';
-		
-		//right
-		body = body + 
-		'<div class="col-md-6">' +
-			'<div class="row default">' +
-				'<div class="cards">' +
-					'<div class="cards-header">' +
-						'<h5>&nbsp;</h5>' +
-						'<div class="btn-collapse right">' +
-							'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
-							'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
-						'</div>' +
-					'</div>' +
-					'<div class="picture-box small">' +
-						'<img viewer-id="v-usaha4" class="pic-default" src="img/sources/picture.png" />' +
-					'</div>' +
-					'<div class="input-box">' +
-						'<input name="keterangan4" placeholder="Keterangan" tabindex="11" type="text" value="" />' +
-					'</div>' +
-					'<div class="input-box">' +
-						'<div class="icon-box both">' +
-							'<label class="browser-box" id="v-usaha4">' +
-								'<p class="placeholder">berkas belum diunggah...</p>' +
-								'<input preview-id="v-usaha4" name="imageUrl4" type="file" tabindex="5" />' +
-							'</label>' +
-							'<button type="button" browser-id="v-usaha4" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
-							'<span class="left fa fa-paperclip text-purple"></span>' +
-						'</div>' +
-					'</div>' +
-				'</div>' +
-			'</div>' +
-		'</div>';
-		body = body + '</div>' + '</form>';
+			'</form>';
+		}
+
+		body = body + '</div>';
 		body = body + '<div class="clearfix tab-container" tab-contentIndex="5">&nbsp;</div>';
 		
 		
@@ -1371,7 +1279,7 @@ function r_f1FormKelembagaan(packet){
 				'<h4>Koleksi</h4>' +
 				'<p class="offset">daftar kepemilikan lembaga yang ingin dipublikasikan.</p>' +
 				'<div class="btn-collapse right">' +
-					'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
+					'<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
 					'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
 				'</div>' +
 			'</div>' +
@@ -1576,13 +1484,14 @@ function r_f1FormKelembagaan(packet){
 		p_formHandler("f-kelembagaan-create" , "addData");
 		p_formHandler("f-sejarah-create" , "addData");
 		p_formHandler("f-bantuan-create" , "addData");
-		for(loop=0; loop<maxForm; loop++){
-			p_formHandler("f-sarana-create-" + loop , "addData");
-		}
 		p_formHandler("f-kepengurusan-create" , "addData");
 		p_formHandler("f-koleksi-create" , "addData");
 		p_formHandler("f-prestasi-create" , "addData");
 
+		for(loop=0; loop<maxForm; loop++){
+			p_formHandler("f-sarana-create-" + loop , "addData");
+			p_formHandler("f-usaha-create-" + loop , "addData");
+		}
 		//generate data for editing
 		//r_f1FormKelembagaanDataGenerator(packet);		
 		$("input[name=noreg]").val('00030200110');

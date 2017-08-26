@@ -117,7 +117,12 @@ function r_customCallBack(formType, group, target, recentId, formId, pId){
 					p_formHandler("f-kepengurusan-create", "updateData");
 				break;
 				case 'f115' :
-					p_formHandler("f-usaha-create", "updateData");
+					p_formHandler("f-kegiatanUsaha-create", "updateData");
+				break;
+				case 'f116' :
+					p_formHandler(formId, "updateData");
+					$("#" + formId + " [name=p-id]").val(pId);
+					$("#" + formId + " [name=imageName]").html(recentId);
 				break;
 				case 'f118' :
 					dataKoleksi = p_getData('f1', 'f117',recentId);
