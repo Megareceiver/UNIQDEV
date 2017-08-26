@@ -191,6 +191,7 @@ function fileSelected(elem){
 		$("button[browser-id=" + target + "]").css("display","block");
 	}
 	$("#" + target + " .placeholder").html(value);
+	$("#" + target + " [browser-state=fileState]").val("add");
 }
 
 function fileRemove(elem){
@@ -201,6 +202,7 @@ function fileRemove(elem){
 	$("button[browser-id=" + target + "]").css("display","none");
 	$('img[viewer-id=' + target + ']').removeClass("changed").attr("src", "img/sources/picture.png");
 	$('input[preview-id=' + target + ']').val("");
+	$("#" + target + " [browser-state=fileState]").val("remove");
 }
 
 /* image Preview */

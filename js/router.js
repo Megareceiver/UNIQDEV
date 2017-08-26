@@ -28,9 +28,9 @@ var pReferencesKey	= "";
 var pDecription		= "";
 
 $(function(){
-	// r_clearCookies();
+	// r_clearCookies(); 
 	r_navigateTo(r_pageReader(), 'start');
-	
+	// r_pageSet(0);
 	// keeping data provinsi, wilayah, kecamatan, kelurahan to global variable
 	optionD = p_getData('f4', 'f40', '');
 	optionD = optionD.feedData;
@@ -48,12 +48,10 @@ function r_navigateTo(index, packet, access) {
 		case 1  : r_f1Kelembagaan(); 				break;
 		case 11 : r_f1DaftarLembaga(packet); 		break;
 		case 12 : r_f1DetailLembaga(packet); 		break;
-		case 20 : r_f1DetailSLembaga(packet); 		break;
 		case 13 : r_f1VerifikasiLembaga(packet);	break;
 		case 14 : r_f1KoleksiLembaga(); 			break;
 		case 16 : r_f1PrestasiLembaga(); 			break;
 		case 15 : r_f1FormKelembagaan(packet);		break;
-		case 19 : r_f1FormNewKelembagaan();			break;
 		
 		case 3  : r_f3Autentikasi(); 				break;
 		
@@ -90,7 +88,7 @@ function r_navigateTo(index, packet, access) {
 	}
 }
 
-function r_customCallBack(formType, group, target, recentId){
+function r_customCallBack(formType, group, target, recentId, formId){
 	var dataFec = null;
 	switch(group){
 		case 'f1' : //yama
@@ -117,7 +115,6 @@ function r_customCallBack(formType, group, target, recentId){
 				break;
 				case 'f118' :
 					dataKoleksi = p_getData('f1', 'f117',recentId);
-					// $("#isiSectionKoleksi").remove();
 					$("#daftarSectionKoleksi").remove();
 					r_f1KoleksiDataGenerator(dataKoleksi);
 
@@ -128,8 +125,6 @@ function r_customCallBack(formType, group, target, recentId){
 							dataKoleksi = p_getData('f1', 'f117',recentId);
 							r_f1KoleksiDataGenerator(dataKoleksi);
 						}; 
-						console.log(pId);
-					// console.log("isiSectionKoleksi"+$(this).attr('id'));
 					}); 
 				break;
 				case 'f119' :
@@ -152,6 +147,10 @@ function r_customCallBack(formType, group, target, recentId){
 							};
 						});
 					}); 
+				break;
+				case 'f120' :
+					$("#" + formId + " [name=imageName]").html(recentId);
+				break;
 			}
 		break;
 		case 'f4': //megan
@@ -750,9 +749,9 @@ function r_fLogin() {
 		
 		//--command reactor
 		$(".back-button").unbind().on('click', function(){ r_navigateTo(); });
-		//$(".go-login").unbind().on('click', function(){ r_navigateTo(0); });
+		$(".go-login").unbind().on('click', function(){ r_navigateTo(0); });
 
-		p_logIn('f-login');
+		// p_logIn('f-login');
 	});
 }
 

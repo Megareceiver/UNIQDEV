@@ -185,7 +185,7 @@ function r_f1DaftarLembaga(packet) {
 		
 		//--command reactor
 		$(".back-button").unbind().on('click', function(){ r_navigateTo(1); });
-		$("#add-button").unbind().on('click', function(){ r_navigateTo(19); });
+		$("#add-button").unbind().on('click', function(){ r_navigateTo(15); });
 		
 		//navbar
 		r_navbarReactor();
@@ -310,7 +310,7 @@ function r_f1LembagaGenerator(data){
 
 //F1 DETAIL LEMBAGA
 //=====================================
-function r_f1DetailLembaga(packet) {
+function r_f1DetailLembaga(packet) { 
 	$("body").prepend(preload);
 	$('main.parent').animate({'opacity': '0.6'},'fast','linear', function(){
 		mainPage.html('');
@@ -325,12 +325,14 @@ function r_f1DetailLembaga(packet) {
 
 		profile_look_set(packet);
 		
-		// data = p_getData('f1', 'f1111', '', '12121300001');
+		//data = p_getData('f1', 'f1111', '', '12121300001');
 		data = p_getData('f1', 'f1111', '', packet);
 		data = data.feedData;
 		
 		//-- set option list on a session
-		optionBatch = data.option;
+		if(data.option != null){
+			optionBatch = data.option;
+		}
 		
 		//--open
 		head	= '';
@@ -534,7 +536,7 @@ function r_f1FormKelembagaan(packet){
 		dataGrup = [];
 		dataTemp = [];
 		dataLegalitas = [];
-		
+		kodeBentukLembaga = "";
 		
 		//-- get data bentuk lembaga
 		dataGrup = p_getData('f4', 'f431', '');
@@ -551,12 +553,10 @@ function r_f1FormKelembagaan(packet){
 		sourcesData 	  = dataTemp.feedData[0];
 		sourcesDetailData = dataTemp.feedDataDetail;
 		
-		//-- get data legalitas
-		dataLegalitas = [
-			{ "kodeBentukLembaga": "1", "namaBentukLembaga": "xx" },
-			{ "kodeBentukLembaga": "2", "namaBentukLembaga": "yy" },
-			{ "kodeBentukLembaga": "3", "namaBentukLembaga": "zz" },
-		];
+		//-- get kode bentuk lembaga for legalitas
+		var bentukLembaga = r_bentukLembagaReader();
+		dataLegalitas = p_getData('f1','f1114','',bentukLembaga[0]);
+		dataLegalitas = dataLegalitas.feedData;
 
 		//-- get data koleksi
 		dataKoleksi = p_getData('f1', 'f117','');
@@ -569,9 +569,8 @@ function r_f1FormKelembagaan(packet){
 					'<div class="tab-header">' +
 						'<ul>';
 		
-		var state = 'active';
 		for(var loop = 0; loop < dataHead.length; loop++){
-			head = head + '<li class="tab-navigator ' + state + '" tab-headIndex="' + dataHead[loop].idFilter + '">' + dataHead[loop].form + '</li>';
+			head = head + '<li class="tab-navigator" tab-headIndex="' + dataHead[loop].idFilter + '">' + dataHead[loop].form + '</li>';
 			state = "";
 		}
 		
@@ -588,16 +587,16 @@ function r_f1FormKelembagaan(packet){
 		// KELEMBAGAAN =======================================================================
 		//=======================================================================
 		//=======================================================================
-		body = body + '<div class="col-md-8 col-md-offset-2 tab-container active" tab-contentIndex="1">';
+		body = body + '<div class="col-md-8 col-md-offset-2 tab-container" tab-contentIndex="1">';
 		body = body + 
 		'<form id="f-kelembagaan-create" f-group = "f1" f-target = "f111">' +
 			'<div class="cards title">' +
 				'<div class="cards-header">' +
 					'<h4>Kelembagaan</h4>' +
 					'<p class="offset">kelengkapan data dapat ditambahkan secara berkala.</p>' +
+					'<p class="offset"><small>(*) <i>Mandatory atau kolom yang wajib diisi.</i>.</small></p>' +
 					'<div class="btn-collapse right">' +
-						'<button class="clear" type="button"><span class="fa fa-trash"></span></button>' +
-						'<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
+						// '<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
 						'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
 					'</div>' +
 				'</div>' +
@@ -610,48 +609,53 @@ function r_f1FormKelembagaan(packet){
 		'<div class="col-md-6">' +
 			'<div class="input-box">' +
 				'<input name="noreg" tabindex="1" type="hidden" value="" />' +
-				'<input name="nama" placeholder="Nama lembaga" tabindex="1" type="text" value="" />' +
+				'<input name="nama" placeholder="Nama lembaga (*)" tabindex="1" type="text" value="" />' +
 			'</div>' +
 			'<div class="input-box rows-2">' +
-				'<textarea name="alamat" placeholder="Alamat" tabindex="1" class="rows-2"></textarea>' +
+				'<textarea name="alamat" placeholder="Alamat (*)" tabindex="1" class="rows-2"></textarea>' +
 			'</div>' +
 			'<div class="input-box">' +
-				'<input name="rt" placeholder="RT" tabindex="1" class="half" type="text" value="" />' +
-				'<input name="rw" placeholder="RW" tabindex="1" class="half" type="text" value="" />' +
+				'<input name="rt" placeholder="RT (*)" tabindex="1" class="half" type="text" value="" />' +
+				'<input name="rw" placeholder="RW (*)" tabindex="1" class="half" type="text" value="" />' +
 			'</div>' +
 			'<div class="input-box">' +
 				'<div class="icon-box left">' +
-					'<input id="f111_lingkupArea" name="kelurahan" placeholder="Kelurahan" tabindex="1" type="text" value="" />' +
-					'<input id="f111_lingkupArea_kode" name="kodeKelurahan" placeholder="Kelurahan" tabindex="1" type="hidden" value="" />' +
+					'<input id="f111_lingkupArea" name="kelurahan" placeholder="Kelurahan (*)" tabindex="1" type="text" value="" />' +
+					'<input id="f111_lingkupArea_kode" name="kodeKelurahan" tabindex="1" type="hidden" value="" />' +
 					'<span class="fa fa-magic"></span>' +
 				'</div>' +
 			'</div>' +
 			'<div class="input-box">' +
 				'<div class="icon-box left">' +
-					'<input id="f111_lingkupArea_2" name="kecamatan" placeholder="Kecamatan" tabindex="1" type="text" value="" readonly />' +
-					'<input id="f111_lingkupArea_kode2" name="kodeKecamatan" placeholder="Kecamatan" tabindex="1" type="hidden" value="" readonly />' +
+					'<input id="f111_lingkupArea_2" name="kecamatan" placeholder="Kecamatan (*)" tabindex="1" type="text" value="" readonly />' +
+					'<input id="f111_lingkupArea_kode2" name="kodeKecamatan" tabindex="1" type="hidden" value="" readonly />' +
 					'<span class="fa fa-repeat"></span>' +
 				'</div>' +
 			'</div>' +
 			'<div class="input-box">' +
 				'<div class="icon-box left">' +
-					'<input id="f111_lingkupArea_3" name="wilayah" placeholder="Wilayah" tabindex="1" type="text" value="" readonly />' +
-					'<input id="f111_lingkupArea_kode3" name="kodeWilayah" placeholder="Wilayah" tabindex="1" type="hidden" value="" readonly />' +
+					'<input id="f111_lingkupArea_3" name="wilayah" placeholder="Wilayah (*)" tabindex="1" type="text" value="" readonly />' +
+					'<input id="f111_lingkupArea_kode3" name="kodeWilayah" tabindex="1" type="hidden" value="" readonly />' +
 					'<span class="fa fa-repeat"></span>' +
 				'</div>' +
 			'</div>' +
 			'<div class="input-box">' +
 				'<div class="icon-box left">' +
-					'<input id="f111_lingkupArea_4" name="provinsi" placeholder="Provinsi" tabindex="1" type="text" value="" readonly />' +
-					'<input id="f111_lingkupArea_kode4" name="kodeProvinsi" placeholder="Provinsi" tabindex="1" type="hidden" value="" readonly />' +
+					'<input id="f111_lingkupArea_4" name="provinsi" placeholder="Provinsi (*)" tabindex="1" type="text" value="" readonly />' +
+					'<input id="f111_lingkupArea_kode4" name="kodeProvinsi" tabindex="1" type="hidden" value="" readonly />' +
 					'<span class="fa fa-repeat"></span>' +
 				'</div>' +
 			'</div>' +
 			'<div class="input-box">' +
-				'<input name="telp" placeholder="Telp" tabindex="2" type="text" value="" />' +
+				'<input name="telp" placeholder="Telp (*)" tabindex="2" type="text" value="" />' +
 			'</div>' +
 			'<div class="input-box">' +
-				'<input name="email" placeholder="Email" tabindex="2" type="text" value="" />' +
+				'<input name="email" placeholder="Email (*)" tabindex="2" type="text" value="" />' +
+			'</div>' +
+			'<div class="input-box"><p>Google Maps</p></div>' +
+			'<div class="input-box">' +
+				'<input name="langitude" placeholder="Langitude" tabindex="1" class="half" type="text" value="" />' +
+				'<input name="latitude" placeholder="Latitude" tabindex="1" class="half" type="text" value="" />' +
 			'</div>' +
 		'</div>';
 		
@@ -663,8 +667,8 @@ function r_f1FormKelembagaan(packet){
 			'</div>' +
 			'<div class="select-box">' +
 				'<select name="bentukLembaga" tabindex="2">' +
-					'<option value="0" selected>Bentuk lembaga</option>' +
-					selectItems['bentukLembaga'] +
+					'<option value="0" selected>Bentuk lembaga (*)</option>' +
+					'<option value="' + bentukLembaga[0] + '" selected>' + bentukLembaga[1] + '</option>' +
 				'</select>' +
 			'</div>' +
 			'<div class="select-box">' +
@@ -703,7 +707,7 @@ function r_f1FormKelembagaan(packet){
 					'<div class="icon-box both">' +
 						'<label class="browser-box" id="v-logo">' +
 							'<p name="v-logoName" class="placeholder">berkas belum diunggah...</p>' +
-							'<input preview-id="v-logo" name="imageUrl" type="file" tabindex="5" />' +
+							'<input preview-id="v-logo" name="imageUrl" type="file" accept="image/*" tabindex="5" />' +
 						'</label>' +
 						'<button type="button" browser-id="v-logo" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
 						'<span class="left fa fa-paperclip text-purple"></span>' +
@@ -1627,12 +1631,23 @@ function r_f1FormKelembagaan(packet){
 		//--gen
 		headPage.html(r_headPageHtml(3, 'Form lembaga'));
 		mainPage.html(content).animate({'opacity': '1'},'fast','linear');
+		r_f1legaitasGenerator(dataLegalitas); //generate legalitas form
 		$("#preload").remove();
 		
 		//--command reactor
 		$(".back-button").unbind().on('click', function(){ r_navigateTo(r_pagePreviousReader()); });
 		
 		// $(".reset").unbind().on('click', function(){ clearTargetForm('f-kelembagaan-create'); });
+		/*tab reader*/
+		if(r_tabReader() == null){
+			r_tabSet(1);
+			$('[tab-headIndex = "1"]').addClass('active');
+			$('[tab-contentIndex = "1"]').addClass('active');
+		}else{
+			$('[tab-headIndex = "' + r_tabReader() + '"]').addClass('active');
+			$('[tab-contentIndex = "' + r_tabReader() + '"]').addClass('active');
+		}
+
 		tabActivator();
 		datePickerActivator();
 		fileBrowserActivator();
@@ -1640,8 +1655,6 @@ function r_f1FormKelembagaan(packet){
 		r_navbarReactor();
 		autoCompleteActivator("f111_lingkupArea", sourcesData, sourcesDetailData, "lingkupArea");
 		autoCompleteActivator("f114_lingkupArea", sourcesData, sourcesDetailData, "lingkupArea");
-		
-		$("#f-kelembagaan-create [name=bentukLembaga]").unbind().on("change", function(){ r_f1legaitasGenerator(p_getData('f1','f1113',$("#f-kelembagaan-create [name=noreg]").val())); });
 
 		//form reactor
 		p_formHandler("f-kelembagaan-create" , "addData");
@@ -1650,9 +1663,9 @@ function r_f1FormKelembagaan(packet){
 		p_formHandler("f-kepengurusan-create" , "addData");
 		p_formHandler("f-koleksi-create" , "addData");
 		p_formHandler("f-prestasi-create" , "addData");
-		
+
 		//generate data for editing
-		r_f1FormKelembagaanDataGenerator(packet);		
+		//r_f1FormKelembagaanDataGenerator(packet);		
 	});
 }
 
@@ -1767,35 +1780,35 @@ function r_f1legaitasGenerator(dataFecth){
 	var genHtml 	= "";
 	for(var loop=0; loop<dataFecth.items.length; loop++){
 		genHtml = genHtml + 
-		'<form class="f-legalitas-create">' +
-			'<div class="col-md-12">' +
-				'<div class="cards flush ">' +
-					'<div class="cards-header">' +
-						'<h5>' + dataFecth.items[loop].namaLegalitas + '</h5>' +
-						'<div class="btn-collapse right">' +
-							'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
-							'<button class="clear" type="button"><span class="fa fa-check-circle-o"></span></button>' +
-						'</div>' + 
-					'</div>' +
-					'<div class="input-box">' +
-						'<input name="noreg" tabindex="5" type="hidden" value="' + dataFecth.noRegistrasi + '" />' +
-						'<input name="nomor" placeholder="Nomor" tabindex="5" type="text" value="' + dataFecth.items[loop].noLegalitas + '" />' +
-					'</div>' +
-					'<div class="input-box">' +
-						'<div class="icon-box left">' +
-							'<input class="date" placeholder="Tanggal" tabindex="5" type="text" value="' + dataFecth.items[loop].tanggalLegalitas + '" />' +
-							'<span class="fa fa-calendar"></span>' +
-						'</div>' + 
-					'</div>' +
-					'<div class="input-box">' +
-						'<div class="icon-box both">' +
-							'<label class="browser-box" id="legalitas-' + dataFecth.items[loop].kodePersyaratan + '">' +
-								'<p class="placeholder">berkas belum diunggah...</p>' +
-								'<input type="file" tabindex="5" />' +
-							'</label>' +
-							'<button type="button" browser-id="legalitas-' + dataFecth.items[loop].kodePersyaratan + '" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
-							'<span class="left fa fa-paperclip text-purple"></span>' +
-						'</div>' +
+		'<form id="f-legalitas-create-' + loop + '" f-group = "f1" f-target = "f120">' +
+			'<div class="cards flush ">' +
+				'<div class="cards-header">' +
+					'<h5>' + dataFecth.items[loop].namaLegalitas + '</h5>' +
+					'<div class="btn-collapse right">' +
+						'<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
+						'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
+					'</div>' + 
+				'</div>' +
+				'<div class="input-box">' +
+					'<input name="noreg" tabindex="5" type="hidden" value="' + dataFecth.noRegistrasi + '" />' +
+					'<input name="kodePersyaratan" tabindex="5" type="hidden" value="' + dataFecth.items[loop].kodePersyaratan + '" />' +
+					'<input name="nomorLegalitas" placeholder="Nomor (*)" tabindex="5" type="text" value="' + dataFecth.items[loop].noLegalitas + '" />' +
+				'</div>' +
+				'<div class="input-box">' +
+					'<div class="icon-box left">' +
+						'<input name="tanggalLegalitas" class="date" placeholder="Tanggal (*)" tabindex="5" type="text" value="' + dataFecth.items[loop].tanggalLegalitas + '" />' +
+						'<span class="fa fa-calendar"></span>' +
+					'</div>' + 
+				'</div>' +
+				'<div class="input-box">' +
+					'<div class="icon-box both">' +
+						'<label class="browser-box" id="legalitas-' + dataFecth.items[loop].kodePersyaratan + '">' +
+							'<p class="placeholder" name="imageName">berkas belum diunggah...</p>' +
+							'<input name="imageUrl" accept="image/*" type="file" tabindex="5" />' +
+							'<input browser-state="fileState" name="fileState" type="hidden" tabindex="5" value="add" />' +
+						'</label>' +
+						'<button type="button" browser-id="legalitas-' + dataFecth.items[loop].kodePersyaratan + '" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
+						'<span class="left fa fa-paperclip text-purple"></span>' +
 					'</div>' +
 				'</div>' +
 			'</div>' +
@@ -1803,6 +1816,10 @@ function r_f1legaitasGenerator(dataFecth){
 	}
 
 	$("#legalitas-frame").html(genHtml);
+
+	for(var loop=0; loop<dataFecth.items.length; loop++){
+		p_formHandler('f-legalitas-create-' + loop,'addData');
+	}
 }
 
 //F1 VERIFIKASI LEMBAGA

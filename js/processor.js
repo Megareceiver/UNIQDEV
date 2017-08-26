@@ -128,7 +128,7 @@ function p_removeData(group, target, pId){
 	return reStatus;
 }
 
-function p_formHandler(formId, type){	
+function p_formHandler(formId, type){
 	$("#" + formId).unbind().on('submit', function(e) {
 		showNotification('info', 'waiting', 'sedang memproses...', false);
 		e.preventDefault();
@@ -145,7 +145,7 @@ function p_formHandler(formId, type){
 				hideNotification('waiting');
 				showNotification(data.feedType, 'add', data.feedMessage);
 				if(data.feedStatus == "success"){
-					r_customCallBack(type, $("#" + formId).attr('f-group'), $("#" + formId).attr('f-target'), data.feedId);
+					r_customCallBack(type, $("#" + formId).attr('f-group'), $("#" + formId).attr('f-target'), data.feedId, formId);
 				}
 			}
 		});

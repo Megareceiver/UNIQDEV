@@ -22,7 +22,8 @@
 			case "f1110": $resultList = getListLembagaan($data); break;
 			case "f1111": $resultList = getDetailLembagaan($data); break;
 			case "f1112": $resultList = getFetchLembagaan($data); break;
-			case "f1113": $resultList = legalitasGen($data); break;
+			case "f1113": $resultList = legalitasByNoreg($data); break;
+			case "f1114": $resultList = legalitasByBentukLembaga($data); break;
 			case "f117": $resultList = getKoleksiSection($data); break;
 			case "f119": $resultList = getPrestasiSection($data); break;
 			case "f141": $resultList = getKoleksi($data); break;
@@ -59,7 +60,7 @@
 			case "f116": $resultList = createVisualisasiUsahaSection($target, $data); break;
 			case "f118": $resultList = createKoleksiSection($target, $data); break;
 			case "f119": $resultList = createPrestasiSection($target, $data); break;
-			// case "f121": $resultList = getLegalitasSection(); break;
+			case "f120": $resultList = createLegalitasSection($target, $data); break;
 			default	   : $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Terjadi kesalahan fatal, proses dibatalkan!"); break;
 		}
 		
@@ -1661,19 +1662,16 @@
 		$idRecent	= "";
 		$idTemp		= "";
 		
-		/* validation 
-		if($target == "f411"){
-			if(
-				!isset($data['kode']) || $data['kode']==""
-				|| !isset($data['nama']) || $data['nama']==""
-			){ $error = 1; }
-		}elseif($target == "f412" || $target == "f413" || $target == "f414"){
-			if(
-				!isset($data['kode']) || $data['kode']==""
-				|| !isset($data['nama']) || $data['nama']==""
-				|| !isset($data['referensi']) || $data['referensi']==""
-			){ $error = 1; }
-		}*/
+		/* validation */
+		if( 
+			   $data['nama'] == ""
+			|| $data['alamat'] == ""
+			|| $data['rt'] == "" || $data['rw'] == ""
+			|| $data['kelurahan'] == "" || $data['kecamatan'] == "" || $data['wilayah'] == "" || $data['provinsi'] == ""
+			|| $data['telp'] == ""
+			|| $data['email'] == ""
+			|| $data['bentukLembaga'] == ""
+		){ $error = 1; }
 
 		if($error != 1){
 			/* open connection */
@@ -1685,9 +1683,9 @@
 					SELECT noRegistrasi
 					FROM dplega_000_lembaga_temp
 					WHERE 
-					kodeProvinsi   = '".$data["kodeProvinsi"]."' and
-					kodeWilayah    = '".$data["kodeWilayah"]."' and
-					kodeKecamatan  = '".$data["kodeKecamatan"]."'
+						kodeProvinsi   = '".$data["kodeProvinsi"]."' and
+						kodeWilayah    = '".$data["kodeWilayah"]."' and
+						kodeKecamatan  = '".$data["kodeKecamatan"]."'
 					ORDER BY noRegistrasi DESC LIMIT 1
 				";
 				$query	= mysqli_query($gate, $sql);
@@ -1716,6 +1714,7 @@
 				}else{
 					$idTemp = $data['kodeProvinsi'].$data['kodeWilayah'].$data['kodeKecamatan'].'00001';
 				}
+
 				$sql = 
 				"	INSERT INTO dplega_000_lembaga_temp
 					(
@@ -1728,7 +1727,8 @@
 						kodeKecamatan,
 						kodeWilayah,
 						kodeProvinsi,
-						koordinatGPS,
+						langitude,
+						latitude,
 						noTelp,
 						email,
 						mediaSosial,
@@ -1753,7 +1753,8 @@
 						'".$data['kodeKecamatan']."',
 						'".$data['kodeWilayah']."',
 						'".$data['kodeProvinsi']."',
-						'',
+						'".$data['langitude']."',
+						'".$data['latitude']."',
 						'".$data['telp']."',
 						'".$data['email']."',
 						'".$data['medsos']."',
@@ -1834,7 +1835,182 @@
 	}
 
 
-	function legalitasGen($data){
+	// LEGLITAS =============
+	function createLegalitasSection($target, $data){
+		/* initial condition */
+		$resultList = array();
+		$table 		= "";
+		$field 		= array();
+		$rows		= 0;
+		$condition 	= "";
+		$orderBy	= "";
+		$error		= 0;
+		$resultType = "";
+		$resultMsg	= "";
+		$counter	= "";
+		$idRecent	= "";
+		$idTemp		= "";
+		$dumbTable  = "";
+		$noreg 		= $data['noreg'];
+		$file_name	= "";
+
+		/* validation */
+		if( 
+			   $data['noreg'] == ""
+			|| $data['nomorLegalitas'] == ""
+			|| $data['tanggalLegalitas'] == ""
+		){ $error = 1; }
+
+		if($error != 1){
+			/* open connection */
+			$gate = openGate();
+			if($gate){
+				// connection = true
+				//checking lembaga exist
+				$sql 	= " SELECT noRegistrasi FROM dplega_000_lembaga WHERE noRegistrasi = '".$noreg."'";
+				$result = mysqli_query($gate, $sql);
+				if(mysqli_num_rows($result) > 0) {
+					$dumbTable = "";
+				}else{
+					$sql 	= " SELECT noRegistrasi FROM dplega_000_lembaga_temp WHERE noRegistrasi = '".$noreg."'";
+					$result = mysqli_query($gate, $sql);
+					if(mysqli_num_rows($result) > 0) {
+						$dumbTable = "_temp";
+					}else{
+						//error state
+						$error		= 1;
+						$errorType  = "danger";
+						$errorMsg	= "Terjadi kesalahan, data tidak dikenal!";
+					}
+				}
+
+				if($error != 1){
+					$sql 	= "
+								SELECT noRegistrasi FROM dplega_009_legalitas".$dumbTable." 
+								WHERE noRegistrasi = '".$noreg."' AND kodePersyaratan = '".$data['kodePersyaratan']."'";
+					
+					$result = mysqli_query($gate, $sql);
+					if(mysqli_num_rows($result) > 0) {
+						$sql = 
+						"	UPDATE dplega_009_legalitas".$dumbTable."
+							SET
+								kodePersyaratan 	= '".$data['kodePersyaratan']."',
+								noLegalitas 		= '".$data['nomorLegalitas']."',
+								tanggalLegalitas 	= '".$data['tanggalLegalitas']."',
+								changedBy 			= 'TESTSESSION',
+								changedDate 		= NOW()
+							WHERE
+								noRegistrasi 		= '".$noreg."' 
+							AND kodePersyaratan 	= '".$data['kodePersyaratan']."'";
+					}else{
+						$sql = 
+						"	INSERT INTO dplega_009_legalitas".$dumbTable."
+							(
+								noRegistrasi,
+								kodePersyaratan,
+								noLegalitas,
+								tanggalLegalitas,
+								createdBy
+							)
+							VALUES
+							(
+								'".$noreg."',
+								'".$data['kodePersyaratan']."',
+								'".$data['nomorLegalitas']."',
+								'".$data['tanggalLegalitas']."',
+								'TESTSESSION'
+							)
+						";
+					}
+
+					$result	  = mysqli_query($gate, $sql);
+					$eresult  = mysqli_error($gate);
+					if($result){	
+						$error	    = 0;
+						$resultType = "success";
+						$resultMsg  = "Input berhasil disimpan. ";
+
+						if(isset($data['fileState']) && $data['fileState'] == "remove"){
+							$sql 	= "
+								SELECT urlFile FROM dplega_009_legalitas".$dumbTable." 
+								WHERE noRegistrasi = '".$noreg."' AND kodePersyaratan = '".$data['kodePersyaratan']."'";
+					
+								$result = mysqli_query($gate, $sql);
+								if(mysqli_num_rows($result) > 0) {
+									while($row = mysqli_fetch_assoc($result)) {
+										if(file_exists("../img/legalitas/".$row['urlFile'])){
+											unlink("../img/legalitas/".$row['urlFile']);
+										}
+									}
+								}
+
+								$file_name = "berkas belum diunggah...";
+								$sql = "
+										UPDATE dplega_009_legalitas".$dumbTable." SET urlFile = '' 
+										WHERE noRegistrasi = '".$noreg."' AND kodePersyaratan = '".$data['kodePersyaratan']."'";			
+								$result = mysqli_query($gate, $sql);
+										
+						}else{
+							/*upload image*/
+							$validextensions = array("jpeg", "jpg", "png", "gif");
+							$temporary = explode(".", $_FILES["imageUrl"]["name"]);
+							$file_extension = end($temporary);
+							$file_name = $noreg."_".$data['kodePersyaratan']."_legalitas.".$file_extension;					
+							if (in_array($file_extension, $validextensions)) {						
+								if ($_FILES["imageUrl"]["error"] > 0)
+								{
+									$upload_message = $_FILES["imageUrl"];
+								}
+								else
+								{					
+									$sourcePath = $_FILES['imageUrl']['tmp_name']; // Storing source path of the file in a variable
+									$targetPath = "img/legalitas/".$file_name; // Target path where file is to be stored
+									if(move_uploaded_file($sourcePath,"../".$targetPath)){ /*Moving Uploaded file*/
+										$sql = "
+												UPDATE dplega_009_legalitas".$dumbTable." SET urlFile = '".$file_name."' 
+												WHERE noRegistrasi = '".$noreg."' AND kodePersyaratan = '".$data['kodePersyaratan']."'";			
+										$result = mysqli_query($gate, $sql);									
+									}								
+								}
+							}
+							/*upload end*/
+						}
+					}
+				}else{
+					//error state
+					$error		= 1;
+					$resultType = "danger";
+					$resultMsg	= "Terjadi kesalahan fatal, input gagal disimpan!";
+				}
+				
+				closeGate($gate);
+			}else{
+				//error state
+				$error		= 1;
+				$resultType = "danger";
+				$resultMsg	= "Terjadi kesalahan, tidak dapat terhubung ke server!";
+			}
+		}else{
+			//error state
+			$error		= 1;
+			$resultType = "danger";
+			$resultMsg	= "Terjadi kesalahan, mandatory tidak boleh kosong!";
+		}
+		
+		if($error == 1){
+			//error state
+			$resultList = array( "feedStatus" => "failed", "feedType" => $resultType, "feedMessage" => $resultMsg);
+		}else{
+			$resultList = array( "feedStatus" => "success", "feedType" => $resultType, "feedMessage" => $resultMsg, "feedId" => $file_name);
+		}
+		
+		/* result fetch */
+		$json = $resultList;
+		
+		return $json;
+	}
+	
+	function legalitasByNoreg($data){
 		/* initial condition */
 		$resultList = array();
 		$table 		= "";
@@ -1939,6 +2115,92 @@
 
 					$legalitas = array(
 								"noRegistrasi"   	=> $noreg,
+								"items" 			=> $record
+					);
+
+					unset($record);
+					$record = array();
+
+					closeGate($gate);
+
+					$resultList = array( "feedStatus" => "success", "feedMessage" => "Data ditemukan!", "feedData" => $legalitas);
+				}
+			}else{
+				//error state
+				$error		= 1;
+				$errorType  = "danger";
+				$errorMsg	= "Terjadi kesalahan, tidak dapat terhubung ke server!";
+			}
+		}else{
+			//error state
+			$error		= 1;
+			$errorType  = "danger";
+			$errorMsg	= "Terjadi kesalahan, tidak dapat terhubung ke server!";
+		}
+
+		if($error == 1){
+			//error state
+			$resultList = array( "feedStatus" => "failed", "feedType" => $errorType, "feedMessage" => $errorMsg);
+		}
+		
+		/* result fetch */
+		$json = $resultList;
+		
+		return $json;
+	}
+
+	function legalitasByBentukLembaga($data){
+		/* initial condition */
+		$resultList = array();
+		$table 		= "";
+		$field 		= array();
+		$rows		= 0;
+		$condition 	= "";
+		$orderBy	= "";
+		$error		= 0;
+		$resultType = "";
+		$resultMsg	= "";
+		$record    		= array(); 
+		$fetch 	   		= array();
+		$legalitas 	   	= array();
+
+		$kodeBentukLembaga 	= $data['refferences'];
+
+		/* open connection */ 
+		$gate = openGate();
+		if($gate){		
+			// connection = true
+			$sql = 	"
+				SELECT 
+					`kodePersyaratan`, 
+					`namaPersyaratan`
+				FROM
+					dplega_201_persyaratan
+				WHERE
+					kodeBentukLembaga = '".$kodeBentukLembaga."'
+			";
+
+			$result = mysqli_query($gate, $sql);
+			if($result){
+				if(mysqli_num_rows($result) > 0) {
+					// output data of each row 
+					while($row = mysqli_fetch_assoc($result)) {
+						$fetch = array (
+							"noRegistrasi" 		=> '',
+							"kodePersyaratan" 	=> $row['kodePersyaratan'],
+							"namaLegalitas" 	=> $row['namaPersyaratan'],
+							"noLegalitas" 		=> '',
+							"tanggalLegalitas" 	=> '',
+							"urlFile" 			=> ''
+						);
+
+						array_push($record, $fetch);
+						unset($fetch);
+						$fetch = array();
+					}
+
+					$legalitas = array(
+								"noRegistrasi"   	=> '',
 								"items" 			=> $record
 					);
 
