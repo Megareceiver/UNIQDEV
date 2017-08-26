@@ -88,7 +88,7 @@ function r_navigateTo(index, packet, access) {
 	}
 }
 
-function r_customCallBack(formType, group, target, recentId, formId){
+function r_customCallBack(formType, group, target, recentId, formId, pId){
 	var dataFec = null;
 	switch(group){
 		case 'f1' : //yama
@@ -106,6 +106,12 @@ function r_customCallBack(formType, group, target, recentId, formId){
 				break;
 				case 'f112' :
 					p_formHandler("f-sejarah-create", "updateData");
+					$("#" + formId + " [name=imageName]").html(recentId);
+				break;
+				case 'f113' :
+					p_formHandler(formId, "updateData");
+					$("#" + formId + " [name=p-id]").val(pId);
+					$("#" + formId + " [name=imageName]").html(recentId);
 				break;
 				case 'f114' :
 					p_formHandler("f-kepengurusan-create", "updateData");
@@ -150,6 +156,17 @@ function r_customCallBack(formType, group, target, recentId, formId){
 				break;
 				case 'f120' :
 					$("#" + formId + " [name=imageName]").html(recentId);
+				break;
+				case 'f121' :
+					dataFec = [{ 
+							'idData' 		: recentId, 
+							'noreg'	 		: $('#' + formId + ' input[name="noreg"]').val(), 
+							'bantuanDari'	: $('#' + formId + ' input[name="bantuanDari"]').val(), 
+							'tahun'			: $('#' + formId + ' input[name="tahun"]').val(),
+					}];
+					
+					r_f1SejarahBantuanDataGenerator(dataFec);
+					clearTargetFormNoreg(formId, $('#' + formId + ' input[name="noreg"]').val());
 				break;
 			}
 		break;

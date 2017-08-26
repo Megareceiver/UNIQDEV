@@ -107,7 +107,7 @@ function p_getData(group, target, keyword, refferences){
 	return data;
 }
 
-function p_removeData(group, target, pId){
+function p_removeData(group, target, pId, refferenceId){
 	var reStatus = null;
 
 	showNotification('info', 'waiting', 'sedang memproses...', false);
@@ -116,9 +116,8 @@ function p_removeData(group, target, pId){
 		type: 'post',
 		dataType: 'json',
 		async: false,
-		data: { pId : pId },
+		data: { pId : pId, refferenceId: refferenceId },
 		success: function(data){
-			console.log(data);
 			reStatus = data.feedStatus;
 			hideNotification('waiting');
 			showNotification(data.feedType, 'add', data.feedMessage);
@@ -141,11 +140,11 @@ function p_formHandler(formId, type){
 			processData:false,        // To send DOMDocument or non processed data file it is set to false
 			success: function(data)   // A function to be called if request succeeds
 			{
-				console.log(data);
 				hideNotification('waiting');
 				showNotification(data.feedType, 'add', data.feedMessage);
 				if(data.feedStatus == "success"){
-					r_customCallBack(type, $("#" + formId).attr('f-group'), $("#" + formId).attr('f-target'), data.feedId, formId);
+					if(data.feedPId == undefined){ data.feedPId = null }
+					r_customCallBack(type, $("#" + formId).attr('f-group'), $("#" + formId).attr('f-target'), data.feedId, formId, data.feedPId);
 				}
 			}
 		});
@@ -165,7 +164,6 @@ function p_logIn(formId){
 			processData:false,        // To send DOMDocument or non processed data file it is set to false
 			success: function(data)   // A function to be called if request succeeds
 			{
-				console.log(data);
 				hideNotification('waiting');
 				if(data.feedStatus == "success"){
 					if(data.userLevel == 1){

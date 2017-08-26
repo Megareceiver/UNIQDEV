@@ -561,6 +561,15 @@ function r_f1FormKelembagaan(packet){
 		//-- get data koleksi
 		dataKoleksi = p_getData('f1', 'f117','');
 
+		//option list 
+		optionBatch = [
+			{'selector': 'edit-card', 			'icon': 'pencil', 'label': 'Ubah data'},
+			{'selector': 'delete-card', 		'icon': 'trash',  'label': 'Hapus data'},
+		]; 
+
+		//loop setup
+		maxForm = 4;
+
 		//--open
 		head	= 
 		'<div class="row head">' +
@@ -796,9 +805,8 @@ function r_f1FormKelembagaan(packet){
 				'</div>' +
 				'<div class="select-box">' +
 					'<select name="sertifikasi" tabindex="6">' +
-						'<option value="" selected>Sertifikasi - belum</option>' +
-						'<option value="Sudah" >Sudah</option>' +
-						'<option value="Belum" >Belum</option>' +
+						'<option value="Belum" selected>Sertifikasi - belum</option>' +
+						'<option value="Sudah" >Sertifikasi - Sudah</option>' +
 					'</select>' +
 				'</div>' +
 				'<div class="hi-box">' +
@@ -842,27 +850,26 @@ function r_f1FormKelembagaan(packet){
 				'</div>' +
 				'<div class="select-box">' +
 					'<select name="saranaPrasarana" tabindex="7">' +
-						'<option value="" selected>Sarana / Prasarana - Tidak ada</option>' +
-						'<option value="Ada" >Ada</option>' +
-						'<option value="Tidak ada" >Tidak ada</option>' +
+						'<option value="Tidak ada" selected>Sarana / Prasarana - Tidak ada</option>' +
+						'<option value="Ada" >Sarana / Prasarana - Ada</option>' +
 					'</select>' +
 				'</div>' +
-				'<div class="empty-box">&nbsp;</div>' +
 				'<div class="input-box">' +
 					'<p>Struktur Organisasi</p>' +
 				'</div>' +
 				'<div class="input-box">' +
 					'<div class="icon-box both">' +
-						'<p name="picName"></p>' +
 						'<label class="browser-box" id="s-org">' +
-							'<p class="placeholder">berkas belum diunggah...</p>' +
-							'<input name="imageUrl" type="file" tabindex="5" />' +
+							'<p class="placeholder" name="imageName">berkas belum diunggah...</p>' +
+							'<input name="imageUrl" accept="image/*" type="file" tabindex="5" />' +
+							'<input browser-state="fileState" name="fileState" type="hidden" tabindex="5" value="add" />' +
 						'</label>' +
 						'<button type="button" browser-id="s-org" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
 						'<span class="left fa fa-paperclip text-purple"></span>' +
 					'</div>' +
 				'</div>' +
-			'</div>';
+			'</div>' +
+			'<div class="clearfix"></div>';
 			
 			//right
 			body = body +
@@ -872,16 +879,14 @@ function r_f1FormKelembagaan(packet){
 				'</div>' +
 				'<div class="select-box">' +
 					'<select name="sensus" tabindex="8">' +
-						'<option value="" selected>Sensus - belum</option>' +
-						'<option value="Sudah" >Sudah</option>' +
-						'<option value="Belum" >Belum</option>' +
+						'<option value="Belum" selected>Sensus - belum</option>' +
+						'<option value="Sensus - Sudah" >Sudah</option>' +
 					'</select>' +
 				'</div>' +
 				'<div class="select-box">' +
 					'<select name="bantuan" tabindex="8">' +
-						'<option value="" selected>Bantuan pemerintah - belum</option>' +
-						'<option value="Sudah" >Sudah</option>' +
-						'<option value="Belum" >Belum</option>' +
+						'<option value="Belum" selected>Bantuan pemerintah - belum</option>' +
+						'<option value="Sudah" >Bantuan pemerintah - Sudah</option>' +
 					'</select>' +
 				'</div>' +
 				'<div class="select-box">' +
@@ -916,40 +921,41 @@ function r_f1FormKelembagaan(packet){
 		//--sejarah ext
 
 		body = body + 
-		'<form id="f-bantuan-create" f-group="f1" f-target="">'+
-		'<div class="col-md-8 col-md-offset-2 tab-container" tab-contentIndex="3">';
+		'<form id="f-bantuan-create" f-group="f1" f-target="f121">'+
+			'<div class="col-md-8 col-md-offset-2 tab-container" id="f-bantuan-list" tab-contentIndex="3">';
+		
 		body = body +
 		'<div class="cards">' +
 			'<div class="cards-header">' +
-				'<h4>Bantuan</h4>' +
-				'<p class="offset">daftar bantuan yang telah diterima.</p>' +
+				'<h4>Riwayat bantuan</h4>' +
+				'<p class="offset">riwayat bantuan yang telah diterima oleh lembaga.</p>' +
 				'<div class="btn-collapse right">' +
-					'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
+					'<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
 					'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
 				'</div>' +
 			'</div>' +
 		'</div>' +
 		'<div class="cards flush">' +
-			// '<form id="f-koleksi">' +
-		'<div class="row default">';
+			'<div class="row default">';
 		
 		//left
 		body = body +
 		'<div class="col-md-6">' +
 			'<div class="input-box">' +
-				'<input name="noreg" placeholder="" tabindex="13" type="hidden" value="" />' +
-				'<input name="bantuanDari" placeholder="bantuan dari" tabindex="13" type="text" value="" />' +
+				'<input name="noreg" placeholder="" tabindex="8" type="hidden" value="" />' +
+				'<input name="bantuanDari" placeholder="Pemberi bantuan (*)" tabindex="13" type="text" value="" />' +
+			'</div>' +
+			'<div class="input-box">' +
+				'<input name="tahun" placeholder="Tahun (*)" tabindex="8" type="text" maxlength="4" value="" />' +
 			'</div>' +
 		'</div>';
 		
-		//center		
 		//right
 		body = body +
 		'<div class="col-md-6">' +
-			'<div class="input-box">' +
-				'<input name="tahun" placeholder="Tahun" tabindex="13" type="text" value="" />' +
+			'<div class="input-box rows-2">' +
+				'<textarea name="deskripsi" placeholder="Deskripsi bantuan" class="rows-2" tabindex="8" type="text"></textarea>' +
 			'</div>' +
-			'<div class="space-box"></div>' +
 		'</div>';
 		
 		body = body + '</div></form></div>';
@@ -976,135 +982,45 @@ function r_f1FormKelembagaan(packet){
 		
 		body = body + '<div class="col-md-8 col-md-offset-2 tab-container" tab-contentIndex="3">';
 		
-		//left
-		body = body +
-		'<form id="f-sarana-create" f-group = "f1" f-target = "f113">'+
-		'<input name="noreg" placeholder="" tabindex="11" type="hidden" value="">' +
-		'<div class="col-md-6">' +
-			'<div class="row default">' +
-				'<div class="cards">' +
-					'<div class="cards-header">' +
-						'<h5>&nbsp;</h5>' +
-						'<div class="btn-collapse right">' +
-							'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
-							'<button name="btn" class="clear" type="submit" value="1"><span class="fa fa-check-circle-o"></span></button>' +
-						'</div>' +
-					'</div>' +
-					'<div class="picture-box small">' +
-						'<img viewer-id="v-sarana1" class="pic-default" src="img/sources/picture.png" />' +
-					'</div>' +
-					'<div class="input-box">' +
-						'<input name="keterangan1" placeholder="Keterangan" tabindex="11" type="text" value="" />' +
-					'</div>' +
-					'<div class="input-box">' +
-						'<div class="icon-box both">' +
-							'<label class="browser-box" id="v-sarana1">' +
-								'<p class="placeholder">berkas belum diunggah...</p>' +
-								'<input preview-id="v-sarana1" name="imageUrl1" type="file" tabindex="5" />' +
-							'</label>' +
-							'<button type="button" browser-id="v-sarana1" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
-							'<span class="left fa fa-paperclip text-purple"></span>' +
-						'</div>' +
-					'</div>' +
-				'</div>' +
-			'</div>' +
-		'</div>';
-		
-		//center
-		body = body + 
-		'<div class="col-md-6">' +
-			'<div class="row default">' +
-				'<div class="cards">' +
-					'<div class="cards-header">' +
-						'<h5>&nbsp;</h5>' +
-						'<div class="btn-collapse right">' +
-							'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
-							'<button name="btn" class="clear" type="submit" value="2"><span class="fa fa-check-circle-o"></span></button>' +
-						'</div>' +
-					'</div>' +
-					'<div class="picture-box small">' +
-						'<img class="pic-default" src="img/sources/picture.png" />' +
-					'</div>' +
-					'<div class="input-box">' +
-						'<input name="keterangan2" placeholder="Keterangan" tabindex="11" type="text" value="" />' +
-					'</div>' +
-					'<div class="input-box">' +
-						'<div class="icon-box both">' +
-							'<label class="browser-box" id="v-sarana2">' +
-								'<p class="placeholder">berkas belum diunggah...</p>' +
-								'<input name="imageUrl2" type="file" tabindex="5" />' +
-							'</label>' +
-							'<button type="button" browser-id="v-sarana2" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
-							'<span class="left fa fa-paperclip text-purple"></span>' +
+		//form render
+		for(loop=0; loop<maxForm; loop++){
+			body = body +
+			'<form id="f-sarana-create-' + loop + '" f-group = "f1" f-target = "f113">'+
+				'<div class="col-md-6">' +
+					'<div class="row default">' +
+						'<div class="cards">' +
+							'<div class="cards-header">' +
+								'<h5>&nbsp;</h5>' +
+								'<div class="btn-collapse right">' +
+									'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
+									'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
+								'</div>' +
+							'</div>' +
+							'<div class="picture-box small">' +
+								'<img viewer-id="v-sarana' + loop + '" class="pic-default" src="img/sources/picture.png" />' +
+							'</div>' +
+							'<div class="input-box">' +
+								'<input name="noreg" type="hidden" value="">' +
+								'<input name="p-id" type="hidden" value="">' +
+								'<input name="keterangan" placeholder="Keterangan (*)" tabindex="5" type="text" value="" />' +
+							'</div>' +
+							'<div class="input-box">' +
+								'<div class="icon-box both">' +
+									'<label class="browser-box" id="v-sarana' + loop + '">' +
+										'<p class="placeholder" name="imageName">berkas belum diunggah...</p>' +
+										'<input preview-id="v-sarana' + loop + '" name="imageUrl" accept="image/*" type="file" tabindex="5" />' +
+										'<input browser-state="fileState" name="fileState" type="hidden" tabindex="5" value="add" />' +
+									'</label>' +
+									'<button type="button" browser-id="v-sarana' + loop + '" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
+									'<span class="left fa fa-paperclip text-purple"></span>' +
+								'</div>' +
+							'</div>' +
 						'</div>' +
 					'</div>' +
 				'</div>' +
-			'</div>' +
-		'</div>';
-		
-		//center
-		body = body + 
-		'<div class="col-md-6">' +
-			'<div class="row default">' +
-				'<div class="cards">' +
-					'<div class="cards-header">' +
-						'<h5>&nbsp;</h5>' +
-						'<div class="btn-collapse right">' +
-							'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
-							'<button name="btn" class="clear" type="submit" value="3"><span class="fa fa-check-circle-o"></span></button>' +
-						'</div>' +
-					'</div>' +
-					'<div class="picture-box small">' +
-						'<img class="pic-default" src="img/sources/picture.png" />' +
-					'</div>' +
-					'<div class="input-box">' +
-						'<input name="keterangan3" placeholder="Keterangan" tabindex="11" type="text" value="" />' +
-					'</div>' +
-					'<div class="input-box">' +
-						'<div class="icon-box both">' +
-							'<label class="browser-box" id="v-sarana3">' +
-								'<p class="placeholder">berkas belum diunggah...</p>' +
-								'<input name="imageUrl3" type="file" tabindex="5" />' +
-							'</label>' +
-							'<button type="button" browser-id="v-sarana3" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
-							'<span class="left fa fa-paperclip text-purple"></span>' +
-						'</div>' +
-					'</div>' +
-				'</div>' +
-			'</div>' +
-		'</div>';
-		
-		//right
-		body = body + 
-		'<div class="col-md-6">' +
-			'<div class="row default">' +
-				'<div class="cards">' +
-					'<div class="cards-header">' +
-						'<h5>&nbsp;</h5>' +
-						'<div class="btn-collapse right">' +
-							'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
-							'<button name="btn" class="clear" type="submit" value="4"><span class="fa fa-check-circle-o"></span></button>' +
-						'</div>' +
-					'</div>' +
-					'<div class="picture-box small">' +
-						'<img class="pic-default" src="img/sources/picture.png" />' +
-					'</div>' +
-					'<div class="input-box">' +
-						'<input name="keterangan4" placeholder="Keterangan" tabindex="11" type="text" value="" />' +
-					'</div>' +
-					'<div class="input-box">' +
-						'<div class="icon-box both">' +
-							'<label class="browser-box" id="v-sarana4">' +
-								'<p class="placeholder">berkas belum diunggah...</p>' +
-								'<input name="imageUrl4" type="file" tabindex="5" />' +
-							'</label>' +
-							'<button type="button" browser-id="v-sarana4" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
-							'<span class="left fa fa-paperclip text-purple"></span>' +
-						'</div>' +
-					'</div>' +
-				'</div>' +
-			'</div>' +
-		'</div>'+'</form>';
+			'</form>';
+		}
+
 		body = body + '</div>';
 		body = body + '<div class="clearfix tab-container" tab-contentIndex="3">&nbsp;</div>';
 		
@@ -1659,13 +1575,17 @@ function r_f1FormKelembagaan(packet){
 		//form reactor
 		p_formHandler("f-kelembagaan-create" , "addData");
 		p_formHandler("f-sejarah-create" , "addData");
-		p_formHandler("f-sarana-create" , "addData");
+		p_formHandler("f-bantuan-create" , "addData");
+		for(loop=0; loop<maxForm; loop++){
+			p_formHandler("f-sarana-create-" + loop , "addData");
+		}
 		p_formHandler("f-kepengurusan-create" , "addData");
 		p_formHandler("f-koleksi-create" , "addData");
 		p_formHandler("f-prestasi-create" , "addData");
 
 		//generate data for editing
 		//r_f1FormKelembagaanDataGenerator(packet);		
+		$("input[name=noreg]").val('00030200110');
 	});
 }
 
@@ -1776,6 +1696,9 @@ function r_f1FormKelembagaanDataGenerator(packet){
 	
 }
 
+
+//F1 LEGALITAS
+//=====================================
 function r_f1legaitasGenerator(dataFecth){
 	var genHtml 	= "";
 	for(var loop=0; loop<dataFecth.items.length; loop++){
@@ -1820,6 +1743,80 @@ function r_f1legaitasGenerator(dataFecth){
 	for(var loop=0; loop<dataFecth.items.length; loop++){
 		p_formHandler('f-legalitas-create-' + loop,'addData');
 	}
+}
+
+//F1 SEJARAH
+//=====================================
+function r_f1SejarahBantuanDataGenerator(data){
+	var genHtml = "";
+	if(data != null){
+		//render
+		for(counter = 0; counter < data.length; counter++){
+			genHtml = genHtml +
+			'<div id=bantuan-'+ data[0].idData +' class="cards">' +
+				'<div class="row default">' +
+					'<div class="col-xs-2">' +
+						'<div class="list-box">' +
+							'<div class="list-icon bg-red"><span class="fa fa-handshake-o"></span></div>' +
+							'<p class="list-text">' + data[0].tahun + '</p>' +
+						'</div>' +
+					'</div>' +
+					'<div class="col-xs-10">' +
+						'<div class="list-box clear">' +
+							'<p class="list-text">' + data[0].bantuanDari + '</p>' +
+							'<div class="list-button click-option"' + 
+								'p-label		="' + data[0].bantuanDari + '"' + 
+								'p-id			="' + data[0].idData + '"' +
+								'p-referencesKey="' + data[0].noreg + '"' +
+								'p-group		="f1"' + 
+								'p-target		="f121"' +
+								'p-container	="bantuan-' + data[0].idData + '">' +
+								'<span class="fa fa-ellipsis-v"></span>' +
+							'</div>' +
+						'</div>' +
+					'</div>' +
+					'<div class="clearfix"></div>' +
+				'</div>' 
+			'</div>';
+		}
+	} else {
+		genHtml = genHtml +
+		'<div class="cards">' +
+			'<div class="cards-header">' +
+				'<p class="fixed offset text-black">Data tidak ditemukan.</p>' +
+			'</div>' +
+		'</div>';
+	}	
+
+
+	$("#f-bantuan-list").append(genHtml);
+
+	//reactor
+	$(".click-option").unbind().on("click", function(){ 
+		//packet session
+		clearPacket();
+		pGroup 		= $(this).attr('p-group');
+		pTarget		= $(this).attr('p-target')
+		pId			= $(this).attr('p-id');
+		pLabel		= $(this).attr('p-label');
+		pContainer		= $(this).attr('p-container');
+		pReferences		= $(this).attr('p-references');
+		pReferencesKey	= $(this).attr('p-referencesKey');
+		showOptionList(); 
+		
+		//-- option activator
+		$("#delete-card").unbind().on("click", function(){ 
+			hideOptionList(); 
+			showOptionConfirm('delete');
+			$(".option-yes").unbind().on("click", function(){ 
+				hideOptionList(); 
+				if(p_removeData(pGroup, pTarget, pId, pReferencesKey) == 'success'){ 
+					$('#' + pContainer).remove(); 
+					clearPacket();
+				}; 
+			});
+		});
+	});
 }
 
 //F1 VERIFIKASI LEMBAGA

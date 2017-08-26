@@ -123,6 +123,12 @@ function clearTargetForm(formId){
 	$("#" + formId + "* input, * select, * textarea").val('');
 }
 
+function clearTargetFormNoreg(formId, noreg){
+	$("#" + formId + "* input, * select, * textarea").removeAttr('readonly');
+	$("#" + formId + "* input, * select, * textarea").val('');
+	$("#" + formId + " input[name=noreg]").val(noreg);
+}
+
 
 /* notification */
 /* ============================================================ */
