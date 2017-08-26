@@ -1776,34 +1776,32 @@
 				";
 
 				$result	  = mysqli_query($gate, $sql);
-				$eresult  = mysqli_error($gate);
-				$idRecent = $idTemp;
-					if($result){	
-						$error	    = 0;
-						$resultType = "success";
-						$resultMsg  = "Input berhasil disimpan. ";
+				if($result){	
+					$error	    = 0;
+					$resultType = "success";
+					$resultMsg  = "Input berhasil disimpan. ";
 
-						/*upload image*/
-						$validextensions = array("jpeg", "jpg", "png", "gif");
-						$temporary = explode(".", $_FILES["imageUrl"]["name"]);
-						$file_extension = end($temporary);
-						$file_name = $idTemp."_logo.".$file_extension;					
-						if (in_array($file_extension, $validextensions)) {						
-							if ($_FILES["imageUrl"]["error"] > 0)
-							{
-								$upload_message = $_FILES["imageUrl"];
-							}
-							else
-							{					
-								$sourcePath = $_FILES['imageUrl']['tmp_name']; // Storing source path of the file in a variable
-								$targetPath = "img/logo/".$file_name; // Target path where file is to be stored
-								if(move_uploaded_file($sourcePath,"../".$targetPath)){ /*Moving Uploaded file*/
-									$sql = "UPDATE dplega_000_lembaga_temp SET urlGambarLogo = '".$targetPath."' WHERE noRegistrasi = '".$idTemp."'";			
-									$result = mysqli_query($gate, $sql);									
-								}								
-							}
+					/*upload image*/
+					$validextensions = array("jpeg", "jpg", "png", "gif");
+					$temporary = explode(".", $_FILES["imageUrl"]["name"]);
+					$file_extension = end($temporary);
+					$file_name = $idTemp."_logo.".$file_extension;					
+					if (in_array($file_extension, $validextensions)) {						
+						if ($_FILES["imageUrl"]["error"] > 0)
+						{
+							$upload_message = $_FILES["imageUrl"];
 						}
-						/*upload end*/
+						else
+						{					
+							$sourcePath = $_FILES['imageUrl']['tmp_name']; // Storing source path of the file in a variable
+							$targetPath = "img/logo/".$file_name; // Target path where file is to be stored
+							if(move_uploaded_file($sourcePath,"../".$targetPath)){ /*Moving Uploaded file*/
+								$sql = "UPDATE dplega_000_lembaga_temp SET urlGambarLogo = '".$file_name."' WHERE noRegistrasi = '".$idTemp."'";			
+								$result = mysqli_query($gate, $sql);									
+							}								
+						}
+					}
+					/*upload end*/
 					
 				}else{
 					//error state
@@ -1830,7 +1828,7 @@
 			//error state
 			$resultList = array( "feedStatus" => "failed", "feedType" => $resultType, "feedMessage" => $resultMsg);
 		}else{
-			$resultList = array( "feedStatus" => "success", "feedType" => $resultType, "feedMessage" => $resultMsg, "feedId" => $idRecent);
+			$resultList = array( "feedStatus" => "success", "feedType" => $resultType, "feedMessage" => $resultMsg, "feedId" => $file_name);
 		}
 		
 		/* result fetch */
@@ -2366,28 +2364,47 @@
 		$counter	= "";
 		$idRecent	= "";
 		$idTemp		= "";
+		$dumbTable  = "";
+		$noreg		= "";
+		$file_name	= "";
 		
-		/* validation 
-		if($target == "f411"){
-			if(
-				!isset($data['kode']) || $data['kode']==""
-				|| !isset($data['nama']) || $data['nama']==""
-			){ $error = 1; }
-		}elseif($target == "f412" || $target == "f413" || $target == "f414"){
-			if(
-				!isset($data['kode']) || $data['kode']==""
-				|| !isset($data['nama']) || $data['nama']==""
-				|| !isset($data['referensi']) || $data['referensi']==""
-			){ $error = 1; }
-		}*/
+		if( 
+			   $data['noreg'] == ""
+			|| $data['nama'] == ""
+			|| $data['alamat'] == ""
+			|| $data['rt'] == "" || $data['rw'] == ""
+			|| $data['kelurahan'] == "" || $data['kecamatan'] == "" || $data['wilayah'] == "" || $data['provinsi'] == ""
+			|| $data['telp'] == ""
+			|| $data['email'] == ""
+			|| $data['bentukLembaga'] == ""
+		){ $error = 1; }
 
 		if($error != 1){
 			/* open connection */
 			$gate = openGate();
 			if($gate){
-				// connection = true
+			// connection = true
+				//checking section
+				$noreg	= $data['noreg'];
+				$sql 	= " SELECT noRegistrasi FROM dplega_000_lembaga WHERE noRegistrasi = '".$noreg."'";
+				$result = mysqli_query($gate, $sql);
+				if(mysqli_num_rows($result) > 0) {
+					$dumbTable = "";
+				}else{
+					$sql 	= " SELECT noRegistrasi FROM dplega_000_lembaga_temp WHERE noRegistrasi = '".$noreg."'";
+					$result = mysqli_query($gate, $sql);
+					if(mysqli_num_rows($result) > 0) {
+						$dumbTable = "_temp";
+					}else{
+						//error state
+						$error		= 1;
+						$errorType  = "danger";
+						$errorMsg	= "Terjadi kesalahan, data tidak dikenal!";
+					}
+				}
+
 				$sql = 
-				"	UPDATE dplega_000_lembaga_temp
+				"	UPDATE dplega_000_lembaga".$dumbTable."
 					SET
 						nama 				= '".$data['nama']."',
 						alamat 				= '".$data['alamat']."',
@@ -2397,7 +2414,8 @@
 						kodeKecamatan 		= '".$data['kodeKecamatan']."',
 						kodeWilayah 		= '".$data['kodeWilayah']."',
 						kodeProvinsi 		= '".$data['kodeProvinsi']."',
-						koordinatGPS 		= '',
+						langitude 			= '".$data['langitude']."',
+						latitude 			= '".$data['latitude']."',
 						noTelp 				= '".$data['telp']."',
 						email 				= '".$data['email']."',
 						mediaSosial 		= '".$data['medsos']."',
@@ -2409,19 +2427,39 @@
 						misiLembaga 		= '".$data['misi']."',
 						organisasiAfiliasi 	= '".$data['afiliasi']."',
 						catatanLain 		= '".$data['catatan']."',
-						changedBy 			= 'TESTSESSION'
+						changedBy 			= 'TESTSESSION',
+						changedDate			= NOW()
 					
 					WHERE
 						noRegistrasi = '".$data['noreg']."'
 				";
 				$result	  = mysqli_query($gate, $sql);
-				$eresult  = mysqli_error($gate);
-				$idRecent = $data['noreg'];
 				if($result){	
 					$error	    = 0;
 					$resultType = "success";
 					$resultMsg  = "data berhasil diubah.";
 
+					if(isset($data['fileState']) && $data['fileState'] == "remove"){
+						$sql 	= "
+							SELECT urlGambarLogo FROM dplega_000_lembaga".$dumbTable." 
+							WHERE noRegistrasi = '".$noreg."'";
+				
+							$result = mysqli_query($gate, $sql);
+							if(mysqli_num_rows($result) > 0) {
+								while($row = mysqli_fetch_assoc($result)) {
+									if(file_exists("../img/logo/".$row['urlGambarLogo'])){
+										unlink("../img/logo/".$row['urlGambarLogo']);
+									}
+								}
+							}
+
+							$file_name = "berkas belum diunggah...";
+							$sql = "
+									UPDATE dplega_000_lembaga".$dumbTable." SET urlGambarLogo = '' 
+									WHERE noRegistrasi = '".$noreg."'";			
+							$result = mysqli_query($gate, $sql);
+
+					}else{
 					/*upload image*/
 						$validextensions = array("jpeg", "jpg", "png", "gif");
 						$temporary = explode(".", $_FILES["imageUrl"]["name"]);
@@ -2437,12 +2475,13 @@
 								$sourcePath = $_FILES['imageUrl']['tmp_name']; // Storing source path of the file in a variable
 								$targetPath = "img/logo/".$file_name; // Target path where file is to be stored
 								if(move_uploaded_file($sourcePath,"../".$targetPath)){ /*Moving Uploaded file*/
-									$sql = "UPDATE dplega_000_lembaga_temp SET urlGambarLogo = '".$targetPath."' WHERE noRegistrasi = '".$data['noreg']."'";			
+									$sql = "UPDATE dplega_000_lembaga_temp SET urlGambarLogo = '".$file_name."' WHERE noRegistrasi = '".$data['noreg']."'";			
 									$result = mysqli_query($gate, $sql);									
 								}								
 							}
 						}
-						/*upload end*/		
+						/*upload end*/
+					}
 				}else{
 					//error state
 					$error		= 1;
@@ -2457,6 +2496,7 @@
 				$resultType = "danger";
 				$resultMsg	= "Terjadi kesalahan, tidak dapat terhubung ke server!";
 			}
+
 		}else{
 			//error state
 			$error		= 1;
@@ -2468,7 +2508,7 @@
 			//error state
 			$resultList = array( "feedStatus" => "failed", "feedType" => $resultType, "feedMessage" => $resultMsg);
 		}else{
-			$resultList = array( "feedStatus" => "success", "feedType" => $resultType, "feedMessage" => $resultMsg, "feedId" => $idRecent);
+			$resultList = array( "feedStatus" => "success", "feedType" => $resultType, "feedMessage" => $resultMsg, "feedId" => $file_name);
 		}
 		
 		/* result fetch */

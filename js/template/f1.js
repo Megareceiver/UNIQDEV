@@ -715,8 +715,9 @@ function r_f1FormKelembagaan(packet){
 				'<div class="input-box">' +
 					'<div class="icon-box both">' +
 						'<label class="browser-box" id="v-logo">' +
-							'<p name="v-logoName" class="placeholder">berkas belum diunggah...</p>' +
+							'<p class="placeholder" name="imageName">berkas belum diunggah...</p>' +
 							'<input preview-id="v-logo" name="imageUrl" type="file" accept="image/*" tabindex="5" />' +
+							'<input browser-state="fileState" name="fileState" type="hidden" tabindex="1" value="add" />' +
 						'</label>' +
 						'<button type="button" browser-id="v-logo" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
 						'<span class="left fa fa-paperclip text-purple"></span>' +
