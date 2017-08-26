@@ -3903,58 +3903,77 @@
 		$counter	= "";
 		$idRecent	= "";
 		$idTemp		= "";
+		$dumbTable  = "";
+		$noreg		= "";
 		
-		/* validation 
-		if($target == "f411"){
-			if(
-				!isset($data['kode']) || $data['kode']==""
-				|| !isset($data['nama']) || $data['nama']==""
-			){ $error = 1; }
-		}elseif($target == "f412" || $target == "f413" || $target == "f414"){
-			if(
-				!isset($data['kode']) || $data['kode']==""
-				|| !isset($data['nama']) || $data['nama']==""
-				|| !isset($data['referensi']) || $data['referensi']==""
-			){ $error = 1; }
-		}*/
-			if($error != 1){
+		/* validation */
+		if(
+			!isset($data['noreg']) || $data['noreg']=="" ||
+			!isset($data['judulKoleksi']) || $data['judulKoleksi']=="" ||
+			!isset($data['jenisKoleksi']) || $data['jenisKoleksi']==""
+		){ $error = 1; }
+
+		if($error != 1){
 			/* open connection */
-				$gate = openGate();
-				if($gate){
-				// connection = true
-					if($data['noreg'] != ''){
-						$sql = " INSERT INTO dplega_005_koleksi_temp
-							(
-								noRegistrasi,
-								jenisKoleksi,
-								judulKoleksi,
-								deskripsi,
-								createdBy
-							)
-							VALUES
-							(
-								'".$data['noreg']."',
-								'".$data['jenisKoleksi']."',
-								'".$data['judulKoleksi']."',
-								'".$data['deskripsi']."',
-								'TESTSESSION'
-							)
-						";
+			$gate = openGate();
+			if($gate){
+			// connection = true
+				//checking section
+				$noreg	= $data['noreg'];
+				$sql 	= " SELECT noRegistrasi FROM dplega_000_lembaga WHERE noRegistrasi = '".$noreg."'";
+				$result = mysqli_query($gate, $sql);
+				if(mysqli_num_rows($result) > 0) {
+					$dumbTable = "";
+				}else{
+					$sql 	= " SELECT noRegistrasi FROM dplega_000_lembaga_temp WHERE noRegistrasi = '".$noreg."'";
+					$result = mysqli_query($gate, $sql);
+					if(mysqli_num_rows($result) > 0) {
+						$dumbTable = "_temp";
 					}else{
-						$sql = 'error';
+						//error state
+						$error		= 1;
+						$errorType  = "danger";
+						$errorMsg	= "Terjadi kesalahan, data tidak dikenal!";
 					}
-				$result	  = mysqli_query($gate, $sql);
-				$eresult  = mysqli_error($gate);
-				$idRecent = $data["noreg"];
-				if($result){	
-					$error	    = 0;
-					$resultType = "success";
-					$resultMsg  = "Input berhasil disimpan.";
+				}
+
+				if($error != 1){
+					$sql = " INSERT INTO dplega_005_koleksi".$dumbTable."
+						(
+							noRegistrasi,
+							jenisKoleksi,
+							judulKoleksi,
+							deskripsi,
+							createdBy
+						)
+						VALUES
+						(
+							'".$data['noreg']."',
+							'".$data['jenisKoleksi']."',
+							'".$data['judulKoleksi']."',
+							'".$data['deskripsi']."',
+							'TESTSESSION'
+						)
+					";
+				
+					$result	  = mysqli_query($gate, $sql);
+					$idRecent = mysqli_insert_id($gate);
+					if($result){	
+						$error	    = 0;
+						$resultType = "success";
+						$resultMsg  = "Input berhasil disimpan.";
+					}else{
+						//error state
+						$error		= 1;
+						$resultType = "danger";
+						$resultMsg	= "Terjadi kesalahan fatal, input gagal disimpan! ".$eresult;
+					}
+
 				}else{
 					//error state
 					$error		= 1;
 					$resultType = "danger";
-					$resultMsg	= "Terjadi kesalahan fatal, input gagal disimpan! ".$eresult;
+					$resultMsg	= "Terjadi kesalahan fatal, tidak dapat mengenali data!";
 				}
 				
 				closeGate($gate);
@@ -3996,32 +4015,59 @@
 		$resultType = "";
 		$resultMsg	= "";
 		$counter	= "";
-		
+		$dumbTable  = "";
+		$noreg 	  	= "";
+
 		/* validation */
-		if(	$data['pId']!="")
+		if(	
+			   isset($data['pId']) && $data['pId'] != "" 
+			&& isset($data['refferenceId']) && $data['refferenceId'] != "")
 		{
 			
 			/* open connection */ 
 			$gate = openGate();
 			if($gate){		
 				// connection = true
-				$sql = "";
-
-				$sql = "DELETE FROM dplega_005_koleksi_temp WHERE idData ='".$data['pId']."'";
-				
-					
+				//checking section
+				$noreg  = $data['refferenceId'];
+				$sql 	= " SELECT noRegistrasi FROM dplega_000_lembaga WHERE noRegistrasi = '".$noreg."'";
 				$result = mysqli_query($gate, $sql);
-				if($result){	
-					$error	    = 0;
-					$resultType = "success";
-					$resultMsg  = "data berhasil dihapus.";		
+				if(mysqli_num_rows($result) > 0) {
+					$dumbTable = "";
+				}else{
+					$sql 	= " SELECT noRegistrasi FROM dplega_000_lembaga_temp WHERE noRegistrasi = '".$noreg."'";
+					$result = mysqli_query($gate, $sql);
+					if(mysqli_num_rows($result) > 0) {
+						$dumbTable = "_temp";
+					}else{
+						//error state
+						$error		= 1;
+						$errorType  = "danger";
+						$errorMsg	= "Terjadi kesalahan, data tidak dikenal!";
+					}
+				}
+
+				if($error != 1){
+					$sql = "DELETE FROM dplega_005_koleksi".$dumbTable." WHERE idData ='".$data['pId']."' AND noRegistrasi = '".$noreg."'";
+					
+					$result = mysqli_query($gate, $sql);
+					if($result){	
+						$error	    = 0;
+						$resultType = "success";
+						$resultMsg  = "data berhasil dihapus.";		
+					}else{
+						//error state
+						$error		= 1;
+						$resultType = "danger";
+						$resultMsg	= "Terjadi kesalahan fatal, data gagal dihapus! ";
+					}
 				}else{
 					//error state
 					$error		= 1;
 					$resultType = "danger";
-					$resultMsg	= "Terjadi kesalahan fatal, data gagal dihapus! ";
+					$resultMsg	= "Terjadi kesalahan, tidak dapat mengenali data!";
 				}
-				
+
 				closeGate($gate);
 			}else{
 				//error state
@@ -4146,54 +4192,72 @@
 		$counter	= "";
 		$idRecent	= "";
 		$idTemp		= "";
+		$dumbTable  = "";
+		$noreg		= "";
 		
-		/* validation 
-		if($target == "f411"){
-			if(
-				!isset($data['kode']) || $data['kode']==""
-				|| !isset($data['nama']) || $data['nama']==""
-			){ $error = 1; }
-		}elseif($target == "f412" || $target == "f413" || $target == "f414"){
-			if(
-				!isset($data['kode']) || $data['kode']==""
-				|| !isset($data['nama']) || $data['nama']==""
-				|| !isset($data['referensi']) || $data['referensi']==""
-			){ $error = 1; }
-		}*/
-			if($error != 1){
+		/* validation */
+		if(
+			!isset($data['noreg']) || $data['noreg']=="" ||
+			!isset($data['deskripsi']) || $data['deskripsi']==""
+		){ $error = 1; }
+
+		if($error != 1){
 			/* open connection */
-				$gate = openGate();
-				if($gate){
-				// connection = true
-					if($data['noreg'] != ''){
-						$sql = " INSERT INTO dplega_006_prestasi_temp
-							(
-								noRegistrasi,
-								deskripsi,
-								createdBy
-							)
-							VALUES
-							(
-								'".$data['noreg']."',
-								'".$data['deskripsi']."',
-								'TESTSESSION'
-							)
-						";
+			$gate = openGate();
+			if($gate){
+			// connection = true
+				//checking section
+				$noreg	= $data['noreg'];
+				$sql 	= " SELECT noRegistrasi FROM dplega_000_lembaga WHERE noRegistrasi = '".$noreg."'";
+				$result = mysqli_query($gate, $sql);
+				if(mysqli_num_rows($result) > 0) {
+					$dumbTable = "";
+				}else{
+					$sql 	= " SELECT noRegistrasi FROM dplega_000_lembaga_temp WHERE noRegistrasi = '".$noreg."'";
+					$result = mysqli_query($gate, $sql);
+					if(mysqli_num_rows($result) > 0) {
+						$dumbTable = "_temp";
 					}else{
-						$sql = 'error';
+						//error state
+						$error		= 1;
+						$errorType  = "danger";
+						$errorMsg	= "Terjadi kesalahan, data tidak dikenal!";
 					}
-				$result	  = mysqli_query($gate, $sql);
-				$eresult  = mysqli_error($gate);
-				$idRecent = $data["noreg"];
-				if($result){	
-					$error	    = 0;
-					$resultType = "success";
-					$resultMsg  = "Input berhasil disimpan.";
+				}
+
+				if($error != 1){
+					$sql = " INSERT INTO dplega_006_prestasi".$dumbTable."
+						(
+							noRegistrasi,
+							deskripsi,
+							createdBy
+						)
+						VALUES
+						(
+							'".$data['noreg']."',
+							'".$data['deskripsi']."',
+							'TESTSESSION'
+						)
+					";
+				
+					$result	  = mysqli_query($gate, $sql);
+					$idRecent = mysqli_insert_id($gate);
+					if($result){	
+						$error	    = 0;
+						$resultType = "success";
+						$resultMsg  = "Input berhasil disimpan.";
+					}else{
+						//error state
+						$error		= 1;
+						$resultType = "danger";
+						$resultMsg	= "Terjadi kesalahan fatal, input gagal disimpan! ".$eresult;
+					}
+
 				}else{
 					//error state
 					$error		= 1;
 					$resultType = "danger";
-					$resultMsg	= "Terjadi kesalahan fatal, input gagal disimpan! ".$eresult;
+					$resultMsg	= "Terjadi kesalahan fatal, tidak dapat mengenali data!";
 				}
 				
 				closeGate($gate);
@@ -4235,32 +4299,59 @@
 		$resultType = "";
 		$resultMsg	= "";
 		$counter	= "";
-		
+		$dumbTable  = "";
+		$noreg 	  	= "";
+
 		/* validation */
-		if(	$data['pId']!="")
+		if(	
+			   isset($data['pId']) && $data['pId'] != "" 
+			&& isset($data['refferenceId']) && $data['refferenceId'] != "")
 		{
 			
 			/* open connection */ 
 			$gate = openGate();
 			if($gate){		
 				// connection = true
-				$sql = "";
-
-				$sql = "DELETE FROM dplega_006_prestasi_temp WHERE idData ='".$data['pId']."'";
-				
-					
+				//checking section
+				$noreg  = $data['refferenceId'];
+				$sql 	= " SELECT noRegistrasi FROM dplega_000_lembaga WHERE noRegistrasi = '".$noreg."'";
 				$result = mysqli_query($gate, $sql);
-				if($result){	
-					$error	    = 0;
-					$resultType = "success";
-					$resultMsg  = "data berhasil dihapus.";		
+				if(mysqli_num_rows($result) > 0) {
+					$dumbTable = "";
+				}else{
+					$sql 	= " SELECT noRegistrasi FROM dplega_000_lembaga_temp WHERE noRegistrasi = '".$noreg."'";
+					$result = mysqli_query($gate, $sql);
+					if(mysqli_num_rows($result) > 0) {
+						$dumbTable = "_temp";
+					}else{
+						//error state
+						$error		= 1;
+						$errorType  = "danger";
+						$errorMsg	= "Terjadi kesalahan, data tidak dikenal!";
+					}
+				}
+
+				if($error != 1){
+					$sql = "DELETE FROM dplega_006_prestasi".$dumbTable." WHERE idData ='".$data['pId']."' AND noRegistrasi = '".$noreg."'";
+					
+					$result = mysqli_query($gate, $sql);
+					if($result){	
+						$error	    = 0;
+						$resultType = "success";
+						$resultMsg  = "data berhasil dihapus.";		
+					}else{
+						//error state
+						$error		= 1;
+						$resultType = "danger";
+						$resultMsg	= "Terjadi kesalahan fatal, data gagal dihapus! ";
+					}
 				}else{
 					//error state
 					$error		= 1;
 					$resultType = "danger";
-					$resultMsg	= "Terjadi kesalahan fatal, data gagal dihapus! ";
+					$resultMsg	= "Terjadi kesalahan, tidak dapat mengenali data!";
 				}
-				
+
 				closeGate($gate);
 			}else{
 				//error state
@@ -4333,7 +4424,7 @@
 				}
 
 				if($error != 1){
-					$sql = "DELETE FROM dplega_010_riwayatbantuan".$dumbTable." WHERE idData ='".$data['pId']."'";
+					$sql = "DELETE FROM dplega_010_riwayatbantuan".$dumbTable." WHERE idData ='".$data['pId']."' AND noRegistrasi = '".$noreg."'";
 					
 					$result = mysqli_query($gate, $sql);
 					if($result){	

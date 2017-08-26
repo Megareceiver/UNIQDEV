@@ -125,39 +125,26 @@ function r_customCallBack(formType, group, target, recentId, formId, pId){
 					$("#" + formId + " [name=imageName]").html(recentId);
 				break;
 				case 'f118' :
-					dataKoleksi = p_getData('f1', 'f117',recentId);
-					$("#daftarSectionKoleksi").remove();
-					r_f1KoleksiDataGenerator(dataKoleksi);
-
-					$(".list-remove").unbind().on("click", function(){
-						pId = $(this).attr('id');
-						if(p_removeData("f1", "f118", pId) == 'success'){ 
-							$("#daftarSectionKoleksi").remove();
-							dataKoleksi = p_getData('f1', 'f117',recentId);
-							r_f1KoleksiDataGenerator(dataKoleksi);
-						}; 
-					}); 
+					dataFec = [{ 
+							'idData' 		: recentId, 
+							'noreg'	 		: $('#' + formId + ' input[name="noreg"]').val(), 
+							'judulKoleksi'	: $('#' + formId + ' input[name="judulKoleksi"]').val(), 
+							'jenisKoleksi'	: $('#' + formId + ' select[name="jenisKoleksi"]').val(),
+							'deskripsi'		: $('#' + formId + ' input[name="deskripsi"]').val(),
+					}];
+					
+					r_f1KoleksiDataGenerator(dataFec);
+					clearTargetFormNoreg(formId, $('#' + formId + ' input[name="noreg"]').val());
 				break;
 				case 'f119' :
-					dataPrestasi = p_getData('f1', 'f119', recentId);
-					var minus = 0;
-					$("#isiSectionPrestasi").remove();
-					r_f1PrestasiGenerator(dataPrestasi);
-
-					$(".list-remove").unbind().on("click", function(){
-						pId = $(this).attr('id');	
-						// showOptionList();							
-						showOptionConfirm('delete');
-						$(".option-yes").unbind().on("click", function(){ 
-							hideOptionList(); 
-							if(p_removeData("f1", "f119", pId) == 'success'){ 
-								minus = minus + 1;
-								$("#prestasi"+pId).remove();
-								result = dataPrestasi.feedData.length - minus;
-								$("#counter").html(result);
-							};
-						});
-					}); 
+					dataFec = [{ 
+							'idData' 		: recentId, 
+							'noreg'	 		: $('#' + formId + ' input[name="noreg"]').val(), 
+							'deskripsi'		: $('#' + formId + ' input[name="deskripsi"]').val(),
+					}];
+					
+					r_f1PrestasiDataGenerator(dataFec);
+					clearTargetFormNoreg(formId, $('#' + formId + ' input[name="noreg"]').val());
 				break;
 				case 'f120' :
 					$("#" + formId + " [name=imageName]").html(recentId);
