@@ -115,14 +115,13 @@
 		$errorMsg	= "";
 	
 		/* refferences */
-		// f41 : provinsi
-		// f42 : wilayah
-		// f43 : kecamatan
-		// f44 : kelurahan
 		
 		switch($target){
+			case "f113": $resultList = deleteSaranaSection($target, $data); break;
+			case "f116": $resultList = deleteVisualisasiUsahaSection($target, $data); break;
 			case "f118": $resultList = deleteKoleksiSection($target, $data); break;
 			case "f119": $resultList = deletePrestasiSection($target, $data); break;
+			case "f120": $resultList = deleteLegalitasSection($target, $data); break;
 			case "f121": $resultList = deleteSejarahBantuanSection($target, $data); break;
 			case "f122": $resultList = deleteHirarkiSection($target, $data); break;
 			default	  : $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Terjadi kesalahan fatal, proses dibatalkan!"); break;
@@ -2147,14 +2146,15 @@
 					$validextensions = array("jpeg", "jpg", "png", "gif");
 					$temporary = explode(".", $_FILES["imageUrl"]["name"]);
 					$file_extension = end($temporary);
-					$file_name = $idTemp."_logo.".$file_extension;					
+					$file_name = "berkas belum diunggah...";					
 					if (in_array($file_extension, $validextensions)) {						
 						if ($_FILES["imageUrl"]["error"] > 0)
 						{
 							$upload_message = $_FILES["imageUrl"];
 						}
 						else
-						{					
+						{		
+							$file_name = $idTemp."_logo.".$file_extension;			
 							$sourcePath = $_FILES['imageUrl']['tmp_name']; // Storing source path of the file in a variable
 							$targetPath = "img/logo/".$file_name; // Target path where file is to be stored
 							if(move_uploaded_file($sourcePath,"../".$targetPath)){ /*Moving Uploaded file*/
@@ -3615,14 +3615,15 @@
 							$validextensions = array("jpeg", "jpg", "png", "gif");
 							$temporary = explode(".", $_FILES["imageUrl"]["name"]);
 							$file_extension = end($temporary);
-							$file_name = $noreg."_".$idRecent."_sapra".".".$file_extension;					
+							$file_name = "berkas belum diunggah...";				
 							if (in_array($file_extension, $validextensions)) {						
 								if ($_FILES["imageUrl"]["error"] > 0)
 								{
 									$upload_message = $_FILES["imageUrl"];
 								}
 								else
-								{					
+								{		
+									$file_name = $noreg."_".$idRecent."_sapra".".".$file_extension;				
 									$sourcePath = $_FILES['imageUrl']['tmp_name']; // Storing source path of the file in a variable
 									$targetPath = "img/saranaPrasarana/".$file_name; // Target path where file is to be stored
 									if(move_uploaded_file($sourcePath,"../".$targetPath)){ /*Moving Uploaded file*/
@@ -4231,14 +4232,15 @@
 							$validextensions = array("jpeg", "jpg", "png", "gif");
 							$temporary = explode(".", $_FILES["imageUrl"]["name"]);
 							$file_extension = end($temporary);
-							$file_name = $noreg."_".$idRecent."_usaha".".".$file_extension;					
+							$file_name = "berkas belum diunggah...";					
 							if (in_array($file_extension, $validextensions)) {						
 								if ($_FILES["imageUrl"]["error"] > 0)
 								{
 									$upload_message = $_FILES["imageUrl"];
 								}
 								else
-								{					
+								{		
+									$file_name = $noreg."_".$idRecent."_usaha".".".$file_extension;				
 									$sourcePath = $_FILES['imageUrl']['tmp_name']; // Storing source path of the file in a variable
 									$targetPath = "img/usaha/".$file_name; // Target path where file is to be stored
 									if(move_uploaded_file($sourcePath,"../".$targetPath)){ /*Moving Uploaded file*/
@@ -4398,6 +4400,236 @@
 			$resultList = array( "feedStatus" => "failed", "feedType" => $resultType, "feedMessage" => $resultMsg);
 		}else{
 			$resultList = array( "feedStatus" => "success", "feedType" => $resultType, "feedMessage" => $resultMsg, "feedId" => $idRecent);
+		}
+		
+		/* result fetch */
+		$json = $resultList;
+		
+		return $json;
+	}
+
+	function deleteSaranaSection($target, $data){
+		/* initial condition */
+		$resultList = array();
+		$table 		= "";
+		$field 		= array();
+		$rows		= 0;
+		$condition 	= "";
+		$orderBy	= "";
+		$error		= 0;
+		$resultType = "";
+		$resultMsg	= "";
+		$counter	= "";
+		$dumbTable  = "";
+		$noreg 	  	= "";
+
+		/* validation */
+		if(	
+			   isset($data['pId']) && $data['pId'] != "" 
+			&& isset($data['refferenceId']) && $data['refferenceId'] != "")
+		{
+			
+			/* open connection */ 
+			$gate = openGate();
+			if($gate){		
+				// connection = true
+				//checking section
+				$noreg  = $data['refferenceId'];
+				$sql 	= " SELECT noRegistrasi FROM dplega_000_lembaga WHERE noRegistrasi = '".$noreg."'";
+				$result = mysqli_query($gate, $sql);
+				if(mysqli_num_rows($result) > 0) {
+					$dumbTable = "";
+				}else{
+					$sql 	= " SELECT noRegistrasi FROM dplega_000_lembaga_temp WHERE noRegistrasi = '".$noreg."'";
+					$result = mysqli_query($gate, $sql);
+					if(mysqli_num_rows($result) > 0) {
+						$dumbTable = "_temp";
+					}else{
+						//error state
+						$error		= 1;
+						$errorType  = "danger";
+						$errorMsg	= "Terjadi kesalahan, data tidak dikenal!";
+					}
+				}
+
+				if($error != 1){
+
+					$sql 	= "
+						SELECT urlGambar as urlFile FROM dplega_008_visualisasisarana".$dumbTable." 
+						WHERE noRegistrasi = '".$noreg."' AND idData = '".$data['pId']."'";
+		
+					$result = mysqli_query($gate, $sql);
+					if(mysqli_num_rows($result) > 0) {
+						while($row = mysqli_fetch_assoc($result)) {
+							if(file_exists("../img/saranaPrasarana/".$row['urlFile'])){
+								unlink("../img/saranaPrasarana/".$row['urlFile']);
+							}else{
+								$error = 1;
+							}
+						}
+					}
+					
+					if($error != 1){
+						$sql = "DELETE FROM dplega_008_visualisasisarana".$dumbTable." WHERE idData ='".$data['pId']."' AND noRegistrasi = '".$noreg."'";
+						
+						$result = mysqli_query($gate, $sql);
+						if($result){	
+							$error	    = 0;
+							$resultType = "success";
+							$resultMsg  = "data berhasil dihapus.";		
+						}else{
+							//error state
+							$error		= 1;
+							$resultType = "danger";
+							$resultMsg	= "Terjadi kesalahan fatal, data gagal dihapus! ";
+						}
+					}else{
+						//error state
+						$error		= 1;
+						$resultType = "danger";
+						$resultMsg	= "Terjadi kesalahan fatal, data gagal dihapus! ";
+					}
+				}else{
+					//error state
+					$error		= 1;
+					$resultType = "danger";
+					$resultMsg	= "Terjadi kesalahan, tidak dapat mengenali data!";
+				}
+
+				closeGate($gate);
+			}else{
+				//error state
+				$error		= 1;
+				$resultType = "danger";
+				$resultMsg	= "Terjadi kesalahan, tidak dapat terhubung ke server!";
+			}
+		}else{
+			//error state
+			$error		= 1;
+			$resultType = "danger";
+			$resultMsg	= "Terjadi kesalahan, ID tidak ditemukan!";
+		}
+		
+		if($error == 1){
+			//error state
+			$resultList = array( "feedStatus" => "failed", "feedType" => $resultType, "feedMessage" => $resultMsg);
+		}else{
+			$resultList = array( "feedStatus" => "success", "feedType" => $resultType, "feedMessage" => $resultMsg, "feedId" => $data['pId']);
+		}
+		
+		/* result fetch */
+		$json = $resultList;
+		
+		return $json;
+	}
+
+	function deleteVisualisasiUsahaSection($target, $data){
+		/* initial condition */
+		$resultList = array();
+		$table 		= "";
+		$field 		= array();
+		$rows		= 0;
+		$condition 	= "";
+		$orderBy	= "";
+		$error		= 0;
+		$resultType = "";
+		$resultMsg	= "";
+		$counter	= "";
+		$dumbTable  = "";
+		$noreg 	  	= "";
+		$file_name = "berkas belum diunggah...";
+
+		/* validation */
+		if(	
+			   isset($data['pId']) && $data['pId'] != "" 
+			&& isset($data['refferenceId']) && $data['refferenceId'] != "")
+		{
+			
+			/* open connection */ 
+			$gate = openGate();
+			if($gate){		
+				// connection = true
+				//checking section
+				$noreg  = $data['refferenceId'];
+				$sql 	= " SELECT noRegistrasi FROM dplega_000_lembaga WHERE noRegistrasi = '".$noreg."'";
+				$result = mysqli_query($gate, $sql);
+				if(mysqli_num_rows($result) > 0) {
+					$dumbTable = "";
+				}else{
+					$sql 	= " SELECT noRegistrasi FROM dplega_000_lembaga_temp WHERE noRegistrasi = '".$noreg."'";
+					$result = mysqli_query($gate, $sql);
+					if(mysqli_num_rows($result) > 0) {
+						$dumbTable = "_temp";
+					}else{
+						//error state
+						$error		= 1;
+						$errorType  = "danger";
+						$errorMsg	= "Terjadi kesalahan, data tidak dikenal!";
+					}
+				}
+
+				if($error != 1){
+					$sql 	= "
+						SELECT urlGambar as urlFile FROM dplega_007_visualisasiusaha".$dumbTable." 
+						WHERE noRegistrasi = '".$noreg."' AND idData = '".$data['pId']."'";
+		
+					$result = mysqli_query($gate, $sql);
+					if(mysqli_num_rows($result) > 0) {
+						while($row = mysqli_fetch_assoc($result)) {
+							if(file_exists("../img/usaha/".$row['urlFile'])){
+								unlink("../img/usaha/".$row['urlFile']);
+							}else{
+								$error = 1;
+							}
+						}
+					}
+					
+					if($error != 1){
+						$sql = "DELETE FROM dplega_007_visualisasiusaha".$dumbTable." WHERE idData ='".$data['pId']."' AND noRegistrasi = '".$noreg."'";
+						$result = mysqli_query($gate, $sql);	
+
+						if($result){	
+							$error	    = 0;
+							$resultType = "success";
+							$resultMsg  = "data berhasil dihapus.";	
+						}else{
+							//error state
+							$error		= 1;
+							$resultType = "danger";
+							$resultMsg	= "Terjadi kesalahan fatal, data gagal dihapus! ";
+						}
+					}else{
+						//error state
+						$error		= 1;
+						$resultType = "danger";
+						$resultMsg	= "Terjadi kesalahan fatal, data gagal dihapus! ";
+					}
+				}else{
+					//error state
+					$error		= 1;
+					$resultType = "danger";
+					$resultMsg	= "Terjadi kesalahan, tidak dapat mengenali data!";
+				}
+
+				closeGate($gate);
+			}else{
+				//error state
+				$error		= 1;
+				$resultType = "danger";
+				$resultMsg	= "Terjadi kesalahan, tidak dapat terhubung ke server!";
+			}
+		}else{
+			//error state
+			$error		= 1;
+			$resultType = "danger";
+			$resultMsg	= "Terjadi kesalahan, ID tidak ditemukan!";
+		}
+		
+		if($error == 1){
+			//error state
+			$resultList = array( "feedStatus" => "failed", "feedType" => $resultType, "feedMessage" => $resultMsg);
+		}else{
+			$resultList = array( "feedStatus" => "success", "feedType" => $resultType, "feedMessage" => $resultMsg, "feedId" => $data['pId']);
 		}
 		
 		/* result fetch */
@@ -4847,6 +5079,98 @@
 
 				if($error != 1){
 					$sql = "DELETE FROM dplega_006_prestasi".$dumbTable." WHERE idData ='".$data['pId']."' AND noRegistrasi = '".$noreg."'";
+					
+					$result = mysqli_query($gate, $sql);
+					if($result){	
+						$error	    = 0;
+						$resultType = "success";
+						$resultMsg  = "data berhasil dihapus.";		
+					}else{
+						//error state
+						$error		= 1;
+						$resultType = "danger";
+						$resultMsg	= "Terjadi kesalahan fatal, data gagal dihapus! ";
+					}
+				}else{
+					//error state
+					$error		= 1;
+					$resultType = "danger";
+					$resultMsg	= "Terjadi kesalahan, tidak dapat mengenali data!";
+				}
+
+				closeGate($gate);
+			}else{
+				//error state
+				$error		= 1;
+				$resultType = "danger";
+				$resultMsg	= "Terjadi kesalahan, tidak dapat terhubung ke server!";
+			}
+		}else{
+			//error state
+			$error		= 1;
+			$resultType = "danger";
+			$resultMsg	= "Terjadi kesalahan, ID tidak ditemukan!";
+		}
+		
+		if($error == 1){
+			//error state
+			$resultList = array( "feedStatus" => "failed", "feedType" => $resultType, "feedMessage" => $resultMsg);
+		}else{
+			$resultList = array( "feedStatus" => "success", "feedType" => $resultType, "feedMessage" => $resultMsg, "feedId" => $data['pId']);
+		}
+		
+		/* result fetch */
+		$json = $resultList;
+		
+		return $json;
+	}
+
+	function deleteLegalitasSection($target, $data){
+		/* initial condition */
+		$resultList = array();
+		$table 		= "";
+		$field 		= array();
+		$rows		= 0;
+		$condition 	= "";
+		$orderBy	= "";
+		$error		= 0;
+		$resultType = "";
+		$resultMsg	= "";
+		$counter	= "";
+		$dumbTable  = "";
+		$noreg 	  	= "";
+
+		/* validation */
+		if(	
+			   isset($data['pId']) && $data['pId'] != "" 
+			&& isset($data['refferenceId']) && $data['refferenceId'] != "")
+		{
+			
+			/* open connection */ 
+			$gate = openGate();
+			if($gate){		
+				// connection = true
+				//checking section
+				$noreg  = $data['refferenceId'];
+				$sql 	= " SELECT noRegistrasi FROM dplega_000_lembaga WHERE noRegistrasi = '".$noreg."'";
+				$result = mysqli_query($gate, $sql);
+				if(mysqli_num_rows($result) > 0) {
+					$dumbTable = "";
+				}else{
+					$sql 	= " SELECT noRegistrasi FROM dplega_000_lembaga_temp WHERE noRegistrasi = '".$noreg."'";
+					$result = mysqli_query($gate, $sql);
+					if(mysqli_num_rows($result) > 0) {
+						$dumbTable = "_temp";
+					}else{
+						//error state
+						$error		= 1;
+						$errorType  = "danger";
+						$errorMsg	= "Terjadi kesalahan, data tidak dikenal!";
+					}
+				}
+
+				if($error != 1){
+					$sql = "DELETE FROM dplega_009_legalitas".$dumbTable." WHERE kodePersyaratan ='".$data['pId']."' AND noRegistrasi = '".$noreg."'";
 					
 					$result = mysqli_query($gate, $sql);
 					if($result){	

@@ -129,6 +129,13 @@ function clearTargetFormNoreg(formId, noreg){
 	$("#" + formId + " input[name=noreg]").val(noreg);
 }
 
+function clearTargetFormId(formId, noreg,  refferences, refferencesName){
+	$("#" + formId + "* input, * select, * textarea").removeAttr('readonly');
+	$("#" + formId + "* input, * select, * textarea").val('');
+	$("#" + formId + " input[name=noreg]").val(noreg);
+	$("#" + formId + " input[name=" + refferencesName + "]").val(refferences);
+}
+
 
 /* notification */
 /* ============================================================ */

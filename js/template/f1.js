@@ -994,7 +994,14 @@ function r_f1FormKelembagaan(packet){
 							'<div class="cards-header">' +
 								'<h5>&nbsp;</h5>' +
 								'<div class="btn-collapse right">' +
-									'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
+									'<button class="clear" type="reset"' + 
+										'p-label		="' + loop + '"' + 
+										'p-id			=""' +
+										'p-referencesKey=""' +
+										'p-group		="f1"' + 
+										'p-target		="f113"' +
+										'p-container	="f-sarana-create-' + loop + '">' +
+									'<span class="fa fa-refresh"></span></button>' +
 									'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
 								'</div>' +
 							'</div>' +
@@ -1237,7 +1244,14 @@ function r_f1FormKelembagaan(packet){
 							'<div class="cards-header">' +
 								'<h5>&nbsp;</h5>' +
 								'<div class="btn-collapse right">' +
-									'<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
+									'<button class="clear" type="reset"' + 
+										'p-label		="' + loop + '"' + 
+										'p-id			=""' +
+										'p-referencesKey=""' +
+										'p-group		="f1"' + 
+										'p-target		="f116"' +
+										'p-container	="f-usaha-create-' + loop + '">' +
+									'<span class="fa fa-refresh"></span></button>' +
 									'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
 								'</div>' +
 							'</div>' +
@@ -1511,6 +1525,58 @@ function r_f1FormKelembagaan(packet){
 		for(loop=0; loop<maxForm; loop++){
 			p_formHandler("f-sarana-create-" + loop , "addData");
 			p_formHandler("f-usaha-create-" + loop , "addData");
+
+			$('#f-sarana-create-' + loop + " [type=reset]").unbind().on("click", function(e){
+				e.preventDefault(); 
+				if($("#" + $(this).attr('p-container') + " [name=p-id]").val() != ""){
+					showOptionConfirm('delete');
+					clearPacket();
+					pContainer		= $(this).attr('p-container');
+					pGroup 			= $(this).attr('p-group');
+					pTarget			= $(this).attr('p-target')
+					pId				= $("#" + pContainer + " [name=p-id]").val();
+					pLabel			= $(this).attr('p-label');
+					pReferencesKey	= $("#" + pContainer + " [name=noreg]").val();
+					$(".option-yes").unbind().on("click", function(){ 
+						hideOptionList(); 
+						if(p_removeData(pGroup, pTarget, pId, pReferencesKey) == 'success'){ 
+							$("#" + pContainer + " [browser-id=v-sarana" + pLabel + "]").css('display', 'none'); 
+							$("#" + pContainer + " [viewer-id=v-sarana" + pLabel + "]").removeClass('changed');
+							$("#" + pContainer + " [viewer-id=v-sarana" + pLabel + "]").attr('src', "img/sources/picture.png");
+							$("#" + pContainer + " [name=imageName]").html("berkas belum diunggah...");
+							p_formHandler(pContainer , "addData");
+							clearTargetFormNoreg(pContainer, $('#' + pContainer + ' [name="noreg"]').val());
+							clearPacket();
+						}; 
+					});
+				}
+			});
+
+			$('#f-usaha-create-' + loop + " [type=reset]").unbind().on("click", function(e){
+				e.preventDefault(); 
+				if($("#" + $(this).attr('p-container') + " [name=p-id]").val() != ""){
+					showOptionConfirm('delete');
+					clearPacket();
+					pContainer		= $(this).attr('p-container');
+					pGroup 			= $(this).attr('p-group');
+					pTarget			= $(this).attr('p-target')
+					pId				= $("#" + pContainer + " [name=p-id]").val();
+					pLabel			= $(this).attr('p-label');
+					pReferencesKey	= $("#" + pContainer + " [name=noreg]").val();
+					$(".option-yes").unbind().on("click", function(){ 
+						hideOptionList(); 
+						if(p_removeData(pGroup, pTarget, pId, pReferencesKey) == 'success'){ 
+							$("#" + pContainer + " [browser-id=v-usaha" + pLabel + "]").css('display', 'none'); 
+							$("#" + pContainer + " [viewer-id=v-usaha" + pLabel + "]").removeClass('changed');
+							$("#" + pContainer + " [viewer-id=v-usaha" + pLabel + "]").attr('src', "img/sources/picture.png");
+							$("#" + pContainer + " [name=imageName]").html("berkas belum diunggah...");
+							p_formHandler(pContainer , "addData");
+							clearTargetFormNoreg(pContainer, $('#' + pContainer + ' [name="noreg"]').val());
+							clearPacket();
+						}; 
+					});
+				}
+			});
 		}
 		//generate data for editing
 		//r_f1FormKelembagaanDataGenerator(packet);		
@@ -1713,7 +1779,14 @@ function r_f1legaitasGenerator(dataFecth){
 				'<div class="cards-header">' +
 					'<h5>' + dataFecth.items[loop].namaLegalitas + '</h5>' +
 					'<div class="btn-collapse right">' +
-						'<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
+						'<button class="clear" type="reset"' + 
+							'p-label		="' + dataFecth.items[loop].namaLegalitas + '"' + 
+							'p-id			="' + dataFecth.items[loop].kodePersyaratan + '"' +
+							'p-referencesKey="' + dataFecth.items[loop].noRegistrasi + '"' +
+							'p-group		="f1"' + 
+							'p-target		="f120"' +
+							'p-container	="f-legalitas-create-' + loop + '">' +
+						'<span class="fa fa-refresh"></span></button>' +
 						'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
 					'</div>' + 
 				'</div>' +
@@ -1750,6 +1823,28 @@ function r_f1legaitasGenerator(dataFecth){
 		if(dataFecth.items[loop].urlFile != ""){ 
 			$("[browser-id=legalitas-" + dataFecth.items[loop].kodePersyaratan + "]").css('display', 'block'); 
 		}
+
+		$('#f-legalitas-create-' + loop + " [type=reset]").unbind().on("click", function(e){
+			e.preventDefault(); 
+			showOptionConfirm('delete');
+			clearPacket();
+			pGroup 			= $(this).attr('p-group');
+			pTarget			= $(this).attr('p-target')
+			pId				= $(this).attr('p-id');
+			pLabel			= $(this).attr('p-label');
+			pContainer		= $(this).attr('p-container');
+			pReferences		= $(this).attr('p-references');
+			pReferencesKey	= $(this).attr('p-referencesKey');
+			$(".option-yes").unbind().on("click", function(){ 
+				if(p_removeData(pGroup, pTarget, pId, pReferencesKey) == 'success'){ 
+					hideOptionList(); 
+					$("#" + pContainer + " [browser-id=legalitas-" + pId + "]").css('display', 'none'); 
+					$("#" + pContainer + " [name=imageName]").html("berkas belum diunggah...");
+					clearTargetFormId(pContainer, $('#' + pContainer + ' input[name="noreg"]').val(), $('#' + pContainer + ' input[name="kodePersyaratan"]').val(), "kodePersyaratan");
+					clearPacket();
+				}; 
+			});
+		});
 	}
 
 	//command reactor
