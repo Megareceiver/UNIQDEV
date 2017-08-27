@@ -21,6 +21,9 @@ body.clear { padding: 0 }
 .text-right { text-align: right !important }
 .text-center { text-align: center !important }
 
+/* cursor */
+.click { cursor: pointer; }
+
 /* form area */
 /* =============================================================================================== */
 input, select, textarea { 
@@ -886,7 +889,7 @@ footer.parent .author-box img { height: 30px; float: right }
 .cards .desc-frame .desc-box.flush { margin-bottom: 15px } 
 .cards .desc-frame .desc-box p.big { font-size: 20px }
 .cards .desc-frame .desc-box p { margin: 0; min-height: 16.67px; }
-.cards .desc-frame .desc-box.i-left .text-set { padding-left: 25px }
+.cards .desc-frame .desc-box.i-left .text-set { padding-left: 25px; padding-bottom: 10px; }
 .cards .desc-frame .desc-box .icon-set { 
 	position: absolute;
     top: 10px;

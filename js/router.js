@@ -56,6 +56,7 @@ function r_navigateTo(index, packet, access) {
 		case 15 : r_f1FormKelembagaan(packet);		break;
 		
 		case 3  : r_f3Autentikasi(); 				break;
+		case 31 : r_f3FormUser(packet);				break;
 		
 		case 4  : r_f4Pengaturan();					break;
 		case 41 : r_f4LingkupArea();				break;

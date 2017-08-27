@@ -403,6 +403,9 @@ function r_f1DetailLembaga(packet) {
 					'<div class="icon-set"><span class="fa fa-map-marker"></span></div>' +
 					'<p class="text-set">' + data.profile[0].alamat + '</p>' +
 				'</div>' +
+				'<div class="desc-box i-left">' +
+					'<p class="text-set"><span class="text-cyan click" id="go-maps" m-lng="' + data.profile[0].langitude + '" m-lat="' + data.profile[0].latitude + '">Lihat maps</span></p>' +
+				'</div>' +
 			'</div>' +
 		'</div>';
 			
@@ -485,12 +488,19 @@ function r_f1DetailLembaga(packet) {
 					'</p>' +
 				'</div>' +
 				'<div class="row default">';
-				for(var loopY = 0; loopY < data.detail[loop].items.length; loopY++){	
+				for(var loopY = 0; loopY < data.detail[loop].items.length; loopY++){
+					var size = "";
+					if(
+						   data.detail[loop].items[loopY].picture != "saranaPrasarana/picture.png"
+						&& data.detail[loop].items[loopY].picture != "usaha/picture.png"){
+						size = "changed";
+					}	
+
 					part[1] = part[1] +
 					'<div class="col-md-3">' +
 						'<div class="tumb-cards">' +
 							'<div class="picture-box">' +
-								'<img class="pic-default" src="img/' + data.detail[loop].items[loopY].picture + '" />' +
+								'<img class="pic-default ' + size + '" src="img/' + data.detail[loop].items[loopY].picture + '" />' +
 							'</div>' +
 							'<div class="desc-box">' +
 								'<p>' + data.detail[loop].items[loopY].desc + '</p>' +
@@ -527,6 +537,11 @@ function r_f1DetailLembaga(packet) {
 			$("#verification-card").unbind().on("click", function(){ hideOptionList(); r_navigateTo(13, $(this).attr('p-id')); });
 			$("#edit-card").unbind().on("click", function(){ hideOptionList(); r_navigateTo(15, $(this).attr('p-id')); });
 		});
+
+		$("#go-maps").unbind().on("click", function(){ 
+			openMaps($(this).attr('m-lng'),$(this).attr('m-lat'));
+		});
+
 		toggleBoxActivator();
 		r_navbarReactor();
 	});
@@ -693,7 +708,7 @@ function r_f1FormKelembagaan(packet){
 			'</div>' +
 			'<div class="input-box"><p>Google Maps</p></div>' +
 			'<div class="input-box">' +
-				'<input name="langitude" placeholder="Langitude" tabindex="1" class="half" type="text" value="" />' +
+				'<input name="langitude" placeholder="Longitude" tabindex="1" class="half" type="text" value="" />' +
 				'<input name="latitude" placeholder="Latitude" tabindex="1" class="half" type="text" value="" />' +
 			'</div>' +
 		'</div>';

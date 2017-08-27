@@ -522,6 +522,8 @@
 					l.noTelp as telp,
 					l.email,
 					l.mediaSosial,
+					l.langitude,
+					l.latitude,
 					CONCAT_WS(' ', `alamat`, 'RT.',`noRt`, '/', 'RW.', `noRw`, `namaKelurahan`, `namaKecamatan`, `namaWilayah`, `namaProvinsi`) as alamat,
 					`alamat` as alamat_single,
 					`noRt` as noRt_single,
@@ -574,6 +576,8 @@
 										"catatan"		=> $row['catatanLain'],
 										"telp"			=> $row['telp'],
 										"email"			=> $row['email'],
+										"langitude"		=> $row['langitude'],
+										"latitude"		=> $row['latitude'],
 										"sosialMedia"	=> $row['mediaSosial'],
 										"alamat"		=> $row['alamat'],
 										"alamat_single"		=> $row['alamat_single'],
@@ -997,8 +1001,14 @@
 				if($result){
 					if(mysqli_num_rows($result) > 0) {
 						// output data of each row 
+						$state = 0;
 						while($row = mysqli_fetch_assoc($result)) {
-							array_push($items, array('picture' => $row['urlGambar'], 'desc' => $row['deskripsi'])); 
+							array_push($items, array('picture' => 'saranaPrasarana/'.$row['urlGambar'], 'desc' => $row['deskripsi'])); 
+							$state++;
+						}
+
+						for($loop=$state;$loop<4;$loop++){
+							array_push($items, array('picture' => 'saranaPrasarana/picture.png', 'desc' => '')); 
 						}
 					}else{
 						array_push($items, array('picture' => 'saranaPrasarana/picture.png', 'desc' => ''));
@@ -1031,14 +1041,20 @@
 				if($result){
 					if(mysqli_num_rows($result) > 0) {
 						// output data of each row 
+						$state = 0;
 						while($row = mysqli_fetch_assoc($result)) {
-							array_push($items, array('picture' => $row['urlGambar'], 'desc' => $row['deskripsi'])); 
+							array_push($items, array('picture' => 'usaha/'.$row['urlGambar'], 'desc' => $row['deskripsi'])); 
+							$state++;
+						}
+
+						for($loop=$state;$loop<4;$loop++){
+							array_push($items, array('picture' => 'usaha/picture.png', 'desc' => '')); 
 						}
 					}else{
-						array_push($items, array('picture' => 'kegiatanUsaha/picture.png', 'desc' => '')); 
-						array_push($items, array('picture' => 'kegiatanUsaha/picture.png', 'desc' => '')); 
-						array_push($items, array('picture' => 'kegiatanUsaha/picture.png', 'desc' => '')); 
-						array_push($items, array('picture' => 'kegiatanUsaha/picture.png', 'desc' => '')); 
+						array_push($items, array('picture' => 'usaha/picture.png', 'desc' => '')); 
+						array_push($items, array('picture' => 'usaha/picture.png', 'desc' => '')); 
+						array_push($items, array('picture' => 'usaha/picture.png', 'desc' => '')); 
+						array_push($items, array('picture' => 'usaha/picture.png', 'desc' => '')); 
 					}
 
 					array_push($group, array(
@@ -1201,6 +1217,8 @@
 										"namaProvinsi"		=> $row['namaProvinsi'],
 										"noTelp"			=> $row['noTelp'],
 										"email"				=> $row['email'],
+										"langitude"			=> $row['langitude'],
+										"latitude"			=> $row['latitude'],
 										"mediaSosial"		=> $row['mediaSosial'],
 										"kodeBentukLembaga"	=> $row['kodeBentukLembaga'],
 										"kodeBidangGerak"	=> $row['kodeBidangGerak'],

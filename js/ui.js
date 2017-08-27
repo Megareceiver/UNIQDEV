@@ -316,3 +316,8 @@ function autoCompleteActivator(targetId, sources, sourcesDetail, targetIndex){
 	  }
     });
 }
+
+function openMaps(lng,lat){
+	var url = "https://maps.google.com/?q=" + lat + "," + lng;
+	window.open(url);
+}
