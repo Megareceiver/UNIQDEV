@@ -1502,7 +1502,7 @@ function r_f1FormKelembagaan(packet){
 		autoCompleteActivator("hirarkiLembaga", dataAllLembaga[0], dataAllLembaga, "hirarkiLembaga");
 
 		//form reactor
-		p_formHandler("f-kelembagaan-create" , "updateData");
+		p_formHandler("f-kelembagaan-create" , "addData");
 		p_formHandler("f-sejarah-create" , "addData");
 		p_formHandler("f-bantuan-create" , "addData");
 		p_formHandler("f-kepengurusan-create" , "addData");
@@ -1516,7 +1516,8 @@ function r_f1FormKelembagaan(packet){
 		}
 		//generate data for editing
 		//r_f1FormKelembagaanDataGenerator(packet);		
-		$("input[name=noreg]").val('00030200110');
+		r_f1FormKelembagaanDataGenerator('00030200110');		
+		//$("input[name=noreg]").val('00030200110');
 	});
 }
 
@@ -1541,6 +1542,8 @@ function r_f1FormKelembagaanDataGenerator(packet){
 	$("#f-kelembagaan-create [name=kodeProvinsi]").val(data.kelembagaan.kodeProvinsi);
 	$("#f-kelembagaan-create [name=telp]").val(data.kelembagaan.noTelp);
 	$("#f-kelembagaan-create [name=email]").val(data.kelembagaan.email);
+	$("#f-kelembagaan-create [name=langitude]").val(data.kelembagaan.langitude);
+	$("#f-kelembagaan-create [name=latitude]").val(data.kelembagaan.latitude);
 	$("#f-kelembagaan-create [name=medsos]").val(data.kelembagaan.mediaSosial);
 	$("#f-kelembagaan-create [name=bentukLembaga]").val(data.kelembagaan.kodeBentukLembaga);
 	$("#f-kelembagaan-create [name=bidangGerak]").val(data.kelembagaan.kodeBidangGerak);
@@ -1549,10 +1552,14 @@ function r_f1FormKelembagaanDataGenerator(packet){
 	$("#f-kelembagaan-create [name=afiliasi]").val(data.kelembagaan.noNpwp);
 	$("#f-kelembagaan-create [name=visi]").val(data.kelembagaan.visiLembaga);
 	$("#f-kelembagaan-create [name=misi]").val(data.kelembagaan.misiLembaga);
-	$("#f-kelembagaan-create [viewer-id=v-logo]").attr('src','img/sources/'+data.kelembagaan.urlGambarLogo);
-	//$("#f-kelembagaan-create [name=v-logoName]").html(data.kelembagaan.urlGambarLogo);
+	$("#f-kelembagaan-create [viewer-id=v-logo]").attr('src',(data.kelembagaan.urlGambarLogo != "") ? 'img/logo/'+data.kelembagaan.urlGambarLogo : "img/sources/picture.png");
+	$("#f-kelembagaan-create [name=imageName]").html((data.kelembagaan.urlGambarLogo != "") ? data.kelembagaan.urlGambarLogo : "berkas belum diunggah...");
 	$("#f-kelembagaan-create [name=catatan]").val(data.kelembagaan.catatanLain);
 
+	if(data.kelembagaan.urlGambarLogo != ""){ 
+		$("[viewer-id=v-logo]").removeClass('changed').addClass('changed'); 
+		$("[browser-id=v-logo]").css('display', 'block'); 
+	}
 
 	//legalitas
 	$(".f-legalitas-create [name=noreg]").val(data.kelembagaan.noRegistrasi);
@@ -1569,9 +1576,10 @@ function r_f1FormKelembagaanDataGenerator(packet){
 	$("#f-sejarah-create [name=satuanT]").val(data.sejarah.satuanLuasTanah);
 	$("#f-sejarah-create [name=luasBangun]").val(data.sejarah.luasBangunan);
 	$("#f-sejarah-create [name=satuanB]").val(data.sejarah.satuanLuasBangunan);
-	$("#f-sejarah-create [name=kondisiBangunan]").val(data.sejarah.kondisiBangunan);
+	$("#f-sejarah-create [name=kondisiBangunan]").val((data.sejarah.kondisiBangunan != "") ? data.sejarah.kondisiBangunan : "Baik");
 	$("#f-sejarah-create [name=saranaPrasarana]").val(data.sejarah.statusSarana);
-	$("#f-sejarah-create [name=picName]").html(data.sejarah.urlGambarStrukturKepengurusan);
+	$("#f-sejarah-create [name=imageName]").html((data.sejarah.urlGambarStrukturKepengurusan != "") ? data.sejarah.urlGambarStrukturKepengurusan : "berkas belum diunggah...");
+	$("#f-sejarah-create [name=imageUrl]").val("");
 	$("#f-sejarah-create [name=bahasa]").val(data.sejarah.bahasaPengantar);
 	$("#f-sejarah-create [name=sensus]").val(data.sejarah.statusSensus);
 	$("#f-sejarah-create [name=bantuan]").val(data.sejarah.statusBantuanPemerintah);
@@ -1580,6 +1588,9 @@ function r_f1FormKelembagaanDataGenerator(packet){
 	$("#f-sejarah-create [name=jenisWilayah]").val(data.sejarah.jenisWilayah);
 	$("#f-sejarah-create [name=catatan]").val(data.sejarah.catatanLain);
 
+	if(data.sejarah.urlGambarStrukturKepengurusan != ""){ 
+		$("[browser-id=s-org]").css('display', 'block'); 
+	}
 
 	//kepengurusan
 	$("#f-kepengurusan-create [name=noreg]").val(data.kepengurusan.noRegistrasi);
@@ -1616,6 +1627,10 @@ function r_f1FormKelembagaanDataGenerator(packet){
 	$("#f-kegiatanUsaha-create [name=catatan]").val(data.usaha.catatan);
 
 
+	//bantuan
+	$("#f-bantuan-create [name=noreg]").val(data.sejarah.noRegistrasi);
+	r_f1SejarahBantuanDataGenerator(data.bantuan);
+
 	//koleksi
 	$("#f-koleksi-create [name=noreg]").val(data.kelembagaan.noRegistrasi);
 
@@ -1625,6 +1640,11 @@ function r_f1FormKelembagaanDataGenerator(packet){
 	//prestasi
 	$("#f-prestasi-create [name=noreg]").val(data.kelembagaan.noRegistrasi);
 	
+
+	//form reactor
+	p_formHandler("f-kelembagaan-create" , "updateData");
+	p_formHandler("f-sejarah-create" , "updateData");
+	p_formHandler("f-kepengurusan-create" , "updateData");
 }
 
 
@@ -1632,7 +1652,11 @@ function r_f1FormKelembagaanDataGenerator(packet){
 //=====================================
 function r_f1legaitasGenerator(dataFecth){
 	var genHtml 	= "";
+	var fileChecker	= "";
 	for(var loop=0; loop<dataFecth.items.length; loop++){
+		
+		fileChecker = (dataFecth.items[loop].urlFile != "") ? dataFecth.items[loop].urlFile : 'berkas belum diunggah...';
+
 		genHtml = genHtml + 
 		'<form id="f-legalitas-create-' + loop + '" f-group = "f1" f-target = "f120">' +
 			'<div class="cards flush ">' +
@@ -1657,7 +1681,7 @@ function r_f1legaitasGenerator(dataFecth){
 				'<div class="input-box">' +
 					'<div class="icon-box both">' +
 						'<label class="browser-box" id="legalitas-' + dataFecth.items[loop].kodePersyaratan + '">' +
-							'<p class="placeholder" name="imageName">berkas belum diunggah...</p>' +
+							'<p class="placeholder" name="imageName">' + fileChecker + '</p>' +
 							'<input name="imageUrl" accept="image/*" type="file" tabindex="5" />' +
 							'<input browser-state="fileState" name="fileState" type="hidden" tabindex="5" value="add" />' +
 						'</label>' +
@@ -1673,41 +1697,53 @@ function r_f1legaitasGenerator(dataFecth){
 
 	for(var loop=0; loop<dataFecth.items.length; loop++){
 		p_formHandler('f-legalitas-create-' + loop,'addData');
+		if(dataFecth.items[loop].urlFile != ""){ 
+			$("[browser-id=legalitas-" + dataFecth.items[loop].kodePersyaratan + "]").css('display', 'block'); 
+		}
 	}
+
+	//command reactor
+	datePickerActivator();
+	fileBrowserActivator();
 }
 
 //F1 SEJARAH
 //=====================================
 function r_f1SejarahBantuanDataGenerator(data){
 	var genHtml = "";
-	if(data != null){
+	if(data != null){ 
 		//render
 		for(counter = 0; counter < data.length; counter++){
 			genHtml = genHtml +
-			'<div id=bantuan-'+ data[0].idData +' class="cards">' +
+			'<div id=bantuan-'+ data[counter].idData +' class="cards">' +
 				'<div class="row default">' +
-					'<div class="col-xs-2">' +
+					'<div class="col-xs-3">' +
 						'<div class="list-box">' +
 							'<div class="list-icon bg-red"><span class="fa fa-handshake-o"></span></div>' +
-							'<p class="list-text">' + data[0].tahun + '</p>' +
+							'<p class="list-text">' + data[counter].tahun + '</p>' +
 						'</div>' +
 					'</div>' +
-					'<div class="col-xs-10">' +
+					'<div class="col-xs-4">' +
 						'<div class="list-box clear">' +
-							'<p class="list-text">' + data[0].bantuanDari + '</p>' +
+							'<p class="list-text">' + data[counter].bantuanDari + '</p>' +
+						'</div>' +
+					'</div>' +
+					'<div class="col-xs-5">' +
+						'<div class="list-box clear">' +
+							'<p class="list-text">' + data[counter].deskripsi + '</p>' +
 							'<div class="list-button click-option"' + 
-								'p-label		="' + data[0].bantuanDari + '"' + 
-								'p-id			="' + data[0].idData + '"' +
-								'p-referencesKey="' + data[0].noreg + '"' +
+								'p-label		="' + data[counter].bantuanDari + '"' + 
+								'p-id			="' + data[counter].idData + '"' +
+								'p-referencesKey="' + data[counter].noreg + '"' +
 								'p-group		="f1"' + 
 								'p-target		="f121"' +
-								'p-container	="bantuan-' + data[0].idData + '">' +
+								'p-container	="bantuan-' + data[counter].idData + '">' +
 								'<span class="fa fa-ellipsis-v"></span>' +
 							'</div>' +
 						'</div>' +
 					'</div>' +
 					'<div class="clearfix"></div>' +
-				'</div>' 
+				'</div>' +
 			'</div>';
 		}
 	} else {

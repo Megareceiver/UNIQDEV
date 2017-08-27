@@ -148,6 +148,7 @@ function r_customCallBack(formType, group, target, recentId, formId, pId){
 							'idData' 		: recentId, 
 							'noreg'	 		: $('#' + formId + ' input[name="noreg"]').val(), 
 							'bantuanDari'	: $('#' + formId + ' input[name="bantuanDari"]').val(), 
+							'deskripsi'		: $('#' + formId + ' textarea[name="deskripsi"]').val(), 
 							'tahun'			: $('#' + formId + ' input[name="tahun"]').val(),
 					}];
 					

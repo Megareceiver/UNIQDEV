@@ -1125,6 +1125,7 @@
 			$kelembagaan  	= array();  
 			$legalitas    	= array();  
 			$sejarah   		= array();  
+			$bantuan   		= array();  
 			$kepengurusan   = array();  
 			$usaha     		= array();  
 			$hirarki 		= array();  
@@ -1150,6 +1151,8 @@
 						`namaProvinsi`,  
 						l.`noTelp`, 
 						l.`email`, 
+						l.`langitude`, 
+						l.`latitude`, 
 						l.`mediaSosial`, 
 						l.`kodeBentukLembaga`, 
 						l.`kodeBidangGerak`, 
@@ -1362,6 +1365,45 @@
 				}
 
 
+				//bantuan
+				$sql = 	"
+					SELECT 
+						`idData`, 
+						`noRegistrasi`, 
+						`tahun`, 
+						`dibantuOleh`, 
+						`deskripsi`
+					FROM
+						dplega_010_riwayatbantuan".$dumbTable." l
+					WHERE
+						l.noRegistrasi = '".$noreg."'
+				";
+				$result = mysqli_query($gate, $sql);
+				if($result){
+					if(mysqli_num_rows($result) > 0) {
+						// output data of each row 
+						while($row = mysqli_fetch_assoc($result)) {
+							$fetch = array(
+										"idData"   			=> $row['idData'],
+										"noreg"   			=> $row['noRegistrasi'],
+										"tahun" 			=> $row['tahun'],
+										"bantuanDari" 		=> $row['dibantuOleh'],
+										"deskripsi" 		=> $row['deskripsi'],
+							);
+
+							array_push($bantuan, $fetch);
+							unset($fetch);
+							$fetch = array();
+						}
+					}
+				}else{
+					//error state
+					$error		= 1;
+					$errorType  = "danger";
+					$errorMsg	= "Terjadi kesalahan, tidak dapat terhubung ke serverSS!";
+				}
+
+
 				//kepengurusan
 				$sql = 	"
 					SELECT 
@@ -1488,6 +1530,7 @@
 				"kelembagaan" 	=> $kelembagaan,
 				"legalitas" 	=> $legalitas,
 				"sejarah" 		=> $sejarah,
+				"bantuan" 		=> $bantuan,
 				"kepengurusan" 	=> $kepengurusan,
 				"usaha" 		=> $usaha
 			);
@@ -2906,7 +2949,6 @@
 				";
 
 				$result	  = mysqli_query($gate, $sql);
-				$eresult  = mysqli_error($gate);
 				if($result){	
 					$error	    = 0;
 					$resultType = "success";
@@ -2940,7 +2982,7 @@
 						$validextensions = array("jpeg", "jpg", "png", "gif");
 						$temporary = explode(".", $_FILES["imageUrl"]["name"]);
 						$file_extension = end($temporary);
-						$file_name = $data['noreg']."_sOrganisasi.".$file_extension;					
+						$file_name = "berkas belum diunggah...";					
 						if (in_array($file_extension, $validextensions)) {						
 							if ($_FILES["imageUrl"]["error"] > 0)
 							{
@@ -2948,6 +2990,7 @@
 							}
 							else
 							{					
+								$file_name = $data['noreg']."_sOrganisasi.".$file_extension;
 								$sourcePath = $_FILES['imageUrl']['tmp_name']; // Storing source path of the file in a variable
 								$targetPath = "img/strukturOrganisasi/".$file_name; // Target path where file is to be stored
 								if(move_uploaded_file($sourcePath,"../".$targetPath)){ /*Moving Uploaded file*/
