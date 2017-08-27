@@ -185,7 +185,7 @@ function r_f1DaftarLembaga(packet) {
 		
 		//--command reactor
 		$(".back-button").unbind().on('click', function(){ r_navigateTo(1); });
-		$("#add-button").unbind().on('click', function(){ r_navigateTo(15); });
+		$("#add-button").unbind().on('click', function(){ profile_look_set("");  r_navigateTo(15); });
 		
 		//navbar
 		r_navbarReactor();
@@ -1579,8 +1579,8 @@ function r_f1FormKelembagaan(packet){
 			});
 		}
 		//generate data for editing
-		//r_f1FormKelembagaanDataGenerator(packet);		
-		r_f1FormKelembagaanDataGenerator('00030200110');		
+		if(packet != "" && packet != null){ r_f1FormKelembagaanDataGenerator(packet); }		
+		// r_f1FormKelembagaanDataGenerator('00030200110');		
 		//$("input[name=noreg]").val('00030200110');
 	});
 }
@@ -1616,12 +1616,12 @@ function r_f1FormKelembagaanDataGenerator(packet){
 	$("#f-kelembagaan-create [name=afiliasi]").val(data.kelembagaan.noNpwp);
 	$("#f-kelembagaan-create [name=visi]").val(data.kelembagaan.visiLembaga);
 	$("#f-kelembagaan-create [name=misi]").val(data.kelembagaan.misiLembaga);
-	$("#f-kelembagaan-create [viewer-id=v-logo]").attr('src',(data.kelembagaan.urlGambarLogo != "") ? 'img/logo/'+data.kelembagaan.urlGambarLogo : "img/sources/picture.png");
-	$("#f-kelembagaan-create [name=imageName]").html((data.kelembagaan.urlGambarLogo != "") ? data.kelembagaan.urlGambarLogo : "berkas belum diunggah...");
+	$("#f-kelembagaan-create [viewer-id=v-logo]").attr('src',(data.kelembagaan.urlGambarLogo != "" && data.kelembagaan.urlGambarLogo != null) ? 'img/logo/'+data.kelembagaan.urlGambarLogo : "img/sources/picture.png");
+	$("#f-kelembagaan-create [name=imageName]").html((data.kelembagaan.urlGambarLogo != "" && data.kelembagaan.urlGambarLogo != null) ? data.kelembagaan.urlGambarLogo : "berkas belum diunggah...");
 	$("#f-kelembagaan-create [name=catatan]").val(data.kelembagaan.catatanLain);
 
 	$("#f-kelembagaan-create [name=kelurahan]").attr('readonly', 'readonly');
-	if(data.kelembagaan.urlGambarLogo != ""){ 
+	if(data.kelembagaan.urlGambarLogo != "" && data.kelembagaan.urlGambarLogo != null){ 
 		$("[viewer-id=v-logo]").removeClass('changed').addClass('changed'); 
 		$("[browser-id=v-logo]").css('display', 'block'); 
 	}
@@ -1653,7 +1653,7 @@ function r_f1FormKelembagaanDataGenerator(packet){
 	$("#f-sejarah-create [name=jenisWilayah]").val(data.sejarah.jenisWilayah);
 	$("#f-sejarah-create [name=catatan]").val(data.sejarah.catatanLain);
 
-	if(data.sejarah.urlGambarStrukturKepengurusan != ""){ 
+	if(data.sejarah.length > 0 && data.sejarah.urlGambarStrukturKepengurusan != ""){ 
 		$("[browser-id=s-org]").css('display', 'block'); 
 	}
 

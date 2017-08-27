@@ -97,6 +97,8 @@ function r_customCallBack(formType, group, target, recentId, formId, pId){
 				case 'f111' :
 					$('#f-kelembagaan-create input[name="kelurahan"]').attr('readonly','readonly');
 					$("#" + formId + " [name=imageName]").html(recentId);
+					$("[name=noreg]").val(pId);
+					profile_look_set(pId);
 					p_formHandler("f-kelembagaan-create", "updateData");
 				break;
 				case 'f112' :
