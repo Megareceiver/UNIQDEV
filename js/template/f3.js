@@ -145,6 +145,7 @@ function r_f3Autentikasi() {
 		
 		//--gen
 		headPage.html(r_headPageHtml(4, 'Autentikasi'));
+		footPage.html(r_footPageHtml('add'));
 		mainPage.html(content).animate({'opacity': '1'},'fast','linear');
 		$("#preload").remove();
 		

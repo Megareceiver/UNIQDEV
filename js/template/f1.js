@@ -185,7 +185,7 @@ function r_f1DaftarLembaga(packet) {
 		
 		//--command reactor
 		$(".back-button").unbind().on('click', function(){ r_navigateTo(1); });
-		$("#add-button").unbind().on('click', function(){ profile_look_set("");  r_navigateTo(15); });
+		$("#add-button").unbind().on('click', function(){ profile_look_set(""); r_tabSet(1);  r_navigateTo(15); });
 		
 		//navbar
 		r_navbarReactor();
@@ -232,13 +232,34 @@ function r_f1LembagaEventctivator(){
 	$(".click-option").unbind().on("click", function(){ 
 		//packet session
 		clearPacket();
+		pGroup 			= $(this).attr('p-group');
+		pTarget			= $(this).attr('p-target');
 		pId				= $(this).attr('p-id');
 		pLabel			= $(this).attr('p-label');
+		pContainer		= $(this).attr('p-container');
+		pReferences		= $(this).attr('p-references');
+		pReferencesKey	= $(this).attr('p-referencesKey');
 		showOptionList(); 
 		//-- popup
 		$("#view-card").unbind().on("click", function(){ hideOptionList(); r_navigateTo(12, pId); });
 		$("#verification-card").unbind().on("click", function(){ hideOptionList(); r_navigateTo(13, pId); });
 		$("#edit-card").unbind().on("click", function(){ hideOptionList(); r_navigateTo(15, pId); });
+		$("#delete-card").unbind().on("click", function(){ 
+			hideOptionList(); 
+			showOptionConfirm('delete');
+			$(".option-yes").unbind().on("click", function(){ 
+				hideOptionList(); 
+				if(p_removeData(pGroup, pTarget, pId) == 'success'){ 
+					$('#' + pContainer).remove(); 
+					lembagaCounter = lembagaCounter - 1;
+					if(lembagaCounter <= 0){
+						$(".cards-label").remove();
+						//$("#lembaga-list").append(r_f1LembagaGenerator([{"lembaga" : null}]));
+					}
+					clearPacket();
+				}; 
+			});
+		});
 	});
 
 	detailBoxActivator();
@@ -249,6 +270,7 @@ function r_f1LembagaGenerator(data){
 	var tempB 	= "";
 	var tempP	= "";
 	if(data.lembaga != null){
+		lembagaCounter = data.lembaga.length;
 		for(var loop = 0; loop < data.lembaga.length; loop++){	
 			if(loop > 0){ tempP = "plus"; }
 			if(data.lembaga[loop].collapse == 'y') { tempB = '<span class="btn-collapse">Lihat semua</span>'; } else { tempB = ""; }
@@ -274,7 +296,13 @@ function r_f1LembagaGenerator(data){
 								'<span class="desc-text">' + data.lembaga[loop].list[loopY].telp + ' | ' + data.lembaga[loop].list[loopY].email + '</span>' +
 							'</div>' +
 						'</div>' +
-						'<button type="button" class="click-option btn-set" p-id="' + data.lembaga[loop].list[loopY].id + '" p-label="' + data.lembaga[loop].list[loopY].nama + '"><span class="fa fa-ellipsis-v"></span></button>' +
+						'<button type="button" class="click-option btn-set" ' + 
+							'p-label		="' + data.lembaga[loop].list[loopY].nama + '"' + 
+							'p-id			="' + data.lembaga[loop].list[loopY].id + '"' +
+							'p-group		="f1"' + 
+							'p-target		="f111"' +
+							'p-container	="' + data.lembaga[loop].list[loopY].id + '">' +
+						'<span class="fa fa-ellipsis-v"></span></button>' +
 					'</div>' +
 					'<div class="detail-box">' +
 						'<div class="list-box">' +
@@ -1631,7 +1659,7 @@ function r_f1FormKelembagaanDataGenerator(packet){
 	r_f1legaitasGenerator(data.legalitas);
 
 	//sejarah
-	$("#f-sejarah-create [name=noreg]").val(data.sejarah.noRegistrasi);
+	$("#f-sejarah-create [name=noreg]").val(data.kelembagaan.noRegistrasi);
 	$("#f-sejarah-create [name=sejarah]").val(data.sejarah.deskripsi);
 	$("#f-sejarah-create [name=tanggalBerdiri]").val(data.sejarah.tanggalDidirikan);
 	$("#f-sejarah-create [name=kepemilikan]").val(data.sejarah.kepemilikan);
@@ -1658,7 +1686,7 @@ function r_f1FormKelembagaanDataGenerator(packet){
 	}
 
 	//kepengurusan
-	$("#f-kepengurusan-create [name=noreg]").val(data.kepengurusan.noRegistrasi);
+	$("#f-kepengurusan-create [name=noreg]").val(data.kelembagaan.noRegistrasi);
 	$("#f-kepengurusan-create [name=penanggungJawab]").val(data.kepengurusan.penanggungJawab);
 	$("#f-kepengurusan-create [name=alamat]").val(data.kepengurusan.alamat);
 	$("#f-kepengurusan-create [name=rt]").val(data.kepengurusan.noRt);
@@ -1684,7 +1712,7 @@ function r_f1FormKelembagaanDataGenerator(packet){
 
 
 	//usaha
-	$("#f-kegiatanUsaha-create [name=noreg]").val(data.usaha.noRegistrasi);
+	$("#f-kegiatanUsaha-create [name=noreg]").val(data.kelembagaan.noRegistrasi);
 	$("#f-kegiatanUsaha-create [name=namaUsaha]").val(data.usaha.namaUsaha);
 	$("#f-kegiatanUsaha-create [name=jenisUsaha]").val(data.usaha.jenisUsaha);
 	$("#f-kegiatanUsaha-create [name=jumlahPekerja]").val(data.usaha.jumlahPekerja);
@@ -1705,12 +1733,12 @@ function r_f1FormKelembagaanDataGenerator(packet){
 				$("#f-usaha-create-" + loop + " [name=imageName]").html((data.vUsaha[loop].urlGambar != "") ? data.vUsaha[loop].urlGambar : "berkas belum diunggah...");
 			}
 		}else{
-			$("#f-usaha-create-" + loop + " [name=noreg]").val(data.usaha.noRegistrasi);
+			$("#f-usaha-create-" + loop + " [name=noreg]").val(data.kelembagaan.noRegistrasi);
 		}
 	}
 
 	//bantuan
-	$("#f-bantuan-create [name=noreg]").val(data.sejarah.noRegistrasi);
+	$("#f-bantuan-create [name=noreg]").val(data.kelembagaan.noRegistrasi);
 	r_f1SejarahBantuanDataGenerator(data.bantuan);
 
 	//sarana 
@@ -1727,7 +1755,7 @@ function r_f1FormKelembagaanDataGenerator(packet){
 				$("#f-sarana-create-" + loop + " [name=imageName]").html((data.sarana[loop].urlGambar != "") ? data.sarana[loop].urlGambar : "berkas belum diunggah...");
 			}
 		}else{
-			$("#f-sarana-create-" + loop + " [name=noreg]").val(data.sejarah.noRegistrasi);
+			$("#f-sarana-create-" + loop + " [name=noreg]").val(data.kelembagaan.noRegistrasi);
 		}
 	}
 

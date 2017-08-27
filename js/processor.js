@@ -118,6 +118,7 @@ function p_removeData(group, target, pId, refferenceId){
 		async: false,
 		data: { pId : pId, refferenceId: refferenceId },
 		success: function(data){
+			console.log(data);
 			reStatus = data.feedStatus;
 			hideNotification('waiting');
 			showNotification(data.feedType, 'add', data.feedMessage);
@@ -140,7 +141,6 @@ function p_formHandler(formId, type){
 			processData:false,        // To send DOMDocument or non processed data file it is set to false
 			success: function(data)   // A function to be called if request succeeds
 			{
-				console.log(data);
 				hideNotification('waiting');
 				showNotification(data.feedType, 'add', data.feedMessage);
 				if(data.feedStatus == "success"){

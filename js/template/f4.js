@@ -1142,7 +1142,7 @@ function r_f4DaftarVerifikasi() {
 			//packet session
 			clearPacket();
 			pGroup 			= $(this).attr('p-group');
-			pTarget			= $(this).attr('p-target')
+			pTarget			= $(this).attr('p-target');
 			pId				= $(this).attr('p-id');
 			pLabel			= $(this).attr('p-label');
 			pContainer		= $(this).attr('p-container');

@@ -17,6 +17,7 @@ var autoData			= [];
 var sourcesData			= [];
 var sourcesDetailData	= []; 
 var maxForm 			= 4; //set max form
+var lembagaCounter		= 0;
 
 /* packet data variable */
 var pGroup  		= "";
