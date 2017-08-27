@@ -572,9 +572,6 @@ function r_f1FormKelembagaan(packet){
 		dataAllLembaga	= p_getData('f1','f11101');
 		dataAllLembaga	= lembagaFetchArray(dataAllLembaga.feedData);
 
-		//loop setup
-		maxForm = 4;
-
 		//--open
 		head	= 
 		'<div class="row head">' +
@@ -1506,6 +1503,7 @@ function r_f1FormKelembagaan(packet){
 		p_formHandler("f-sejarah-create" , "addData");
 		p_formHandler("f-bantuan-create" , "addData");
 		p_formHandler("f-kepengurusan-create" , "addData");
+		p_formHandler("f-kegiatanUsaha-create" , "addData");
 		p_formHandler("f-koleksi-create" , "addData");
 		p_formHandler("f-prestasi-create" , "addData");
 		p_formHandler("f-hirarki-create" , "addData");
@@ -1556,6 +1554,7 @@ function r_f1FormKelembagaanDataGenerator(packet){
 	$("#f-kelembagaan-create [name=imageName]").html((data.kelembagaan.urlGambarLogo != "") ? data.kelembagaan.urlGambarLogo : "berkas belum diunggah...");
 	$("#f-kelembagaan-create [name=catatan]").val(data.kelembagaan.catatanLain);
 
+	$("#f-kelembagaan-create [name=kelurahan]").attr('readonly', 'readonly');
 	if(data.kelembagaan.urlGambarLogo != ""){ 
 		$("[viewer-id=v-logo]").removeClass('changed').addClass('changed'); 
 		$("[browser-id=v-logo]").css('display', 'block'); 
@@ -1626,25 +1625,76 @@ function r_f1FormKelembagaanDataGenerator(packet){
 	$("#f-kegiatanUsaha-create [name=detailUsaha]").val(data.usaha.detailUsaha);
 	$("#f-kegiatanUsaha-create [name=catatan]").val(data.usaha.catatan);
 
+	//visualisasi usaha 
+	for(loop=0; loop<maxForm; loop++){
+		if(data.vUsaha[loop] != null){
+			$("#f-usaha-create-" + loop + " [name=noreg]").val(data.vUsaha[loop].noreg);
+			$("#f-usaha-create-" + loop + " [name=p-id]").val(data.vUsaha[loop].idData);
+			$("#f-usaha-create-" + loop + " [name=keterangan]").val(data.vUsaha[loop].deskripsi);
+		
+			if(data.vUsaha[loop].urlGambar != ""){ 
+				$("#f-usaha-create-" + loop + " [browser-id=v-usaha" + loop + "]").css('display', 'block'); 
+				$("#f-usaha-create-" + loop + " [viewer-id=v-usaha" + loop + "]").removeClass('changed').addClass('changed'); 
+				$("#f-usaha-create-" + loop + " [viewer-id=v-usaha" + loop + "]").attr('src',(data.vUsaha[loop].urlGambar != "") ? 'img/usaha/'+data.vUsaha[loop].urlGambar : "img/sources/picture.png");
+				$("#f-usaha-create-" + loop + " [name=imageName]").html((data.vUsaha[loop].urlGambar != "") ? data.vUsaha[loop].urlGambar : "berkas belum diunggah...");
+			}
+		}else{
+			$("#f-usaha-create-" + loop + " [name=noreg]").val(data.usaha.noRegistrasi);
+		}
+	}
 
 	//bantuan
 	$("#f-bantuan-create [name=noreg]").val(data.sejarah.noRegistrasi);
 	r_f1SejarahBantuanDataGenerator(data.bantuan);
 
+	//sarana 
+	for(loop=0; loop<maxForm; loop++){
+		if(data.sarana[loop] != null){
+			$("#f-sarana-create-" + loop + " [name=noreg]").val(data.sarana[loop].noreg);
+			$("#f-sarana-create-" + loop + " [name=p-id]").val(data.sarana[loop].idData);
+			$("#f-sarana-create-" + loop + " [name=keterangan]").val(data.sarana[loop].deskripsi);
+		
+			if(data.sarana[loop].urlGambar != ""){ 
+				$("#f-sarana-create-" + loop + " [browser-id=v-sarana" + loop + "]").css('display', 'block'); 
+				$("#f-sarana-create-" + loop + " [viewer-id=v-sarana" + loop + "]").removeClass('changed').addClass('changed'); 
+				$("#f-sarana-create-" + loop + " [viewer-id=v-sarana" + loop + "]").attr('src',(data.sarana[loop].urlGambar != "") ? 'img/saranaPrasarana/'+data.sarana[loop].urlGambar : "img/sources/picture.png");
+				$("#f-sarana-create-" + loop + " [name=imageName]").html((data.sarana[loop].urlGambar != "") ? data.sarana[loop].urlGambar : "berkas belum diunggah...");
+			}
+		}else{
+			$("#f-sarana-create-" + loop + " [name=noreg]").val(data.sejarah.noRegistrasi);
+		}
+	}
+
 	//koleksi
 	$("#f-koleksi-create [name=noreg]").val(data.kelembagaan.noRegistrasi);
+	r_f1KoleksiDataGenerator(data.koleksi);
 
 	//hirarki
 	$("#f-hirarki-create [name=noreg]").val(data.kelembagaan.noRegistrasi);
+	r_f1HirarkiDataGenerator(data.hirarki);
 
 	//prestasi
 	$("#f-prestasi-create [name=noreg]").val(data.kelembagaan.noRegistrasi);
-	
+	r_f1PrestasiDataGenerator(data.prestasi);
 
 	//form reactor
 	p_formHandler("f-kelembagaan-create" , "updateData");
 	p_formHandler("f-sejarah-create" , "updateData");
 	p_formHandler("f-kepengurusan-create" , "updateData");
+	p_formHandler("f-kegiatanUsaha-create" , "updateData");
+	for(loop=0; loop<maxForm; loop++){
+		if(data.vUsaha[loop] != null){
+			p_formHandler("f-usaha-create-" + loop, "updateData");
+		}else{
+			p_formHandler("f-usaha-create-" + loop, "addData");
+		}
+
+		if(data.sarana[loop] != null){
+			p_formHandler("f-sarana-create-" + loop, "updateData");
+		}else{
+			p_formHandler("f-sarana-create-" + loop, "addData");
+		}
+	}
 }
 
 
@@ -1983,33 +2033,33 @@ function r_f1KoleksiGenerator(keyword){
 
 function r_f1KoleksiDataGenerator(data){
 	var genHtml = "";
-	if(data != null){
+	if(data != null && data[0] != null){
 		//render
 		for(counter = 0; counter < data.length; counter++){
 			genHtml = genHtml +
-			'<div id=koleksi-'+ data[0].idData +' class="cards">' +
+			'<div id=koleksi-'+ data[counter].idData +' class="cards">' +
 				'<div class="row default">' +
 					'<div class="col-xs-4">' +
 						'<div class="list-box">' +
 							'<div class="list-icon bg-green"><span class="fa fa-book"></span></div>' +
-							'<p class="list-text">' + data[0].judulKoleksi + '</p>' +
+							'<p class="list-text">' + data[counter].judulKoleksi + '</p>' +
 						'</div>' +
 					'</div>' +
 					'<div class="col-xs-5">' +
 						'<div class="list-box">' +
-							'<p class="list-text">' + data[0].deskripsi + '</p>' +
+							'<p class="list-text">' + data[counter].deskripsi + '</p>' +
 						'</div>' +
 					'</div>' +
 					'<div class="col-xs-3">' +
 						'<div class="list-box clear">' +
-							'<p class="list-text">' + data[0].jenisKoleksi + '</p>' +
+							'<p class="list-text">' + data[counter].jenisKoleksi + '</p>' +
 							'<div class="list-button click-option"' + 
-								'p-label		="' + data[0].judulKoleksi + '"' + 
-								'p-id			="' + data[0].idData + '"' +
-								'p-referencesKey="' + data[0].noreg + '"' +
+								'p-label		="' + data[counter].judulKoleksi + '"' + 
+								'p-id			="' + data[counter].idData + '"' +
+								'p-referencesKey="' + data[counter].noreg + '"' +
 								'p-group		="f1"' + 
 								'p-target		="f118"' +
-								'p-container	="koleksi-' + data[0].idData + '">' +
+								'p-container	="koleksi-' + data[counter].idData + '">' +
 								'<span class="fa fa-ellipsis-v"></span>' +
 							'</div>' +
 						'</div>' +
@@ -2018,9 +2068,9 @@ function r_f1KoleksiDataGenerator(data){
 				'</div>' +
 			'</div>';
 		}
-	} else {
+	} else { 
 		genHtml = genHtml +
-		'<div class="cards">' +
+		'<div class="cards" id="f-koleksi-empty-list">' +
 			'<div class="cards-header">' +
 				'<p class="fixed offset text-black">Data tidak ditemukan.</p>' +
 			'</div>' +
@@ -2150,23 +2200,23 @@ function r_f1PrestasiGenerator(data, type){
 
 function r_f1PrestasiDataGenerator(data){
 	var genHtml = "";
-	if(data != null){
+	if(data != null && data[0] != null){
 		//render
 		for(counter = 0; counter < data.length; counter++){
 			genHtml = genHtml +
-			'<div id=koleksi-'+ data[0].idData +' class="cards">' +
+			'<div id=koleksi-'+ data[counter].idData +' class="cards">' +
 				'<div class="row default">' +
 					'<div class="col-xs-12">' +
 						'<div class="list-box">' +
 							'<div class="list-icon bg-yellow"><span class="fa fa-trophy"></span></div>' +
-							'<p class="list-text">' + data[0].deskripsi + '</p>' +
+							'<p class="list-text">' + data[counter].deskripsi + '</p>' +
 							'<div class="list-button click-option"' + 
-								'p-label		="' + data[0].deskripsi + '"' + 
-								'p-id			="' + data[0].idData + '"' +
-								'p-referencesKey="' + data[0].noreg + '"' +
+								'p-label		="' + data[counter].deskripsi + '"' + 
+								'p-id			="' + data[counter].idData + '"' +
+								'p-referencesKey="' + data[counter].noreg + '"' +
 								'p-group		="f1"' + 
 								'p-target		="f119"' +
-								'p-container	="koleksi-' + data[0].idData + '">' +
+								'p-container	="koleksi-' + data[counter].idData + '">' +
 								'<span class="fa fa-ellipsis-v"></span>' +
 							'</div>' +
 						'</div>' +
@@ -2177,7 +2227,7 @@ function r_f1PrestasiDataGenerator(data){
 		}
 	} else {
 		genHtml = genHtml +
-		'<div class="cards">' +
+		'<div class="cards" id="f-prestasi-empty-list">' +
 			'<div class="cards-header">' +
 				'<p class="fixed offset text-black">Data tidak ditemukan.</p>' +
 			'</div>' +
@@ -2224,17 +2274,17 @@ function r_f1HirarkiDataGenerator(data){
 	if(data != null){
 		//render
 		for(counter = 0; counter < data.length; counter++){
-			if(data[0].hirarki == '0'){
+			if(data[counter].hirarki == '0'){
 				genHtml_parent = genHtml_parent +
-				'<div id=hirarki-parent-'+ data[0].noregTarget +' class="cards">' +
+				'<div id=hirarki-parent-'+ data[counter].noregTarget +' class="cards">' +
 					'<div class="row default">' +
 						'<div class="col-xs-12">' +
 							'<div class="list-box">' +
-								'<p class="list-text">' + data[0].namaLembaga + '</p>' +
+								'<p class="list-text">' + data[counter].namaLembaga + '</p>' +
 								'<div class="list-button click-option"' + 
-									'p-label		="' + data[0].namaLembaga + '"' + 
-									'p-id			="' + data[0].noreg + '"' +
-									'p-referencesKey="' + data[0].noregTarget + '"' +
+									'p-label		="' + data[counter].namaLembaga + '"' + 
+									'p-id			="' + data[counter].noreg + '"' +
+									'p-referencesKey="' + data[counter].noregTarget + '"' +
 									'p-group		="f1"' + 
 									'p-target		="f122"' +
 									'p-container	="hirarki-parent-' + data[0].noregTarget + '">' +
@@ -2247,18 +2297,18 @@ function r_f1HirarkiDataGenerator(data){
 				'</div>';
 			}else{
 				genHtml_child = genHtml_child +
-				'<div id=hirarki-child-'+ data[0].noregTarget +' class="cards">' +
+				'<div id=hirarki-child-'+ data[counter].noregTarget +' class="cards">' +
 					'<div class="row default">' +
 						'<div class="col-xs-12">' +
 							'<div class="list-box">' +
-								'<p class="list-text">' + data[0].namaLembaga + '</p>' +
+								'<p class="list-text">' + data[counter].namaLembaga + '</p>' +
 								'<div class="list-button click-option"' + 
-									'p-label		="' + data[0].namaLembaga + '"' + 
-									'p-id			="' + data[0].noreg + '"' +
-									'p-referencesKey="' + data[0].noregTarget + '"' +
+									'p-label		="' + data[counter].namaLembaga + '"' + 
+									'p-id			="' + data[counter].noreg + '"' +
+									'p-referencesKey="' + data[counter].noregTarget + '"' +
 									'p-group		="f1"' + 
 									'p-target		="f122"' +
-									'p-container	="hirarki-child-' + data[0].noregTarget + '">' +
+									'p-container	="hirarki-child-' + data[counter].noregTarget + '">' +
 									'<span class="fa fa-ellipsis-v"></span>' +
 								'</div>' +
 							'</div>' +

@@ -15,7 +15,8 @@ var optionD	 			= [];
 var optionBatch 		= [];
 var autoData			= [];
 var sourcesData			= [];
-var sourcesDetailData	= [];
+var sourcesDetailData	= []; 
+var maxForm 			= 4; //set max form
 
 /* packet data variable */
 var pGroup  		= "";
