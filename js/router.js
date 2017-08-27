@@ -94,14 +94,8 @@ function r_customCallBack(formType, group, target, recentId, formId, pId){
 		case 'f1' : //yama
 			switch(target){
 				case 'f111' :
-					$('#f-sejarah-create input[name="noreg"]').val(recentId);
-					$('#f-kelembagaan-create input[name="noreg"]').val(recentId);
-					$('#f-sarana-create input[name="noreg"]').val(recentId);
-					$('#f-kepengurusan-create input[name="noreg"]').val(recentId);
-					$('#f-kegiatanUsaha-create input[name="noreg"]').val(recentId);
-					$('#f-koleksi-create input[name="noreg"]').val(recentId);
-					$('#f-prestasi-create input[name="noreg"]').val(recentId);
 					$('#f-kelembagaan-create input[name="kelurahan"]').attr('readonly','readonly');
+					$("#" + formId + " [name=imageName]").html(recentId);
 					p_formHandler("f-kelembagaan-create", "updateData");
 				break;
 				case 'f112' :
@@ -158,6 +152,18 @@ function r_customCallBack(formType, group, target, recentId, formId, pId){
 					}];
 					
 					r_f1SejarahBantuanDataGenerator(dataFec);
+					clearTargetFormNoreg(formId, $('#' + formId + ' input[name="noreg"]').val());
+				break;
+				case 'f122' :
+					dataFec = [{ 
+							'idData' 		: recentId, 
+							'noreg'	 		: $('#' + formId + ' input[name="noreg"]').val(), 
+							'namaLembaga'	: $('#' + formId + ' input[name="namaLembaga"]').val(), 
+							'noregTarget'	: $('#' + formId + ' input[name="noregTarget"]').val(), 
+							'hirarki'		: $('#' + formId + ' select[name="hirarki"]').val(),
+					}];
+					
+					r_f1HirarkiDataGenerator(dataFec);
 					clearTargetFormNoreg(formId, $('#' + formId + ' input[name="noreg"]').val());
 				break;
 			}
@@ -265,8 +271,17 @@ function r_customCallBack(formType, group, target, recentId, formId, pId){
 
 function r_autoCompleteCallback(targetIndex, sources, sourcesDetail, ui, targetId){
 	switch (targetIndex){
+		case "hirarkiLembaga": 
+			var source_1 = sourcesDetail[1];
+			var source_2 = sourcesDetail[2]; 
+
+			$("#" + targetId).val(source_2[sources.indexOf(ui.item.value)]);
+			$("#" + targetId + "_kode").val(source_1[sources.indexOf(ui.item.value)]);
+			$("#" + targetId).on("keyup", function(){ 
+				$("#" + targetId + "_kode").val(""); 
+			});
+		break;
 		case "lingkupArea": 
-			console.log(targetId);
 			$("#" + targetId).val(sourcesDetail.list[sources.indexOf(ui.item.value)].namaKelurahan);
 			$("#" + targetId + "_2").val(sourcesDetail.list[sources.indexOf(ui.item.value)].namaKecamatan);
 			$("#" + targetId + "_3").val(sourcesDetail.list[sources.indexOf(ui.item.value)].namaWilayah);
@@ -276,9 +291,20 @@ function r_autoCompleteCallback(targetIndex, sources, sourcesDetail, ui, targetI
 			$("#" + targetId + "_kode2").val(sourcesDetail.list[sources.indexOf(ui.item.value)].kodeKecamatan);
 			$("#" + targetId + "_kode3").val(sourcesDetail.list[sources.indexOf(ui.item.value)].kodeWilayah);
 			$("#" + targetId + "_kode4").val(sourcesDetail.list[sources.indexOf(ui.item.value)].kodeProvinsi);
+			
+			$("#" + targetId).on("keyup", function(){ 
+				$("#" + targetId + "_2").val(""); 
+				$("#" + targetId + "_3").val(""); 
+				$("#" + targetId + "_4").val(""); 
+				$("#" + targetId + "_kode").val(""); 
+				$("#" + targetId + "_kode2").val(""); 
+				$("#" + targetId + "_kode3").val(""); 
+				$("#" + targetId + "_kode4").val(""); 
+			});
 		break;
 	}
 }
+
 function r_flexForm(){
 
 }

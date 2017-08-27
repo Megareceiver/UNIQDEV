@@ -19,14 +19,15 @@
 		// f414 : kelurahan
 		
 		switch($target){
-			case "f1110": $resultList = getListLembagaan($data); break;
-			case "f1111": $resultList = getDetailLembagaan($data); break;
-			case "f1112": $resultList = getFetchLembagaan($data); break;
-			case "f1113": $resultList = legalitasByNoreg($data); break;
-			case "f1114": $resultList = legalitasByBentukLembaga($data); break;
-			case "f117" : $resultList = getKoleksiSection($data); break;
-			case "f119" : $resultList = getPrestasiSection($data); break;
-			case "f141" : $resultList = getKoleksi($data); break;
+			case "f1110" : $resultList = getListLembagaan($data); break;
+			case "f11101": $resultList = getListAllLembagaan($data); break;
+			case "f1111" : $resultList = getDetailLembagaan($data); break;
+			case "f1112" : $resultList = getFetchLembagaan($data); break;
+			case "f1113" : $resultList = legalitasByNoreg($data); break;
+			case "f1114" : $resultList = legalitasByBentukLembaga($data); break;
+			case "f117"  : $resultList = getKoleksiSection($data); break;
+			case "f119"  : $resultList = getPrestasiSection($data); break;
+			case "f141"  : $resultList = getKoleksi($data); break;
 			
 			default	   : $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Terjadi kesalahan fatal, proses dibatalkan!", "feedData" => array()); break;
 		}
@@ -62,6 +63,7 @@
 			case "f119": $resultList = createPrestasiSection($target, $data); break;
 			case "f120": $resultList = createLegalitasSection($target, $data); break;
 			case "f121": $resultList = createSejarahBantuanSection($target, $data); break;
+			case "f122": $resultList = createHirarkiSection($target, $data); break;
 			default	   : $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Terjadi kesalahan fatal, proses dibatalkan!"); break;
 		}
 		
@@ -122,6 +124,7 @@
 			case "f118": $resultList = deleteKoleksiSection($target, $data); break;
 			case "f119": $resultList = deletePrestasiSection($target, $data); break;
 			case "f121": $resultList = deleteSejarahBantuanSection($target, $data); break;
+			case "f122": $resultList = deleteHirarkiSection($target, $data); break;
 			default	  : $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Terjadi kesalahan fatal, proses dibatalkan!"); break;
 		}
 		
@@ -344,6 +347,121 @@
 			$errorType  = "danger";
 			$errorMsg	= "Terjadi kesalahan, tidak dapat menentukan refferences key!";
 		} // return empty of array
+		
+		if($error == 1){
+			//error state
+			$resultList = array( "feedStatus" => "failed", "feedType" => $errorType, "feedMessage" => $errorMsg);
+		}
+		
+		/* result fetch */
+		$json = $resultList;
+		
+		return $json;
+	}
+
+	function getListAllLembagaan($data){
+		/* initial condition */
+		$resultList = array();
+		$table 		= "";
+		$field 		= array();
+		$rows		= 0;
+		$condition 	= "";
+		$orderBy	= "";
+		$error		= 0;
+		$errorType  = "";
+		$errorMsg	= "";
+		$dumb		= "";
+
+		/* open connection */ 
+		$gate = openGate();
+		if($gate){		
+			// connection = true
+			$sql = 	
+			"
+				SELECT * FROM (
+					SELECT  
+						`noRegistrasi` as noreg,
+						CONCAT_WS(' ', `namaBentukLembaga`, `nama`) as caption,
+						CONCAT_WS(' ', `namaBentukLembaga`, `nama`, '|', `alamat`, 'RT.',`noRt`, '/', 'RW.', `noRw`, `namaKelurahan`, `namaKecamatan`, `namaWilayah`, `namaProvinsi`) as nama
+					FROM 
+						dplega_000_lembaga_temp l
+					JOIN
+						dplega_100_provinsi p ON l.kodeProvinsi = p.kodeProvinsi
+					JOIN
+						dplega_101_wilayah w ON l.kodeWilayah = w.kodeWilayah
+					JOIN
+						dplega_102_kecamatan kc ON l.kodeKecamatan = kc.kodeKecamatan
+					JOIN
+						dplega_103_kelurahan kl ON l.kodeKelurahan = kl.kodeKelurahan 
+					JOIN
+						dplega_200_bentuklembaga b ON l.kodeBentukLembaga = b.kodeBentukLembaga 
+					WHERE 
+						l.statusAktif <> '0'
+				) as table_1
+				UNION
+				SELECT * FROM (
+					SELECT  
+						`noRegistrasi` as noreg,
+						CONCAT_WS(' ', `namaBentukLembaga`, `nama`) as caption,
+						CONCAT_WS(' ', `namaBentukLembaga`, `nama`, '|', `alamat`, 'RT.',`noRt`, '/', 'RW.', `noRw`, `namaKelurahan`, `namaKecamatan`, `namaWilayah`, `namaProvinsi`) as nama
+					FROM 
+						dplega_000_lembaga l 
+					JOIN
+						dplega_100_provinsi p ON l.kodeProvinsi = p.kodeProvinsi
+					JOIN
+						dplega_101_wilayah w ON l.kodeWilayah = w.kodeWilayah
+					JOIN
+						dplega_102_kecamatan kc ON l.kodeKecamatan = kc.kodeKecamatan
+					JOIN
+						dplega_103_kelurahan kl ON l.kodeKelurahan = kl.kodeKelurahan 
+					JOIN
+						dplega_200_bentuklembaga b ON l.kodeBentukLembaga = b.kodeBentukLembaga 
+					WHERE 
+						l.statusAktif <> '0'
+				) as table_3
+			";
+
+			$result = mysqli_query($gate, $sql);
+			if($result){
+				$record		= array();  
+				$fetch 	   = array(); 
+				if(mysqli_num_rows($result) > 0) {
+					// output data of each row 
+					while($row = mysqli_fetch_assoc($result)) {
+						$fetch = array(
+							"noreg" 	=> $row['noreg'],
+							"caption" 	=> $row['caption'],
+							"nama" 		=> $row['nama']
+						);
+						
+						array_push($record, $fetch); 
+						unset($fetch); 
+						$fetch = array();
+					}
+				}else {
+					$record = array(
+						"noreg" 	=> '',
+						"caption" 	=> '',
+						"nama" 		=> ''
+					);
+				}
+
+				$resultList = array( "feedStatus" => "success", "feedMessage" => "Data ditemukan!", "feedData" => $record);
+			}else{
+				//error state
+				$error		= 1;
+				$errorType  = "danger";
+				$errorMsg	= "Terjadi kesalahan, tidak dapat terhubung ke server!";
+			}		
+				
+			closeGate($gate);
+		}else {
+			//error state
+			$error		= 1;
+			$errorType  = "danger";
+			$errorMsg	= "Terjadi kesalahan, tidak dapat terhubung ke server!";
+		}
+	
 		
 		if($error == 1){
 			//error state
@@ -4327,6 +4445,117 @@
 		return $json;
 	}
 
+	function createHirarkiSection($target, $data){
+		/* initial condition */
+		$resultList = array();
+		$table 		= "";
+		$field 		= array();
+		$rows		= 0;
+		$condition 	= "";
+		$orderBy	= "";
+		$error		= 0;
+		$resultType = "";
+		$resultMsg	= "";
+		$counter	= "";
+		$idRecent	= "";
+		$idTemp		= "";
+		$dumbTable  = "";
+		$noreg		= "";
+		
+		/* validation */
+		if(
+			!isset($data['noreg']) || $data['noreg']=="" ||
+			!isset($data['hirarki']) || $data['hirarki']=="" ||
+			!isset($data['noregTarget']) || $data['noregTarget']==""
+		){ $error = 1; }
+
+		if($error != 1){
+			/* open connection */
+			$gate = openGate();
+			if($gate){
+			// connection = true
+				//checking section
+				$noreg	= $data['noreg'];
+				$sql 	= " SELECT noRegistrasi FROM dplega_000_lembaga WHERE noRegistrasi = '".$noreg."'";
+				$result = mysqli_query($gate, $sql);
+				if(mysqli_num_rows($result) > 0) {
+					$dumbTable = "";
+				}else{
+					$sql 	= " SELECT noRegistrasi FROM dplega_000_lembaga_temp WHERE noRegistrasi = '".$noreg."'";
+					$result = mysqli_query($gate, $sql);
+					if(mysqli_num_rows($result) > 0) {
+						$dumbTable = "_temp";
+					}else{
+						//error state
+						$error		= 1;
+						$errorType  = "danger";
+						$errorMsg	= "Terjadi kesalahan, data tidak dikenal!";
+					}
+				}
+
+				if($error != 1){
+					$sql = " INSERT INTO dplega_011_hirarkilembaga".$dumbTable."
+						(
+							noRegistrasi,
+							hirarki,
+							noRegistrasiTarget,
+							createdBy
+						)
+						VALUES
+						(
+							'".$data['noreg']."',
+							'".$data['hirarki']."',
+							'".$data['noregTarget']."',
+							'TESTSESSION'
+						)
+					";
+				
+					$result	  = mysqli_query($gate, $sql);
+					if($result){	
+						$error	    = 0;
+						$resultType = "success";
+						$resultMsg  = "Input berhasil disimpan.";
+					}else{
+						//error state
+						$error		= 1;
+						$resultType = "danger";
+						$resultMsg	= "Terjadi kesalahan fatal, input gagal disimpan! ".$eresult;
+					}
+
+				}else{
+					//error state
+					$error		= 1;
+					$resultType = "danger";
+					$resultMsg	= "Terjadi kesalahan fatal, tidak dapat mengenali data!";
+				}
+				
+				closeGate($gate);
+			}else{
+				//error state
+				$error		= 1;
+				$resultType = "danger";
+				$resultMsg	= "Terjadi kesalahan, tidak dapat terhubung ke server!";
+			}
+		}else{
+			//error state
+			$error		= 1;
+			$resultType = "danger";
+			$resultMsg	= "Terjadi kesalahan, mandatory tidak boleh kosong!";
+		}
+		
+		if($error == 1){
+			//error state
+			$resultList = array( "feedStatus" => "failed", "feedType" => $resultType, "feedMessage" => $resultMsg);
+		}else{
+			$resultList = array( "feedStatus" => "success", "feedType" => $resultType, "feedMessage" => $resultMsg, "feedId" => "");
+		}
+		
+		/* result fetch */
+		$json = $resultList;
+		
+		return $json;
+	}
+
 	function deletePrestasiSection($target, $data){
 		/* initial condition */
 		$resultList = array();
@@ -4465,6 +4694,98 @@
 
 				if($error != 1){
 					$sql = "DELETE FROM dplega_010_riwayatbantuan".$dumbTable." WHERE idData ='".$data['pId']."' AND noRegistrasi = '".$noreg."'";
+					
+					$result = mysqli_query($gate, $sql);
+					if($result){	
+						$error	    = 0;
+						$resultType = "success";
+						$resultMsg  = "data berhasil dihapus.";		
+					}else{
+						//error state
+						$error		= 1;
+						$resultType = "danger";
+						$resultMsg	= "Terjadi kesalahan fatal, data gagal dihapus! ";
+					}
+				}else{
+					//error state
+					$error		= 1;
+					$resultType = "danger";
+					$resultMsg	= "Terjadi kesalahan, tidak dapat mengenali data!";
+				}
+
+				closeGate($gate);
+			}else{
+				//error state
+				$error		= 1;
+				$resultType = "danger";
+				$resultMsg	= "Terjadi kesalahan, tidak dapat terhubung ke server!";
+			}
+		}else{
+			//error state
+			$error		= 1;
+			$resultType = "danger";
+			$resultMsg	= "Terjadi kesalahan, ID tidak ditemukan!";
+		}
+		
+		if($error == 1){
+			//error state
+			$resultList = array( "feedStatus" => "failed", "feedType" => $resultType, "feedMessage" => $resultMsg);
+		}else{
+			$resultList = array( "feedStatus" => "success", "feedType" => $resultType, "feedMessage" => $resultMsg, "feedId" => $data['pId']);
+		}
+		
+		/* result fetch */
+		$json = $resultList;
+		
+		return $json;
+	}
+
+	function deleteHirarkiSection($target, $data){
+		/* initial condition */
+		$resultList = array();
+		$table 		= "";
+		$field 		= array();
+		$rows		= 0;
+		$condition 	= "";
+		$orderBy	= "";
+		$error		= 0;
+		$resultType = "";
+		$resultMsg	= "";
+		$counter	= "";
+		$dumbTable  = "";
+		$noreg 	  	= "";
+
+		/* validation */
+		if(	
+			   isset($data['pId']) && $data['pId'] != "" 
+			&& isset($data['refferenceId']) && $data['refferenceId'] != "")
+		{
+			
+			/* open connection */ 
+			$gate = openGate();
+			if($gate){		
+				// connection = true
+				//checking section
+				$noreg  = $data['refferenceId'];
+				$sql 	= " SELECT noRegistrasi FROM dplega_000_lembaga WHERE noRegistrasi = '".$noreg."'";
+				$result = mysqli_query($gate, $sql);
+				if(mysqli_num_rows($result) > 0) {
+					$dumbTable = "";
+				}else{
+					$sql 	= " SELECT noRegistrasi FROM dplega_000_lembaga_temp WHERE noRegistrasi = '".$noreg."'";
+					$result = mysqli_query($gate, $sql);
+					if(mysqli_num_rows($result) > 0) {
+						$dumbTable = "_temp";
+					}else{
+						//error state
+						$error		= 1;
+						$errorType  = "danger";
+						$errorMsg	= "Terjadi kesalahan, data tidak dikenal!";
+					}
+				}
+
+				if($error != 1){
+					$sql = "DELETE FROM dplega_011_hirarkilembaga".$dumbTable." WHERE noRegistrasi ='".$data['pId']."' AND noRegistrasiTarget = '".$noreg."'";
 					
 					$result = mysqli_query($gate, $sql);
 					if($result){	

@@ -304,6 +304,7 @@ function autoCompleteActivator(targetId, sources, sourcesDetail, targetIndex){
       source: sources,
 	  select: function(event, ui){
 		r_autoCompleteCallback(targetIndex, sources, sourcesDetail, ui, $(this).attr('id'));
+		
 		return false;
 	  }
     });

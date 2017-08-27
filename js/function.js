@@ -98,3 +98,16 @@ function imgPreview(event, viewer, elem) {
 		output.src = URL.createObjectURL(event.target.files[0]);
 	}
 };
+
+
+/* fecth array */
+function lembagaFetchArray(data){
+	var res = [[],[],[]];
+	for(var loop=0; loop<data.length; loop++){
+		res[1].push(data[loop].noreg);
+		res[0].push(data[loop].nama);
+		res[2].push(data[loop].caption);
+	}
+	
+	return res;
+}
