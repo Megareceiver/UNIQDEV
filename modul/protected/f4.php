@@ -21,10 +21,7 @@
 		switch($target){
 			case "f40": $resultList = getLingkupAreaSection(); break;
 			case "f401": $resultList = getLingkupAreaListSection(); break;
-			// case "f411": $resultList = getProvinsi($data); break;
-			// case "f412": $resultList = getProvinsi($data); break;
-			// case "f413": $resultList = getProvinsi($data); break;
-			// case "f414": $resultList = getProvinsi($data); break;
+			case "f412": $resultList = getWilayahOnlyListSection($data); break;
 
 			case "f421": $resultList = getGrupVerifikasi(); break;
 			case "f422": $resultList = getVerifikasi(); break;
@@ -174,6 +171,7 @@
 			if($result){
 				if(mysqli_num_rows($result) > 0) {
 					// output data of each row
+					$fetchTemp		= "";
 					$fetch 	  		= array();
 					$fetchDetail	= array();
 					$record    		= array();
@@ -182,8 +180,7 @@
 						
 						unset($fetch); $fetch = array();
 						
-						$fetch = $row['namaKelurahan'].", ".$row['namaKecamatan']." ".$row['namaWilayah']." | ".$row['namaProvinsi'];
-						
+						$fetch 		   = $row['namaKelurahan'].", ".$row['namaKecamatan']." ".$row['namaWilayah']." | ".$row['namaProvinsi'];
 						$fetchDetail = array(
 									"kodeKelurahan" => $row['kodeKelurahan'],
 									"namaKelurahan" => $row['namaKelurahan'],
@@ -193,6 +190,84 @@
 									"namaWilayah" 	=> $row['namaWilayah'],
 									"kodeProvinsi" 	=> $row['kodeProvinsi'],
 									"namaProvinsi" 	=> $row['namaProvinsi']
+								);
+						
+						array_push($record, $fetch); 
+						array_push($recordDetail, $fetchDetail); 
+
+					}
+					
+					$resultList = array( "feedStatus" => "succes", "feedMessage" => "Data ditemukan!", "feedData" => array($record), "feedDataDetail" =>  array("list" => $recordDetail));
+				}else {
+					$resultList = array( "feedStatus" => "succes", "feedMessage" => "Data tidak ditemukan!", "feedData" => null);
+				}
+			}			
+				
+			closeGate($gate);
+		}else {
+			//error state
+			$error		= 1;
+			$errorType  = "danger";
+			$errorMsg	= "Terjadi kesalahan, tidak dapat terhubung ke server!";
+		}
+		
+		
+		if($error == 1){
+			//error state
+			$resultList = array( "feedStatus" => "failed", "feedType" => $errorType, "feedMessage" => $errorMsg);
+		}
+		
+		/* result fetch */
+		$json = $resultList;
+		
+		return $json;
+	}
+
+	function getWilayahOnlyListSection(){
+		/* initial condition */
+		$resultList = array();
+		$table 		= "";
+		$field 		= array();
+		$rows		= 0;
+		$condition 	= "";
+		$orderBy	= "";
+		$error		= 0;
+		$errorType  = "";
+		$errorMsg	= "";
+	
+		/* open connection */ 
+		$gate = openGate();
+		if($gate){		
+			// connection = true
+			$sql = 	"	SELECT 
+							wl.kodeWilayah,
+							wl.namaWilayah,
+							CONCAT_WS(' ', namaWilayah, '-', namaProvinsi) as nama
+						FROM
+							dplega_100_provinsi pr
+						JOIN
+							dplega_101_wilayah wl
+							ON pr.kodeProvinsi = wl.kodeProvinsi
+						ORDER BY namaWilayah ASC, namaProvinsi ASC
+					";
+						
+			$result = mysqli_query($gate, $sql);
+			if($result){
+				if(mysqli_num_rows($result) > 0) {
+					// output data of each row
+					$fetchTemp		= "";
+					$fetch 	  		= array();
+					$fetchDetail	= array();
+					$record    		= array();
+					$recordDetail   = array();
+					while($row = mysqli_fetch_assoc($result)) {
+						
+						unset($fetch); $fetch = array();
+						
+						$fetch 		 = $row['nama'];
+						$fetchDetail = array(
+									"kodeWilayah" 	=> $row['kodeWilayah'],
+									"namaWilayah" 	=> $row['namaWilayah']
 								);
 						
 						array_push($record, $fetch); 

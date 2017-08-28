@@ -317,6 +317,7 @@ function autoCompleteActivator(targetId, sources, sourcesDetail, targetIndex){
     });
 }
 
+/* maps */
 function openMaps(lng,lat){
 	var url = "https://maps.google.com/?q=" + lat + "," + lng;
 	window.open(url);

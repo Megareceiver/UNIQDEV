@@ -100,7 +100,6 @@ function p_getData(group, target, keyword, refferences){
 		data: { keyword : keyword, refferences: refferences },
 		success: function(result){
 			data = result;
-			console.log(data);
 		}
 	});
 	

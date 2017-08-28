@@ -193,7 +193,7 @@ function r_f3FormUser() {
 
 		dataAccess = [
 			{
-				'group': "Kelembagaan", "list": 
+				'module': 'kelembagaan', 'group': "Kelembagaan", "list": 
 				[
 					{"id": "kelembagaan-lihat", "state": "checked='checked'"},
 					{"id": "kelembagaan-tambah", "state": ""},
@@ -202,7 +202,7 @@ function r_f3FormUser() {
 				]
 			},
 			{
-				'group': "Lingkup Area", "list": 
+				'module': 'lingkupArea', 'group': "Lingkup Area", "list": 
 				[
 					{"id": "lingkupArea-lihat", "state": "checked='checked'"},
 					{"id": "lingkupArea-tambah", "state": ""},
@@ -211,7 +211,7 @@ function r_f3FormUser() {
 				]
 			},
 			{
-				'group': "Pengaturan kelembagaan", "list": 
+				'module': 'pengatuanKelembagaan', 'group': "Pengaturan kelembagaan", "list": 
 				[
 					{"id": "pengaturanKelembagaan-lihat", "state": "checked='checked'"},
 					{"id": "pengaturanKelembagaan-tambah", "state": ""},
@@ -220,7 +220,7 @@ function r_f3FormUser() {
 				]
 			},
 			{
-				'group': "Pengaturan verifikasi", "list": 
+				'module': 'pengaturanVerifikasi', 'group': "Pengaturan verifikasi", "list": 
 				[
 					{"id": "pengaturanVerifikasi-lihat", "state": "checked='checked'"},
 					{"id": "pengaturanVerifikasi-tambah", "state": ""},
@@ -229,7 +229,7 @@ function r_f3FormUser() {
 				]
 			},
 			{
-				'group': "Berita", "list": 
+				'module': 'berita', 'group': "Berita", "list": 
 				[
 					{"id": "berita-lihat", "state": "checked='checked'"},
 					{"id": "berita-tambah", "state": ""},
@@ -238,7 +238,7 @@ function r_f3FormUser() {
 				]
 			},
 			{
-				'group': "Konfigurasi & pemeliharaan aplikasi", "list": 
+				'module': 'kofigurasi', 'group': "Konfigurasi & pemeliharaan aplikasi", "list": 
 				[
 					{"id": "konfigurasi-lihat", "state": "checked='checked'"},
 					{"id": "konfigurasi-tambah", "state": ""},
@@ -248,7 +248,17 @@ function r_f3FormUser() {
 			}
 
 		];
-		
+
+
+		//-- get data lingkup area
+		dataTemp 		  	= p_getData('f4', 'f401', '');
+		sourcesData 	  	= dataTemp.feedData[0];
+		sourcesDetailData 	= dataTemp.feedDataDetail;
+
+		dataTemp 		  	= p_getData('f4', 'f412', '');
+		sourcesWilayah 		= dataTemp.feedData[0];
+		sourcesWilayahDetail= dataTemp.feedDataDetail;
+
 		counter = 0;
 		data = p_getData('f4', 'f431', '');
 		data = data.feedData;
@@ -273,7 +283,7 @@ function r_f3FormUser() {
 				'<div class="row default">' +
 					'<div class="col-md-6">' +
 						'<div class="input-box">' +
-							'<input placeholder="Nama user" name="nama" tabindex="1" type="text" value="" />' +
+							'<input placeholder="Nama user (*)" name="nama" tabindex="1" type="text" value="" />' +
 						'</div>' +
 						'<div class="input-box">' +
 							'<input placeholder="Jabatan" name="jabatan" tabindex="1" type="text" value="" />' +
@@ -316,11 +326,11 @@ function r_f3FormUser() {
 						'<div class="input-box">' +
 							'<input name="telp" placeholder="Telp (*)" tabindex="2" type="text" value="" />' +
 						'</div>' +
-					'</div>' +
-					'<div class="col-md-6">' +
 						'<div class="input-box">' +
 							'<input name="email" placeholder="Email (*)" tabindex="2" type="text" value="" />' +
 						'</div>' +
+					'</div>' +
+					'<div class="col-md-6">' +
 						'<div class="input-box">' +
 							'<input name="username" placeholder="Username (*)" tabindex="2" type="text" value="" />' +
 						'</div>' +
@@ -333,11 +343,12 @@ function r_f3FormUser() {
 						'<div class="input-box">' +
 							'<p>Batasi wilayah (optional)</p>' +
 						'</div>' +
-						'<div class="select-box">' +
-							'<select name="batasWilayah" tabindex="2">' +
-								'<option value="" selected>Pilih wilayah</option>' +
-								r_optionDHtml('wilayah') +
-							'</select>' +
+						'<div class="input-box">' +
+							'<div class="icon-box left">' +
+								'<input id="batasWilayah" name="wilayah" placeholder="Pilih wilayah" tabindex="1" type="text" value="" />' +
+								'<input id="batasWilayah_kode" name="kodeWilayah" tabindex="2" type="hidden" value="" />' +
+								'<span class="fa fa-magic"></span>' +
+							'</div>' +
 						'</div>' +
 						'<div class="input-box">' +
 							'<p>Pilih foto</p>' +
@@ -368,7 +379,7 @@ function r_f3FormUser() {
 					'<div class="col-md-4">' +
 						'<div class="input-box">' +
 							'<p>Pengaturan akses untuk setiap user.</p>' +
-							'<p><b>Akses menu</b> &nbsp; <!--span class="click text-pink" id="selectAll">Pilih semua</span--></p>' +
+							'<p><b>Akses menu</b> &nbsp; <span class="click text-pink" id="selectAll">Pilih semua</span></p>' +
 						'</div>' +
 					'</div>' +
 					'<div class="col-md-2">' +
@@ -401,6 +412,7 @@ function r_f3FormUser() {
 					'<div class="col-md-4">' +
 						'<div class="input-box">' +
 							'<p>' + dataAccess[loop].group + '</p>' +
+					  		'<input name="module" value="' + dataAccess[loop].module + '" type="hidden">' +
 						'</div>' +
 					'</div>';
 			for(loopY=0; loopY<dataAccess[loop].list.length; loopY++){		
@@ -461,17 +473,30 @@ function r_f3FormUser() {
 			});
 		});
 
-		// $("#selectAll").unbind().on("click", function(){
-		// 	if($(this).html() == "Pilih semua"){
-		// 		$(".check-box input").attr('checked', '');
-		// 		$(this).html("Bersihkan");
-		// 	}else{
-		// 		$(".check-box input").removeAttr('checked');
-		// 		$(this).html("Pilih semua");
-		// 	}
-		// });
+		$('#selectAll').click(function(event) {
+		  	if($(this).html() == "Pilih semua"){
+			     // Iterate each checkbox
+			     $(':checkbox').each(function() {
+			          this.checked = true;
+			     });
 
+			     $(this).html("Bersihkan");
+		  	}
+		  	else {
+			    $(':checkbox').each(function() {
+			          this.checked = false;
+			     });
+			    $(this).html("Pilih semua");
+		  	}
+		});
+
+		fileBrowserActivator();
+		imagePreviewActivator();
 		r_navbarReactor();
+
+		//autocomplete
+		autoCompleteActivator("f111_lingkupArea", sourcesData, sourcesDetailData, "lingkupArea");
+		autoCompleteActivator("batasWilayah", sourcesWilayah, sourcesWilayahDetail, "batasWilayah");
 	
 		//form reactor
 		p_formHandler("f-bentukLembaga-create" , "addData");

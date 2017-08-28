@@ -308,6 +308,13 @@ function r_autoCompleteCallback(targetIndex, sources, sourcesDetail, ui, targetI
 				$("#" + targetId + "_kode4").val(""); 
 			});
 		break;
+		case "batasWilayah": 
+			$("#" + targetId).val(sourcesDetail.list[sources.indexOf(ui.item.value)].namaWilayah);
+			$("#" + targetId + "_kode").val(sourcesDetail.list[sources.indexOf(ui.item.value)].kodeWilayah);
+			$("#" + targetId).on("keyup", function(){ 
+				$("#" + targetId + "_kode").val(""); 
+			});
+		break;
 	}
 }
 
