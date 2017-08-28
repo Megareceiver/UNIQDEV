@@ -269,6 +269,11 @@ function r_customCallBack(formType, group, target, recentId, formId, pId){
 					clearTargetForm('f-bidangGerak-create');
 					p_formHandler("f-bidangGerak-create" , "addData");
 				break;
+				case 'f441':
+					$("#f-berita-create [name=imgName]").html("berkas belum diunggah...");
+					$("#f-berita-create [browser-id=gambar-berita] ").css('display', 'none'); 
+					clearTargetForm('f-berita-create');
+				break;
 			}
 		break;
 	}

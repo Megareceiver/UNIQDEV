@@ -29,6 +29,8 @@
 			case "f431": $resultList = getKelembagaanSection($target); break;
 			case "f432": $resultList = getKelembagaanSection($target); break;
 			case "f433": $resultList = getKelembagaanSection($target); break;
+
+			case "f441": $resultList = getDaftarBeritaSection($target); break;
 		
 			default	   : $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Terjadi kesalahan fatal, proses dibatalkan!", "feedData" => array()); break;
 		}
@@ -442,6 +444,89 @@
 		
 		return $json;
 	}
+
+	function getDaftarBeritaSection($data){
+		/* initial condition */
+		$resultList = array();
+		$table 		= "";
+		$field 		= array();
+		$rows		= 0;
+		$condition 	= "";
+		$orderBy	= "";
+		$error		= 0;
+		$errorType  = "";
+		$errorMsg	= "";
+	
+		/* open connection */ 
+		$gate = openGate();
+		if($gate){
+			$sql = "";
+			$key = $data['keyword'];
+			// connection = true
+			if($key == 'all'){
+				$sql = 	
+				"SELECT
+					idData,
+					judulBerita,
+					deskripsi
+				FROM dplega_230_berita
+				";
+
+			}
+		// else{
+			// 	$sql = 	
+			// 	"SELECT 
+			// 		judulBerita,
+			// 		deskripsi,
+			// 		urlGambar
+			// 	fROM dplega_230_berita
+			// 	WHERE idData = '".$data['idData']."'
+			// 	";			
+			// }
+						
+			$result = mysqli_query($gate, $sql);
+			if($result){
+				$record    = array();  
+				$fetch 	   = array(); 
+				if(mysqli_num_rows($result) > 0) {
+					// output data of each row 
+					while($row = mysqli_fetch_assoc($result)) {
+						$fetch = array(
+									"noId"   		=> $row['idData'],
+									"judul"   	 	=> $row['judulBerita'],
+									"isiBerita" 	=> $row['deskripsi']
+								);
+						
+						array_push($record, $fetch); 
+						unset($fetch); 
+						$fetch = array();
+					}
+					
+					$resultList = array( "feedStatus" => "succes", "feedMessage" => "Data ditemukan!", "feedData" => $record);
+				}else {
+					$resultList = array( "feedStatus" => "succes", "feedMessage" => "Data tidak ditemukan!", "feedData" => null);
+				}
+			}			
+				
+			closeGate($gate);
+		}else {
+			//error state
+			$error		= 1;
+			$errorType  = "danger";
+			$errorMsg	= "Terjadi kesalahan, tidak dapat terhubung ke server!";
+		}
+		
+		
+		if($error == 1){
+			//error state
+			$resultList = array( "feedStatus" => "failed", "feedType" => $errorType, "feedMessage" => $errorMsg);
+		}
+		
+		/* result fetch */
+		$json = $resultList;
+		
+		return $json;
+	}
 	
 	function getKelembagaanSection($target){
 		/* initial condition */
@@ -590,6 +675,8 @@
 			case "f431": $resultList = createKelembagaanSection($target, $data); break;
 			case "f432": $resultList = createKelembagaanSection($target, $data); break;
 			case "f433": $resultList = createKelembagaanSection($target, $data); break;
+
+			case "f441": $resultList = createDaftarBeritaSection($target, $data); break;
 			default	  : $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Terjadi kesalahan fatal, proses dibatalkan!"); break;
 		}
 		
@@ -955,6 +1042,119 @@
 		if($error == 1){
 			//error state
 			$resultList = array( "feedStatus" => "failed", "feedType" => $resultType, "feedMessage" => $resultMsg);
+		}else{
+			$resultList = array( "feedStatus" => "success", "feedType" => $resultType, "feedMessage" => $resultMsg, "feedId" => $resultId);
+		}
+		
+		/* result fetch */
+		$json = $resultList;
+		
+		return $json;
+	}
+
+	function createDaftarBeritaSection($target, $data){
+		/* initial condition */
+		$resultList = array();
+		$table 		= "";
+		$field 		= array();
+		$rows		= 0;
+		$condition 	= "";
+		$orderBy	= "";
+		$error		= 0;
+		$resultType = "";
+		$resultMsg	= "";
+		$counter	= "";
+		$resultId	= "";
+		
+		/* validation */
+		if(
+			!isset($data['judul']) || $data['judul']==""
+			|| !isset($data['isiBerita']) || $data['isiBerita']==""
+		){ $error = 1; }
+		
+		if($error != 1){
+			
+			/* open connection */ 
+			$gate = openGate();
+			if($gate){		
+				// connection = true
+				$sql = 	
+				"
+					INSERT INTO dplega_230_berita
+					(
+						judulBerita,
+						deskripsi,
+						createdBy
+					)
+					VALUES
+					(
+						'".$data['judul']."',
+						'".$data['isiBerita']."',
+						'TESTSESSION'
+					)
+				";
+				
+				$result = mysqli_query($gate, $sql);
+				$erres  = mysqli_error($gate);
+				if($result){	
+					$error	    = 0;
+					$resultType = "success";
+					$resultMsg  = "Input berhasil disimpan.";	
+					$resultId	= mysqli_insert_id($gate);
+
+					/*upload image*/
+						$validextensions = array("jpeg", "jpg", "png", "gif");
+						$temporary = explode(".", $_FILES["urlFile"]["name"]);
+						$file_extension = end($temporary);
+						$file_name = "berkas belum diunggah...";					
+						if (in_array($file_extension, $validextensions)) {						
+							if ($_FILES["urlFile"]["error"] > 0)
+							{
+								$upload_message = $_FILES["urlFile"];
+							}
+							else
+							{		
+								$file_name = $resultId."_news".".".$file_extension;				
+								$sourcePath = $_FILES['urlFile']['tmp_name']; // Storing source path of the file in a variable
+								$targetPath = "img/news/".$file_name; // Target path where file is to be stored
+								if(move_uploaded_file($sourcePath,"../".$targetPath)){ /*Moving Uploaded file*/
+									$sql = "
+										UPDATE dplega_230_berita
+										SET 
+										urlGambar = '".$file_name."' 
+										WHERE
+										noRegistrasi = idData = '".$resultId."'
+									";
+
+									$result = mysqli_query($gate, $sql);									
+								}								
+							}
+						}
+					/*upload end*/		
+				}else{
+					//error state
+					$error		= 1;
+					$resultType = "danger";
+					$resultMsg	= "Terjadi kesalahan fatal, input gagal disimpan! ".$erres;
+				}
+				
+				closeGate($gate);
+			}else{
+				//error state
+				$error		= 1;
+				$resultType = "danger";
+				$resultMsg	= "Terjadi kesalahan, tidak dapat terhubung ke server!";
+			}
+		}else{
+			//error state
+			$error		= 1;
+			$resultType = "danger";
+			$resultMsg	= "Terjadi kesalahan, mandatory tidak boleh kosong!";
+		}
+		
+		if($error == 1){
+			//error state
+			$resultList = array( "feedStatus" => "failed", "feedType" => $resultType, "feedMessage" => $resultMsg );
 		}else{
 			$resultList = array( "feedStatus" => "success", "feedType" => $resultType, "feedMessage" => $resultMsg, "feedId" => $resultId);
 		}
@@ -1360,6 +1560,8 @@
 			case "f431": $resultList = deleteKelembagaanSection($target, $data); break;
 			case "f432": $resultList = deleteKelembagaanSection($target, $data); break;
 			case "f433": $resultList = deleteKelembagaanSection($target, $data); break;
+
+			case "f441": $resultList = deleteDaftarBeritaSection($target, $data); break;
 			default	  : $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Terjadi kesalahan fatal, proses dibatalkan!"); break;
 		}
 		

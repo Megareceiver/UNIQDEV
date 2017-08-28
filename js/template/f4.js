@@ -2074,37 +2074,39 @@ function r_f4DaftarBerita() {
 		body  	= '';
 		part	= ['',''];
 		content = '';
-		data 	= [
-			{'id': '1', 'title': 'Pembukaan Bantuan Dana Hibah 2017 telah dibuka !', 'description': 'Bantuan Dana Hibah kini telah dibuka, kepada para lembaga yang membutuhkan data, untuk segera mengirimkan proposal permohonan dan persyaratan-persyaratan yang diperlukan be ...'},
-			{'id': '2', 'title': 'Penutupan Bantuan Dana Hibah 2016 !', 'description': 'Lembaga yang ikut serta diwajibkan melaporkan penggunaan dana secara lengkap dan baik, pelaporan dilakukan terakhir pada tanggal yang telah ditentukan sebelumnya, de ...'},
-		];
-		
+		// data 	= [
+		// 	{'id': '1', 'title': 'Pembukaan Bantuan Dana Hibah 2017 telah dibuka !', 'description': 'Bantuan Dana Hibah kini telah dibuka, kepada para lembaga yang membutuhkan data, untuk segera mengirimkan proposal permohonan dan persyaratan-persyaratan yang diperlukan be ...'},
+		// 	{'id': '2', 'title': 'Penutupan Bantuan Dana Hibah 2016 !', 'description': 'Lembaga yang ikut serta diwajibkan melaporkan penggunaan dana secara lengkap dan baik, pelaporan dilakukan terakhir pada tanggal yang telah ditentukan sebelumnya, de ...'},
+		// ];
+		data 	= p_getData("f4", "f441", "all"); 
+		console.log(data);
 		//--open
 		head	= '';
 		body	= '<div class="row no-head"><div class="container">';
 		body	= body + '<div class="col-md-8 col-md-offset-2">';
 		body 	= body + 
+		'<form id="f-berita-create" f-group = "f4" f-target = "f441">' +
 		'<div class="cards">' +
 			'<div class="cards-header">' +
 				'<h4>Berita</h4>' +
 				'<p class="offset">form untuk menambahkan berita.</p>' +
 				'<div class="btn-collapse right">' +
 					'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
-					'<button class="clear" type="button"><span class="fa fa-check-circle-o"></span></button>' +
+					'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
 				'</div>' +
 			'</div>' +
 		'</div>' +
 		'<div class="cards flush">' +
-			'<form id="f-berita-create">' +
+			// '<form id="f-berita-create">' +
 				'<div class="row default">' +
 					'<div class="col-md-12">' +
 						'<div class="input-box">' +
-							'<input placeholder="Judul" tabindex="2" type="text" value="" />' +
+							'<input name="judul" placeholder="Judul" tabindex="2" type="text" value="" />' +
 						'</div>' +
 					'</div>' +
 					'<div class="col-md-12">' +
 						'<div class="input-box rows-4">' +
-							'<textarea placeholder="Isi berita" tabindex="2" class="rows-4"></textarea>' +
+							'<textarea name="isiBerita" placeholder="Isi berita" tabindex="2" class="rows-4"></textarea>' +
 						'</div>' +
 					'</div>' +
 					'<div class="col-md-12">' +
@@ -2113,8 +2115,8 @@ function r_f4DaftarBerita() {
 						'<div class="input-box fixed">' +
 							'<div class="icon-box both">' +
 								'<label class="browser-box" id="gambar-berita">' +
-									'<p class="placeholder">berkas belum diunggah...</p>' +
-									'<input type="file" tabindex="32" />' +
+									'<p class="placeholder" name="imgName">berkas belum diunggah...</p>' +
+									'<input name="urlFile" type="file" tabindex="32" />' +
 								'</label>' +
 								'<button type="button" browser-id="gambar-berita" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
 								'<span class="left fa fa-paperclip text-purple"></span>' +
@@ -2162,8 +2164,10 @@ function r_f4DaftarBerita() {
 		//--command reactor
 		$(".back-button").unbind().on('click', function(){ r_navigateTo(4); });
 		$(".detail-click").unbind().on('click', function(){ r_navigateTo(441); });
+
 		fileBrowserActivator();
 		r_navbarReactor();
+		p_formHandler("f-berita-create"  , "addData");
 	});
 }
 
