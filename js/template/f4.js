@@ -829,6 +829,65 @@ function r_f4LingkupAreaDataGenerator(formType, type, data, sectionId){
 	});
 }
 
+function r_f4BeritaGenerator(data){
+	var genHtml = "";
+	if(data != null){
+		// genHtml = genHtml +
+		// '<div class="cards-label plus emptyList">' +
+		// 	'<p>' +
+		// 		'<strong>Daftar berita (<span id=counter>' + counter + '</span>)</strong>' +
+		// 	'</p>' +
+		// '</div>';
+		for(var loop = 0; loop < data.length; loop++){	
+			$('.emptyList').remove();
+			genHtml = genHtml +
+			'<div class="cards clear" id = "berita-'+data[loop].idBerita+'">' +
+				'<div class="article-box">' +
+					'<div class="body">' +
+						'<p class="title">' + data[loop].judul + '</p>	' +
+						'<p class="content">' + data[loop].isiBerita + '</p>' +
+					'</div>' +
+					'<div class="foot">' +
+						'<button '+
+							'id 		= "'+data[loop].idBerita +'" '+
+							'title 		= "'+data[loop].judul +'" '+
+							'description= "'+data[loop].isiBerita+'" '+
+						'type="button" class="clear btn-link detail-click text-cyan">Baca lebih lanjut</button> | ' +
+						'<button id-button = '+data[loop].idBerita+' type="reset" class="clear btn-link text-pink">Hapus</button>' +
+					'</div>' +
+				'</div>' +
+			'</div>';
+		}
+	}else{
+		genHtml = genHtml +
+		'<div class="cards emptyList">' +
+			'<div class="row default">' +
+				'<div class="col-xs-12">' +
+					'<div class="list-box text-center clear">' +
+						'<p class="list-text">Data tidak ditemukan</p>' +
+					'</div>' +
+				'</div>' +
+			'</div>' +
+		'</div>';
+	}
+	$('#renderData').append(genHtml);
+	$('#renderData  [type=reset]').unbind().on("click", function(e){
+			e.preventDefault();
+			idBerita = $(this).attr('id-button');
+			showOptionConfirm('delete');
+			$(".option-yes").unbind().on("click", function(){ 
+				hideOptionList();
+				if(p_removeData('f4', 'f441', idBerita) == 'success'){
+					$('#berita-'+idBerita).remove();
+				}; 
+			});
+		});
+	$(".detail-click").unbind().on('click', function(){
+	idDetail = $(this).attr('id');
+	 r_navigateTo(441,idDetail); 
+	});
+}
+
 //F4 TRANSFER LEMBAGA
 //=====================================
 function r_f4TransferLembaga() {
@@ -2074,12 +2133,16 @@ function r_f4DaftarBerita() {
 		body  	= '';
 		part	= ['',''];
 		content = '';
+		genHtml = '';
+		data = p_getData('f4','f441','');
+		data = data.feedData;
+		if(data !=null){
+			counter = data.length;
+		}
 		// data 	= [
 		// 	{'id': '1', 'title': 'Pembukaan Bantuan Dana Hibah 2017 telah dibuka !', 'description': 'Bantuan Dana Hibah kini telah dibuka, kepada para lembaga yang membutuhkan data, untuk segera mengirimkan proposal permohonan dan persyaratan-persyaratan yang diperlukan be ...'},
 		// 	{'id': '2', 'title': 'Penutupan Bantuan Dana Hibah 2016 !', 'description': 'Lembaga yang ikut serta diwajibkan melaporkan penggunaan dana secara lengkap dan baik, pelaporan dilakukan terakhir pada tanggal yang telah ditentukan sebelumnya, de ...'},
 		// ];
-		data 	= p_getData("f4", "f441", "all"); 
-		console.log(data);
 		//--open
 		head	= '';
 		body	= '<div class="row no-head"><div class="container">';
@@ -2115,7 +2178,7 @@ function r_f4DaftarBerita() {
 						'<div class="input-box fixed">' +
 							'<div class="icon-box both">' +
 								'<label class="browser-box" id="gambar-berita">' +
-									'<p class="placeholder" name="imgName">berkas belum diunggah...</p>' +
+									'<p class="placeholder" name="imgName" id="berkas">berkas belum diunggah...</p>' +
 									'<input name="urlFile" type="file" tabindex="32" />' +
 								'</label>' +
 								'<button type="button" browser-id="gambar-berita" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
@@ -2125,29 +2188,14 @@ function r_f4DaftarBerita() {
 					'</div>' +
 				'</div>' +
 			'</form>' +
-		'</div>' +
-		'<div class="cards-label plus">' +
-			'<p>' +
-				'<strong>Daftar berita (' + data.length + ')</strong>' +
-			'</p>' +
 		'</div>';
-		
+
 		//--render data
-		for(var loop = 0; loop < data.length; loop++){	
 			body = body +
-			'<div class="cards clear">' +
-				'<div class="article-box">' +
-					'<div class="body">' +
-						'<p class="title">' + data[loop].title + '</p>	' +
-						'<p class="content">' + data[loop].description + '</p>' +
-					'</div>' +
-					'<div class="foot">' +
-						'<button type="button" class="clear btn-link detail-click">Baca lebih lanjut</button>' +
-					'</div>' +
-				'</div>' +
-			'</div>';
-		}
+			'<div id="renderData">';
 		
+			body = body + '</div>';
+		//--render data end
 		body	= body + '</div></div></div>';
 		content = '<section id="">' + head + body + '</section>';
 		//--close
@@ -2165,9 +2213,36 @@ function r_f4DaftarBerita() {
 		$(".back-button").unbind().on('click', function(){ r_navigateTo(4); });
 		$(".detail-click").unbind().on('click', function(){ r_navigateTo(441); });
 
+		r_f4BeritaGenerator(data);
 		fileBrowserActivator();
 		r_navbarReactor();
 		p_formHandler("f-berita-create"  , "addData");
+		$('#renderData  [type=reset]').unbind().on("click", function(e){
+			e.preventDefault();
+			idBerita = $(this).attr('id-button');
+			showOptionConfirm('delete');
+			$(".option-yes").unbind().on("click", function(){ 
+				hideOptionList();
+				if(p_removeData('f4', 'f441', idBerita) == 'success'){
+					counter = counter -1;
+					$('#berita-'+idBerita).remove();
+					console.log(counter);
+					if(counter == 0){
+						genHtml = genHtml +
+						'<div class="cards emptyList">' +
+							'<div class="row default">' +
+								'<div class="col-xs-12">' +
+									'<div class="list-box text-center clear">' +
+										'<p class="list-text">Data tidak ditemukan</p>' +
+									'</div>' +
+								'</div>' +
+							'</div>' +
+						'</div>';
+						$('#renderData').html(genHtml);
+					}
+				}; 
+			});
+		});
 	});
 }
 
@@ -2179,30 +2254,32 @@ function r_f4DetailBerita(packet) {
 		body  	= '';
 		part	= ['',''];
 		content = '';
-		data 	= [
-			{'id': '1', 'title': 'Pembukaan Bantuan Dana Hibah 2017 telah dibuka !', 'picture': 'avatar-default.jpg', 'description': 'Bantuan Dana Hibah kini telah dibuka, kepada para lembaga yang membutuhkan data, untuk segera mengirimkan proposal permohonan dan persyaratan-persyaratan yang diperlukan berdasarkan PERGUB 2017'},
-		];
-		
+		// data 	= [
+		// 	{'id': '1', 'title': 'Pembukaan Bantuan Dana Hibah 2017 telah dibuka !', 'picture': 'avatar-default.jpg', 'description': 'Bantuan Dana Hibah kini telah dibuka, kepada para lembaga yang membutuhkan data, untuk segera mengirimkan proposal permohonan dan persyaratan-persyaratan yang diperlukan berdasarkan PERGUB 2017'},
+		// ];
+		data = p_getData('f4','f441', packet);
+		data = data.feedData;
+		console.log(data);
 		//--open
 		head	= '';
 		body	= '<div class="row no-head"><div class="container">';
 		body	= body + '<div class="col-md-8 col-md-offset-2">';
 
 		//--render data
-		for(var loop = 0; loop < data.length; loop++){	
+		for(var loop = 0; loop < data.length; loop++){
 			body = body +
 			'<div class="cards clear">' +
 				'<div class="article-box">' +
 					'<div class="body no-foot">' +
-						'<p class="title">' + data[loop].title + '</p>	';
+						'<p class="title">' + data[loop].judul + '</p>	';
 			
 			if(data[loop].picture != ""){
 				body = body +
-				'<img class="left" src="img/news/' + data[loop].picture + '"/>';
+				'<img class="left" src="img/news/' + data[loop].urlGambar + '"/>';
 			}
 			
 			body = body +
-						'<p class="content">' + data[loop].description + '</p>' +
+						'<p class="content">' + data[loop].isiBerita + '</p>' +
 					'</div>' +
 				'</div>' +
 			'</div>';
