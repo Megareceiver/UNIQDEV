@@ -283,6 +283,17 @@ function r_customCallBack(formType, group, target, recentId, formId, pId){
 					clearTargetForm('f-bidangGerak-create');
 					p_formHandler("f-bidangGerak-create" , "addData");
 				break;
+				case 'f441':
+					dataFec = [{
+							'idBerita'		: recentId,
+							'judul'			: $('#f-berita-create input[name="judul"]').val(),
+							'isiBerita'		: $('#f-berita-create textarea[name="isiBerita"]').val(),
+					}];
+					r_f4BeritaGenerator(dataFec);
+					$("#f-berita-create [name=imgName]").html("berkas belum diunggah...");
+					$("#f-berita-create [browser-id=gambar-berita] ").css('display', 'none'); 
+					clearTargetForm('f-berita-create');
+				break;
 			}
 		break;
 	}
