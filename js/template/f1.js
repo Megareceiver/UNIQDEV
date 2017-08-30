@@ -283,13 +283,14 @@ function r_f1LembagaGenerator(data){
 					tempB +
 				'</p>' +
 			'</div>';
-			
+			var temPic = "";
 			for(var loopY = 0; loopY < data.lembaga[loop].list.length; loopY++){	
+				temPic = (data.lembaga[loop].list[loopY].picture != "") ? 'img/logo/' + data.lembaga[loop].list[loopY].picture : 'img/logo/avatar-5.jpg';
 				genHtml = genHtml +
 				'<div id="' + data.lembaga[loop].list[loopY].id + '" class="cards clear">' +
 					'<div class="description-box">' +
 						'<div class="click-frame">' +
-							'<img class="icon-set" src="img/logo/' + data.lembaga[loop].list[loopY].picture + '"/>' +
+							'<img class="icon-set" src="' + temPic + '"/>' +
 							'<p class="title-set">' + data.lembaga[loop].list[loopY].nama + '</p>' +
 							'<div class="text-set">' +
 								'<span class="id-set">' + data.lembaga[loop].list[loopY].noreg + '</span>' +
@@ -346,7 +347,7 @@ function r_f1DetailLembaga(packet) {
 		body  	= '';
 		part	= ['',''];
 		content = '';
-		
+	
 		if(packet == undefined || packet == "" || packet == null || packet == "start"){
 			packet = profile_look_reader();
 		}
@@ -358,8 +359,10 @@ function r_f1DetailLembaga(packet) {
 		data = data.feedData;
 		
 		//-- set option list on a session
-		if(data.option != null){
+		if(data != null && data.option != undefined){
 			optionBatch = data.option;
+		}else{
+			r_navigateTo(99); return false;
 		}
 		
 		//--open
@@ -369,16 +372,21 @@ function r_f1DetailLembaga(packet) {
 		part[1] = '<div class="col-md-9">';
 		
 		//--left
+		var temPic = "";
+		temPic = (data.profile[0].avatar != "") ? 'img/logo/' + data.profile[0].avatar : 'img/logo/avatar-5.jpg';
 		part[0] = part[0] +
 		'<div class="cards clear">' +
 			'<div class="cards-banner-blank long smalltron-ground">' +
 				'<div class="user-frame">' +
-					'<img src="img/avatar/' + data.profile[0].avatar + '">' +
+					'<img src="' + temPic + '">' +
 					'<p class="caption">' +
 						'<span class="big">' + data.profile[0].nama + '</span>' +
 						'<span>Yayasan</span>' +
 					'</p>' +
-					'<button class="btn-option btn-default click-option" p-id="' + data.profile[0].noreg + '" p-label="' + data.profile[0].nama + '"><i class="fa fa-ellipsis-h"></i></button>' +
+					'<button class="btn-option btn-default click-option" ' + 
+						'p-group		="f1"' + 
+						'p-target		="f111"' +
+						'p-id="' + data.profile[0].noreg + '" p-label="' + data.profile[0].nama + '"><i class="fa fa-ellipsis-h"></i></button>' +
 				'</div>' +
 			'</div>' +
 		'</div>' +
@@ -520,6 +528,7 @@ function r_f1DetailLembaga(packet) {
 		
 		//--gen
 		var temp = 3;
+		if(String(r_getCookie('userLevel')) == '1'){ temp = 0; }
 		headPage.html(r_headPageHtml(temp, 'Profil lembaga'));
 		mainPage.html(content).animate({'opacity': '1'},'fast','linear');
 		$("#preload").remove();
@@ -529,6 +538,8 @@ function r_f1DetailLembaga(packet) {
 		$(".click-option").unbind().on("click", function(){ 
 			//packet session
 			clearPacket();
+			pGroup 			= $(this).attr('p-group');
+			pTarget			= $(this).attr('p-target');
 			pId				= $(this).attr('p-id');
 			pLabel			= $(this).attr('p-label');
 			showOptionList(); 
@@ -536,6 +547,18 @@ function r_f1DetailLembaga(packet) {
 			//-- popup
 			$("#verification-card").unbind().on("click", function(){ hideOptionList(); r_navigateTo(13, $(this).attr('p-id')); });
 			$("#edit-card").unbind().on("click", function(){ hideOptionList(); r_navigateTo(15, $(this).attr('p-id')); });
+			$("#delete-card").unbind().on("click", function(){ 
+				hideOptionList(); 
+				showOptionConfirm('delete');
+				$(".option-yes").unbind().on("click", function(){ 
+					hideOptionList(); 
+					if(p_removeData(pGroup, pTarget, pId) == 'success'){ 
+						r_navigateTo(r_pagePreviousReader());
+					}; 
+				});
+			});
+
+			$("#logout-card").unbind().on("click", function(){ hideOptionList(); r_clearCookies(); r_navigateTo(); });
 		});
 
 		$("#go-maps").unbind().on("click", function(){ 
@@ -600,8 +623,11 @@ function r_f1FormKelembagaan(packet){
 		//-- get kode bentuk lembaga for legalitas
 		var bentukLembaga = r_bentukLembagaReader();
 		dataLegalitas = p_getData('f1','f1114','',bentukLembaga[0]);
-		dataLegalitas = dataLegalitas.feedData;
-
+		if(dataLegalitas != null){ 
+			dataLegalitas = dataLegalitas.feedData;
+		}else{
+			dataLegalitas.feedData = null;
+		}
 		//-- get data koleksi
 		dataKoleksi = p_getData('f1', 'f117','');
 
@@ -704,12 +730,12 @@ function r_f1FormKelembagaan(packet){
 				'<input name="telp" placeholder="Telp (*)" tabindex="2" type="text" value="" />' +
 			'</div>' +
 			'<div class="input-box">' +
-				'<input name="email" placeholder="Email (*)" tabindex="2" type="text" value="" />' +
+				'<input name="email" placeholder="Email (*)" tabindex="2" type="email" value="" />' +
 			'</div>' +
 			'<div class="input-box"><p>Google Maps</p></div>' +
 			'<div class="input-box">' +
-				'<input name="langitude" placeholder="Longitude" tabindex="1" class="half" type="text" value="" />' +
 				'<input name="latitude" placeholder="Latitude" tabindex="1" class="half" type="text" value="" />' +
+				'<input name="langitude" placeholder="Longitude" tabindex="1" class="half" type="text" value="" />' +
 			'</div>' +
 		'</div>';
 		
@@ -1527,7 +1553,9 @@ function r_f1FormKelembagaan(packet){
 		//--close
 		
 		//--gen
-		headPage.html(r_headPageHtml(3, 'Form lembaga'));
+		var temp = 3;
+		if(String(r_getCookie('userLevel')) == '1'){ temp = 2; }
+		headPage.html(r_headPageHtml(temp, 'Form lembaga'));
 		mainPage.html(content).animate({'opacity': '1'},'fast','linear');
 		r_f1legaitasGenerator(dataLegalitas); //generate legalitas form
 		$("#preload").remove();
@@ -1620,6 +1648,9 @@ function r_f1FormKelembagaan(packet){
 					});
 				}
 			});
+
+
+			numberOnlyActivator("[name=telp], [name=rt], [name=rw]");
 		}
 		//generate data for editing
 		if(packet != "" && packet != null){ r_f1FormKelembagaanDataGenerator(packet); }		
@@ -1634,6 +1665,10 @@ function r_f1FormKelembagaanDataGenerator(packet){
 	data = data.feedData;
 
 	//kelembagaan
+	var bentukLembaga = r_bentukLembagaReader();
+	var tex = '<option value="' + data.kelembagaan.kodeBentukLembaga + '" selected>' + data.kelembagaan.namaBentukLembaga + '</option>';
+	$("#f-kelembagaan-create [name=bentukLembaga]").append(tex);
+
 	$("#f-kelembagaan-create [name=noreg]").val(data.kelembagaan.noRegistrasi);
 	$("#f-kelembagaan-create [name=nama]").val(data.kelembagaan.nama);
 	$("#f-kelembagaan-create [name=alamat]").val(data.kelembagaan.alamat);
@@ -1679,18 +1714,18 @@ function r_f1FormKelembagaanDataGenerator(packet){
 	$("#f-sejarah-create [name=tanggalBerdiri]").val(data.sejarah.tanggalDidirikan);
 	$("#f-sejarah-create [name=kepemilikan]").val(data.sejarah.kepemilikan);
 	$("#f-sejarah-create [name=statusTanah]").val(data.sejarah.statusTanah);
-	$("#f-sejarah-create [name=sertifikasi]").val(data.sejarah.statusSertifikasi);
+	$("#f-sejarah-create [name=sertifikasi]").val((data.sejarah.statusSertifikasi != "" && data.sejarah.statusSertifikasi != null) ? data.sejarah.statusSertifikasi : "Belum");
 	$("#f-sejarah-create [name=luasTanah]").val(data.sejarah.luasTanah);
 	$("#f-sejarah-create [name=satuanT]").val(data.sejarah.satuanLuasTanah);
 	$("#f-sejarah-create [name=luasBangun]").val(data.sejarah.luasBangunan);
 	$("#f-sejarah-create [name=satuanB]").val(data.sejarah.satuanLuasBangunan);
-	$("#f-sejarah-create [name=kondisiBangunan]").val((data.sejarah.kondisiBangunan != "") ? data.sejarah.kondisiBangunan : "Baik");
-	$("#f-sejarah-create [name=saranaPrasarana]").val(data.sejarah.statusSarana);
+	$("#f-sejarah-create [name=kondisiBangunan]").val((data.sejarah.kondisiBangunan != "" && data.sejarah.kondisiBangunan != null) ? data.sejarah.kondisiBangunan : "Baik");
+	$("#f-sejarah-create [name=saranaPrasarana]").val((data.sejarah.statusSarana != "" && data.sejarah.statusSarana != null) ? data.sejarah.statusSarana : "Tidak ada");
 	$("#f-sejarah-create [name=imageName]").html((data.sejarah.urlGambarStrukturKepengurusan != "") ? data.sejarah.urlGambarStrukturKepengurusan : "berkas belum diunggah...");
 	$("#f-sejarah-create [name=imageUrl]").val("");
 	$("#f-sejarah-create [name=bahasa]").val(data.sejarah.bahasaPengantar);
-	$("#f-sejarah-create [name=sensus]").val(data.sejarah.statusSensus);
-	$("#f-sejarah-create [name=bantuan]").val(data.sejarah.statusBantuanPemerintah);
+	$("#f-sejarah-create [name=sensus]").val((data.sejarah.statusSensus != "" && data.sejarah.statusSensus != null) ? data.sejarah.statusSensus : "Belum");
+	$("#f-sejarah-create [name=bantuan]").val((data.sejarah.statusBantuanPemerintah != "" && data.sejarah.statusBantuanPemerintah != null) ? data.sejarah.statusBantuanPemerintah : "Belum");
 	$("#f-sejarah-create [name=kondisiGeo]").val(data.sejarah.kondisiGeografis);
 	$("#f-sejarah-create [name=potensi]").val(data.sejarah.potensiWilayah);
 	$("#f-sejarah-create [name=jenisWilayah]").val(data.sejarah.jenisWilayah);
@@ -1715,7 +1750,7 @@ function r_f1FormKelembagaanDataGenerator(packet){
 	$("#f-kepengurusan-create [name=kodeProvinsi]").val(data.kepengurusan.kodeProvinsi);
 	$("#f-kepengurusan-create [name=provinsi]").val(data.kepengurusan.namaProvinsi);
 	$("#f-kepengurusan-create [name=telp]").val(data.kepengurusan.noTelp);
-	$("#f-kepengurusan-create [name=wargaNegara]").val(data.kepengurusan.kewarganegaraan);
+	$("#f-kepengurusan-create [name=wargaNegara]").val((data.kepengurusan.kewarganegaraan == "" || data.kepengurusan.kewarganegaraan == null) ? 'WNI' : data.kepengurusan.kewarganegaraan);
 	$("#f-kepengurusan-create [name=tempatLahir]").val(data.kepengurusan.tempatLahir);
 	$("#f-kepengurusan-create [name=tanggalLahir]").val(data.kepengurusan.tempatLahir);
 	$("#f-kepengurusan-create [name=jenisKelamin]").val(data.kepengurusan.jenisKelamin);
@@ -1812,87 +1847,89 @@ function r_f1FormKelembagaanDataGenerator(packet){
 function r_f1legaitasGenerator(dataFecth){
 	var genHtml 	= "";
 	var fileChecker	= "";
-	for(var loop=0; loop<dataFecth.items.length; loop++){
-		
-		fileChecker = (dataFecth.items[loop].urlFile != "") ? dataFecth.items[loop].urlFile : 'berkas belum diunggah...';
+	if(dataFecth != null && dataFecth.items != undefined){
+		for(var loop=0; loop<dataFecth.items.length; loop++){
+			
+			fileChecker = (dataFecth.items[loop].urlFile != "") ? dataFecth.items[loop].urlFile : 'berkas belum diunggah...';
 
-		genHtml = genHtml + 
-		'<form id="f-legalitas-create-' + loop + '" f-group = "f1" f-target = "f120">' +
-			'<div class="cards flush ">' +
-				'<div class="cards-header">' +
-					'<h5>' + dataFecth.items[loop].namaLegalitas + '</h5>' +
-					'<div class="btn-collapse right">' +
-						'<button class="clear" type="reset"' + 
-							'p-label		="' + dataFecth.items[loop].namaLegalitas + '"' + 
-							'p-id			="' + dataFecth.items[loop].kodePersyaratan + '"' +
-							'p-referencesKey="' + dataFecth.items[loop].noRegistrasi + '"' +
-							'p-group		="f1"' + 
-							'p-target		="f120"' +
-							'p-container	="f-legalitas-create-' + loop + '">' +
-						'<span class="fa fa-refresh"></span></button>' +
-						'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
-					'</div>' + 
-				'</div>' +
-				'<div class="input-box">' +
-					'<input name="noreg" tabindex="5" type="hidden" value="' + dataFecth.noRegistrasi + '" />' +
-					'<input name="kodePersyaratan" tabindex="5" type="hidden" value="' + dataFecth.items[loop].kodePersyaratan + '" />' +
-					'<input name="nomorLegalitas" placeholder="Nomor (*)" tabindex="5" type="text" value="' + dataFecth.items[loop].noLegalitas + '" />' +
-				'</div>' +
-				'<div class="input-box">' +
-					'<div class="icon-box left">' +
-						'<input name="tanggalLegalitas" class="date" placeholder="Tanggal (*)" tabindex="5" type="text" value="' + dataFecth.items[loop].tanggalLegalitas + '" />' +
-						'<span class="fa fa-calendar"></span>' +
-					'</div>' + 
-				'</div>' +
-				'<div class="input-box">' +
-					'<div class="icon-box both">' +
-						'<label class="browser-box" id="legalitas-' + dataFecth.items[loop].kodePersyaratan + '">' +
-							'<p class="placeholder" name="imageName">' + fileChecker + '</p>' +
-							'<input name="imageUrl" accept="image/*" type="file" tabindex="5" />' +
-							'<input browser-state="fileState" name="fileState" type="hidden" tabindex="5" value="add" />' +
-						'</label>' +
-						'<button type="button" browser-id="legalitas-' + dataFecth.items[loop].kodePersyaratan + '" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
-						'<span class="left fa fa-paperclip text-purple"></span>' +
+			genHtml = genHtml + 
+			'<form id="f-legalitas-create-' + loop + '" f-group = "f1" f-target = "f120">' +
+				'<div class="cards flush ">' +
+					'<div class="cards-header">' +
+						'<h5>' + dataFecth.items[loop].namaLegalitas + '</h5>' +
+						'<div class="btn-collapse right">' +
+							'<button class="clear" type="reset"' + 
+								'p-label		="' + dataFecth.items[loop].namaLegalitas + '"' + 
+								'p-id			="' + dataFecth.items[loop].kodePersyaratan + '"' +
+								'p-referencesKey="' + dataFecth.items[loop].noRegistrasi + '"' +
+								'p-group		="f1"' + 
+								'p-target		="f120"' +
+								'p-container	="f-legalitas-create-' + loop + '">' +
+							'<span class="fa fa-refresh"></span></button>' +
+							'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
+						'</div>' + 
+					'</div>' +
+					'<div class="input-box">' +
+						'<input name="noreg" tabindex="5" type="hidden" value="' + dataFecth.noRegistrasi + '" />' +
+						'<input name="kodePersyaratan" tabindex="5" type="hidden" value="' + dataFecth.items[loop].kodePersyaratan + '" />' +
+						'<input name="nomorLegalitas" placeholder="Nomor (*)" tabindex="5" type="text" value="' + dataFecth.items[loop].noLegalitas + '" />' +
+					'</div>' +
+					'<div class="input-box">' +
+						'<div class="icon-box left">' +
+							'<input name="tanggalLegalitas" class="date" placeholder="Tanggal (*)" tabindex="5" type="text" value="' + dataFecth.items[loop].tanggalLegalitas + '" />' +
+							'<span class="fa fa-calendar"></span>' +
+						'</div>' + 
+					'</div>' +
+					'<div class="input-box">' +
+						'<div class="icon-box both">' +
+							'<label class="browser-box" id="legalitas-' + dataFecth.items[loop].kodePersyaratan + '">' +
+								'<p class="placeholder" name="imageName">' + fileChecker + '</p>' +
+								'<input name="imageUrl" accept="image/*" type="file" tabindex="5" />' +
+								'<input browser-state="fileState" name="fileState" type="hidden" tabindex="5" value="add" />' +
+							'</label>' +
+							'<button type="button" browser-id="legalitas-' + dataFecth.items[loop].kodePersyaratan + '" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
+							'<span class="left fa fa-paperclip text-purple"></span>' +
+						'</div>' +
 					'</div>' +
 				'</div>' +
-			'</div>' +
-		'</form>';
-	}
-
-	$("#legalitas-frame").html(genHtml);
-
-	for(var loop=0; loop<dataFecth.items.length; loop++){
-		p_formHandler('f-legalitas-create-' + loop,'addData');
-		if(dataFecth.items[loop].urlFile != ""){ 
-			$("[browser-id=legalitas-" + dataFecth.items[loop].kodePersyaratan + "]").css('display', 'block'); 
+			'</form>';
 		}
 
-		$('#f-legalitas-create-' + loop + " [type=reset]").unbind().on("click", function(e){
-			e.preventDefault(); 
-			showOptionConfirm('delete');
-			clearPacket();
-			pGroup 			= $(this).attr('p-group');
-			pTarget			= $(this).attr('p-target')
-			pId				= $(this).attr('p-id');
-			pLabel			= $(this).attr('p-label');
-			pContainer		= $(this).attr('p-container');
-			pReferences		= $(this).attr('p-references');
-			pReferencesKey	= $(this).attr('p-referencesKey');
-			$(".option-yes").unbind().on("click", function(){ 
-				if(p_removeData(pGroup, pTarget, pId, pReferencesKey) == 'success'){ 
-					hideOptionList(); 
-					$("#" + pContainer + " [browser-id=legalitas-" + pId + "]").css('display', 'none'); 
-					$("#" + pContainer + " [name=imageName]").html("berkas belum diunggah...");
-					clearTargetFormId(pContainer, $('#' + pContainer + ' input[name="noreg"]').val(), $('#' + pContainer + ' input[name="kodePersyaratan"]').val(), "kodePersyaratan");
-					clearPacket();
-				}; 
-			});
-		});
-	}
+		$("#legalitas-frame").html(genHtml);
 
-	//command reactor
-	datePickerActivator();
-	fileBrowserActivator();
+		for(var loop=0; loop<dataFecth.items.length; loop++){
+			p_formHandler('f-legalitas-create-' + loop,'addData');
+			if(dataFecth.items[loop].urlFile != ""){ 
+				$("[browser-id=legalitas-" + dataFecth.items[loop].kodePersyaratan + "]").css('display', 'block'); 
+			}
+
+			$('#f-legalitas-create-' + loop + " [type=reset]").unbind().on("click", function(e){
+				e.preventDefault(); 
+				showOptionConfirm('delete');
+				clearPacket();
+				pGroup 			= $(this).attr('p-group');
+				pTarget			= $(this).attr('p-target')
+				pId				= $(this).attr('p-id');
+				pLabel			= $(this).attr('p-label');
+				pContainer		= $(this).attr('p-container');
+				pReferences		= $(this).attr('p-references');
+				pReferencesKey	= $(this).attr('p-referencesKey');
+				$(".option-yes").unbind().on("click", function(){ 
+					if(p_removeData(pGroup, pTarget, pId, pReferencesKey) == 'success'){ 
+						hideOptionList(); 
+						$("#" + pContainer + " [browser-id=legalitas-" + pId + "]").css('display', 'none'); 
+						$("#" + pContainer + " [name=imageName]").html("berkas belum diunggah...");
+						clearTargetFormId(pContainer, $('#' + pContainer + ' input[name="noreg"]').val(), $('#' + pContainer + ' input[name="kodePersyaratan"]').val(), "kodePersyaratan");
+						clearPacket();
+					}; 
+				});
+			});
+		}
+
+		//command reactor
+		datePickerActivator();
+		fileBrowserActivator();
+	}
 }
 
 //F1 SEJARAH

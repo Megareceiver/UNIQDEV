@@ -191,7 +191,7 @@ button.main:hover { background-color: #BF245A; color: #FFF !important }
 .picture-box {
 	position: relative;
 	width: 100%;
-	height: 200px;
+	height: 300px;
 	margin: 15px 0 20px 0;
 	background-color: rgba(0,0,0,0.1);
 }
@@ -1410,7 +1410,7 @@ footer.parent .author-box img { height: 30px; float: right }
 
 #home .banner-black {
 	height: 100%;
-	background-image: url(../img/city_transparent.png);
+	/*background-image: url(../img/city_transparent.png);*/
 	background-repeat: no-repeat;
 	background-size: contain;
 	background-position: bottom center;

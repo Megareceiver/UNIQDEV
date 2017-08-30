@@ -36,6 +36,13 @@ $(function(){
 	// keeping data provinsi, wilayah, kecamatan, kelurahan to global variable
 	optionD = p_getData('f4', 'f40', '');
 	optionD = optionD.feedData;
+
+	/*temp*/
+	if(String(r_getCookie("userLevel")) != "1"){
+		$("#navigation .user-frame img").attr('src', 'img/avatar/' +String(r_getCookie("avatar")));
+		$("#navigation .user-frame p.caption span").html(String(r_getCookie("username")));
+		$("#navigation .user-frame p.caption span.big").html(String(r_getCookie("nama")));
+	}
 });
 
 /* navigation */
@@ -174,6 +181,13 @@ function r_customCallBack(formType, group, target, recentId, formId, pId){
 				break;
 			}
 		break;
+		case 'f3': //megan
+			switch(target){
+				case 'f31' :
+					r_navigateTo(3);
+				break;
+			}
+		break;
 		case 'f4': //megan
 			switch(target){
 				case 'f411':
@@ -284,7 +298,9 @@ function r_autoCompleteCallback(targetIndex, sources, sourcesDetail, ui, targetI
 			$("#" + targetId).val(source_2[sources.indexOf(ui.item.value)]);
 			$("#" + targetId + "_kode").val(source_1[sources.indexOf(ui.item.value)]);
 			$("#" + targetId).on("keyup", function(){ 
-				$("#" + targetId + "_kode").val(""); 
+				if($(this).val() == ""){
+					$("#" + targetId + "_kode").val(""); 
+				}
 			});
 		break;
 		case "lingkupArea": 
@@ -299,13 +315,15 @@ function r_autoCompleteCallback(targetIndex, sources, sourcesDetail, ui, targetI
 			$("#" + targetId + "_kode4").val(sourcesDetail.list[sources.indexOf(ui.item.value)].kodeProvinsi);
 			
 			$("#" + targetId).on("keyup", function(){ 
-				$("#" + targetId + "_2").val(""); 
-				$("#" + targetId + "_3").val(""); 
-				$("#" + targetId + "_4").val(""); 
-				$("#" + targetId + "_kode").val(""); 
-				$("#" + targetId + "_kode2").val(""); 
-				$("#" + targetId + "_kode3").val(""); 
-				$("#" + targetId + "_kode4").val(""); 
+				if($(this).val() == ""){
+					$("#" + targetId + "_2").val(""); 
+					$("#" + targetId + "_3").val(""); 
+					$("#" + targetId + "_4").val(""); 
+					$("#" + targetId + "_kode").val(""); 
+					$("#" + targetId + "_kode2").val(""); 
+					$("#" + targetId + "_kode3").val(""); 
+					$("#" + targetId + "_kode4").val(""); 
+				}
 			});
 		break;
 		case "batasWilayah": 
@@ -377,6 +395,9 @@ function r_headPageHtml(type, title){
 		/*--right */ headPart[2] = '<div class="fly right">';
 		
 		switch(type) {
+			case 0: 
+				headPart[0] = headPart[0] + '<div class="title"><span>' + title + '</span></div>';
+			break;
 			case 1: 
 				headPart[0] = headPart[0] + '<div class="title"><span>' + title + '</span></div>';
 				headPart[2] = headPart[2] + '<div class="click" id="notif-ring"><span class="fa fa-bell bell active"></span></div>';
@@ -414,7 +435,7 @@ function r_headPageHtml(type, title){
 		headHome.addClass('parent theme');
 	}else {
 		headHtml = 
-		'<div class="col-md-3 hidden-sm hidden-xs bg-black inbound">' +
+		'<div class="col-md-3 hidden-sm hidden-xs inbound">' +
 			'<h4>DPLEGA 2.0</h4>' +
 		'</div>' +
 		'<div class="col-md-9 inbound text-right">' +
@@ -505,20 +526,19 @@ function r_fHome() {
 		//--open
 		head	= 
 		'<div class="row no-head jumbotron-ground">' +
-			'<div class="col-md-3 bg-black banner-black">' +
+			'<div class="col-md-3 bg-black-mirror banner-black">' +
 				'<div class="button-box">' +
 					'<h5 class="theme-color text-bold">NAVIGASI</h5>' +
-					'<button type="button" class="clear" id="go-websiteResmi">WEBSITE RESMI</button>' +
-					'<button type="button" class="clear" id="go-beritaTerkini">BERITA TERKINI</button>' +
-					'<button type="button" class="clear" id="go-kelembagaan">KELEMBAGAAN</button>' +
-					'<button type="button" class="clear" id="go-kontak">KONTAK</button>' +
+					'<button type="button" class="clear text-white" id="go-websiteResmi">WEBSITE RESMI</button>' +
+					'<button type="button" class="clear text-white" id="go-beritaTerkini">BERITA TERKINI</button>' +
+					'<button type="button" class="clear text-white" id="go-kelembagaan">KELEMBAGAAN</button>' +
+					'<button type="button" class="clear text-white" id="go-kontak">KONTAK</button>' +
 				'</div>' +
 			'</div>' +
 			'<div class="col-md-9 jumbotron-content bg-black-mirror">' +
 				'<div class="jumbotron-bg text-shadow">' +
-					'<h1>DPLEGA 2.0</h1>' +
-					'<h5>Data potensial lembaga keagamaan - Jawa Barat</h5>' +
-					'<h5>BIRO PELAYANAN SOSIAL DASAR SEKRETARIAT DAERAH PROVINSI JAWA BARAT</h5>' +
+					'<h1>PUSAT DATA POTENSI LEMBAGA KEAGAMAAN DI JAWA BARAT</h1>' +
+					'<h5>BIRO PELAYANAN DAN PENGEMBANGAN SOSIAL</h5>' +
 					'<p>' +
 						'Halo pengunjung ! <br/>' +
 						'Kami ucapkan selamat datang, akhirnya kami dapat kembali meningkatkan pelayanan kepada anda, dan tiada ' +
@@ -620,13 +640,15 @@ function r_fHome() {
 		
 		//--render quick nav
 		var indexes = 0;
-		for(var loop = 0; loop < data[0].quicknav.length; loop++){
+		var dataT 	= p_getData('f4', 'f431'); 
+		dataT 		= dataT.feedData; 
+		for(var loop = 0; loop < dataT.length; loop++){
 			//--content
 			part[indexes] = part[indexes] +
 			'<div class="cards">' +
 				'<div class="navigation-box">' +
 					'<div class="caption">' +
-						'<span>' + data[0].quicknav[loop].menu + ' (' + data[0].quicknav[loop].count + ')</span>' +
+						'<span>' + dataT[loop].caption + ' (' + dataT[loop].counter + ')</span>' +
 					'</div>' +
 				'</div>' +
 			'</div>';
@@ -653,6 +675,17 @@ function r_fHome() {
 							'<div class="navigation-box">' +
 								'<div class="caption">' +
 									'<span>Koleksi</span>' +
+								'</div>' +
+							'</div>' +
+						'</div>' +
+					'</div>' +
+				'</div>' +
+				'<div class="col-md-6">' +
+					'<div class="row default left">' +
+						'<div class="cards flush">' +
+							'<div class="navigation-box">' +
+								'<div class="caption">' +
+									'<span>Prestasi</span>' +
 								'</div>' +
 							'</div>' +
 						'</div>' +
@@ -797,9 +830,9 @@ function r_fLogin() {
 		
 		//--command reactor
 		$(".back-button").unbind().on('click', function(){ r_navigateTo(); });
-		$(".go-login").unbind().on('click', function(){ r_navigateTo(0); });
+		//$(".go-login").unbind().on('click', function(){ r_navigateTo(0); });
 
-		// p_logIn('f-login');
+		p_logIn('f-login');
 	});
 }
 
@@ -820,31 +853,45 @@ function r_fNotification() {
 		if(data.feedData != null){
 			for(var loop = 0; loop < data.feedData.length; loop++){
 				//--group
-				body = body + 
-				'<div class="cards-label plus">' +
-					'<p>' +
-						'<strong>' + data.feedData[loop].group + ' (' + data.feedData[loop].list.length + ')</strong>' +
-					'</p>' +
-				'</div>';
-				
-				for(var look = 0; look < data.feedData[loop].list.length; look++){
+				var counta = 0;
+				if(data.feedData[loop].list != null){
+					counta = data.feedData[loop].list.length;
+
 					body = body + 
-					'<div class="cards bakcup-list">' +
-						'<div class="row default">' +
-							'<div class="col-xs-10">' +
-								'<div class="list-box">' +
-									'<div class="list-icon bg-yellow"><span class="fa fa-bell"></span></div>' +
-									'<p class="list-text">' + data.feedData[loop].list[look].deskripsi + '</p>' +
-								'</div>' +
-							'</div>' +
-							'<div class="col-xs-2">' +
-								'<div class="list-box clear">' +
-									'<p class="list-text">' + timeSince(new Date(Date.parse(data.feedData[loop].list[look].waktu))) + '</p>' +
-								'</div>' +
-							'</div>' +
-							'<div class="clearfix"></div>' +
-						'</div>' +
+					'<div class="cards-label plus">' +
+						'<p>' +
+							'<strong>' + data.feedData[loop].group + ' (' + counta + ')</strong>' +
+						'</p>' +
 					'</div>';
+
+					for(var look = 0; look < data.feedData[loop].list.length; look++){
+						body = body + 
+						'<div class="cards bakcup-list">' +
+							'<div class="row default">' +
+								'<div class="col-xs-9">' +
+									'<div class="list-box">' +
+										'<div class="list-icon bg-yellow"><span class="fa fa-bell"></span></div>' +
+										'<p class="list-text">' + data.feedData[loop].list[look].deskripsi + '</p>' +
+									'</div>' +
+								'</div>' +
+								'<div class="col-xs-3">' +
+									'<div class="list-box clear">' +
+										'<p class="list-text">' + timeSince(new Date(Date.parse(data.feedData[loop].list[look].waktu))) + '</p>' +
+									'</div>' +
+								'</div>' +
+								'<div class="clearfix"></div>' +
+							'</div>' +
+						'</div>';
+					}
+				}else{
+					if(loop ==0){
+						body = body +
+						'<div class="cards">' +
+							'<div class="cards-header">' +
+								'<p class="fixed offset text-black">Tidak ada pemberitahuan.</p>' +
+							'</div>' +
+						'</div>';
+					}
 				}
 			}	
 		}else{
@@ -882,9 +929,9 @@ function r_f0Dashboard() {
 		content = '';
 		data 	= [{
 			'summary':[
-				{'caption':'Total data ajuan', 'counter': '0'},
-				{'caption':'Total data sudah verfikasi', 'counter': '57'},
-				{'caption':'Total data akun (lembaga)', 'counter': '15'},
+				{'caption':'Total data ajuan', 'counter': '0', 'id': 'ajuan'},
+				{'caption':'Total data sudah verfikasi', 'counter': '0', 'id': 'verifikasi'},
+				{'caption':'Total data akun (lembaga)', 'counter': '0', 'id': 'akun'},
 			],
 			'kolektif':[
 				{'bentukLembaga':'Yayasan', 'jumlahData': '4', 'sudahVerifikasi': '3', 'ajuan': '1'},
@@ -898,7 +945,12 @@ function r_f0Dashboard() {
 			]
 			
 		}];
+
+		dataT 	= p_getData('f4', 'f431'); 
+		dataT 	= dataT.feedData; 
 		
+		var counta = 0;
+
 		//--open
 		head	= 
 		'<div class="row no-head">'+
@@ -936,7 +988,7 @@ function r_f0Dashboard() {
 					'<p class="caption">' + data[0].summary[loop].caption + '</p>' +
 				'</div-->' +
 				'<div class="summary-sbody">' +
-					'<p class="counter">' + data[0].summary[loop].counter + '</p>' +
+					'<p class="counter" id="' + data[0].summary[loop].id + '">' + data[0].summary[loop].counter + '</p>' +
 				'</div>' +
 				'<!--div class="summary-sfoot">' +
 					'<button class="btn-link click" type="button">Lihat data <img class="btn-icon-set" src="img/sources/arrow-right-black.png" /></button>' +
@@ -955,17 +1007,18 @@ function r_f0Dashboard() {
 			'</div>' +
 		'</div>';
 		
-		for(var loop = 0; loop < data[0].kolektif.length; loop++){
+		for(var loop = 0; loop < dataT.length; loop++){
+			counta = counta + parseInt(dataT[loop].counter);
 			part[1] = part[1] +
 			'<div class="cards">' +
 				'<div class="row default">' +
 					'<div class="col-md-6">' +
 						'<div class="summary-box">' +
 							'<div class="caption">' +
-								'<span>' + data[0].kolektif[loop].bentukLembaga + '</span>' +
+								'<span>' + dataT[loop].caption + '</span>' +
 							'</div>' +
 							'<div class="counter prime">' +
-								'<span>' + data[0].kolektif[loop].jumlahData + '</span>' +
+								'<span id="countT">' + dataT[loop].counter + '</span>' +
 							'</div>' +
 						'</div>' +
 					'</div>' +
@@ -975,7 +1028,7 @@ function r_f0Dashboard() {
 								'<span>Sudah verifikasi</span>' +
 							'</div>' +
 							'<div class="counter second">' +
-								'<span>' + data[0].kolektif[loop].sudahVerifikasi + '</span>' +
+								'<span>0</span>' +
 							'</div>' +
 						'</div>' +
 					'</div>' +
@@ -985,7 +1038,7 @@ function r_f0Dashboard() {
 								'<span>Ajuan</span>' +
 							'</div>' +
 							'<div class="counter">' +
-								'<span>' + data[0].kolektif[loop].ajuan + '</span>' +
+								'<span>' + dataT[loop].counter + '</span>' +
 							'</div>' +
 						'</div>' +
 					'</div>' +
@@ -1083,6 +1136,9 @@ function r_f0Dashboard() {
 		$(".go-keluar").unbind().on('click', function(){ r_navigateTo(); });
 		
 		r_navbarReactor();
+
+		//sementara
+		$("#ajuan").html(counta);
 	});
 }
 
@@ -1209,7 +1265,7 @@ function r_navbarReactor(){
 	$("#option.syncnav .autentikasi").unbind().on("click", function(){ r_navigateTo(3); });
 	$("#option.syncnav .pengaturan") .unbind().on("click", function(){ r_navigateTo(4); });
 	$("#option.syncnav .bantuan") 	 .unbind().on("click", function(){ r_navigateTo(0.1); });
-	$("#option.syncnav .log-off")	 .unbind().on("click", function(){ r_navigateTo(); });
+	$("#option.syncnav .log-off")	 .unbind().on("click", function(){ r_clearCookies(); r_navigateTo(); });
 	
 	$("#notif-ring").unbind().on("click", function(){ r_navigateTo(999); });
 }

@@ -13,8 +13,9 @@
 		$avatar 	= "";
 		$nama		= "";						
 		$userLevel	= "";	
-		$error		= 1;					
-		$noRegistrasi		= 1;					
+		$error		=  1;					
+		$noRegistrasi= "";	
+
 				
 		$gate = openGate();
 		if($gate && $username != "" && $password != ""){			
@@ -26,14 +27,10 @@
 							noRegistrasi
 						FROM 
 							dplega_910_user u
-						JOIN 
-							dplega_911_useraccess a ON u.username = a.username
 						WHERE 
 							u.username = '".$username."' 
 						AND u.password = md5('".$password."') 
-						AND u.statusActive = '1'
-						AND a.idApps  = '1'
-						AND a.statusAktif = '1'";
+						AND u.statusActive = '1'";
 						
 			$result = mysqli_query($gate, $sql);
 			if($result){
@@ -43,9 +40,15 @@
 						$avatar		= 	$row['urlGambar'];
 						$nama		= 	$row['nama'];
 						$userLevel 	= 	$row['userLevel'];
-						$noRegistrasi 	= 	$row['noRegistrasi'];
+						$noRegistrasi = $row['noRegistrasi'];
 					}
+					
+					$error = 0;
+				}else{
+					$error = 1;
 				}
+			}else{
+				$error = 1;
 			}			
 				
 			closeGate($gate);
@@ -59,7 +62,7 @@
 				$_SESSION["noRegistrasi"] = $noRegistrasi;
 			}
 
-			$error = 0;
+			//$error = 0;
 		}
 		
 		/* result fetch */
@@ -68,7 +71,7 @@
 				"username" 	=> $username, 
 				"nama" 		=> $nama, 
 				"avatar" 	=> $avatar, 
-				"noRegistrasi" 	=> $noRegistrasi, 
+				"noRegistrasi" 	=>$noRegistrasi, 
 				"userLevel" => $userLevel,
 				"feedStatus"=> "success"
 			);

@@ -102,7 +102,7 @@ function p_getData(group, target, keyword, refferences){
 			data = result;
 		}
 	});
-	
+	console.log(data);
 	return data;
 }
 
@@ -117,7 +117,6 @@ function p_removeData(group, target, pId, refferenceId){
 		async: false,
 		data: { pId : pId, refferenceId: refferenceId },
 		success: function(data){
-			console.log(data);
 			reStatus = data.feedStatus;
 			hideNotification('waiting');
 			showNotification(data.feedType, 'add', data.feedMessage);
@@ -142,7 +141,7 @@ function p_formHandler(formId, type){
 			{
 				hideNotification('waiting');
 				showNotification(data.feedType, 'add', data.feedMessage);
-				if(data.feedStatus == "success"){
+				if(data.feedStatus == "success" || data.feedStatus == "warning"){
 					if(data.feedPId == undefined){ data.feedPId = null }
 					r_customCallBack(type, $("#" + formId).attr('f-group'), $("#" + formId).attr('f-target'), data.feedId, formId, data.feedPId);
 				}
@@ -164,15 +163,26 @@ function p_logIn(formId){
 			processData:false,        // To send DOMDocument or non processed data file it is set to false
 			success: function(data)   // A function to be called if request succeeds
 			{
+				console.log(data);
 				hideNotification('waiting');
 				if(data.feedStatus == "success"){
 					if(data.userLevel == 1){
-						r_navigateTo(20, data.noRegistrasi);
-					}else{
+						r_navigateTo(12, data.noRegistrasi);
+						r_setCookie('userLevel', data.userLevel, 1);
+					}else if(data.userLevel != ""){
 						r_navigateTo(0);
+						if(data.avatar == "" || data.avatar == null) { data.avatar = "avatar-default.jpg"; }
+						$("#navigation .user-frame img").attr('src', 'img/avatar/' + data.avatar);
+						$("#navigation .user-frame p.caption span").html(data.username);
+						$("#navigation .user-frame p.caption span.big").html(data.nama);
+
+						r_setCookie('avatar', data.avatar, 1);
+						r_setCookie('username', data.username, 1);
+						r_setCookie('nama', data.nama, 1);
+						r_setCookie('userLevel', data.userLevel, 1);
 					}
 				}else{
-					showNotification("danger", 'error', "username atau password salah, silahkan coba lagi.");
+					showNotification("danger", 'error', data.feedMessage);
 				}
 			}
 		});

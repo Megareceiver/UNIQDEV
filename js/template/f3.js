@@ -49,8 +49,8 @@ function r_f3Autentikasi() {
 		//--open
 		head	= '';
 		body	= '<div class="row no-head"><div class="container">';
-		part[0] = '<div class="col-md-3 col-md-offset-1">';
-		part[1] = '<div class="col-md-7">';
+		part[0] = '<!--div class="col-md-3 col-md-offset-1">';
+		part[1] = '<div class="col-md-8 col-md-offset-2">';
 		
 		//--left
 		part[0] = part[0] +
@@ -93,63 +93,85 @@ function r_f3Autentikasi() {
 			'</form>' +
 		'</div>';
 		
-		part[1] = part[1] +
-		'<div class="cards-label">' +
-			'<p><strong>Pemilik akun (1)</strong></p>' +
-		'</div>';
+		// part[1] = part[1] +
+		// '<div class="cards-label">' +
+		// 	'<p><strong>Pemilik akun (0)</strong></p>' +
+		// '</div>';
 		
 		//--render data
 		var tempP = "";
 		var tempR = "";
-		//for(var loop = 0; loop < data.length; loop++){	
-			part[1] = part[1] +
-			'<div class="cards">' +
-				'<div class="cards-header">' +
-					'<h4>' + data.nama + '</h4>' +
-					'<p>' + data.noreg + ' | ' + data.rule + '</p>' +
-					'<div class="btn-collapse right">' +
-						'<button class="toggle-click clear" toggle-target="' + data.id + '-group" type="button"><span class="fa fa-chevron-down"></span></button>' +
-					'</div>' +
-				'</div>' +
-			'</div>';
-			
-			//-- access list
-			tempP = "";
-			for(var loopY = 0; loopY < data.access.length; loopY++){
-				if(loopY ==  (data.access.length - 1)) { tempP = "flush"; }
-				
-				switch(data.access[loopY].status){
-					case "0"	 : tempR = "disabled"; break;
-					case "1"	 : tempR = "checked"; break;
-					default			 : tempR = ""; break;
-				}
-				
+		var tempL = "";
+		console.log(data);
+		if(data!= null && data.length != 0){
+			for(var loop = 0; loop < data.length; loop++){	
+				tempL = data[loop].noreg != "" ? 'Lembaga :: ' : '';
 				part[1] = part[1] +
-				'<div class="cards toggle-content ' + data.id + '-group">' +
-					'<div class="list-box clear">' +
-						'<p class="list-text ' + data.access[loopY].type + '">' + data.access[loopY].label + '</p>' +
-						'<div class="switch-box clear fixed-position right">' +
-							'<input id="' + data.access[loopY].id + '" type="checkbox" ' + tempR + ' />' +
-							'<label for="' + data.access[loopY].id + '"></label>' +
+				'<div class="cards" id="' + data[loop].id + '-group">' +
+					'<div class="cards-header">' +
+						'<h4>' + tempL + data[loop].nama + '</h4>' +
+						'<p>' + data[loop].username + ' | ' + data[loop].rule + '</p>' +
+						'<div class="btn-collapse right">' +
+							'<button class="toggle-click clear" toggle-target="' + data[loop].id + '-group" type="button"><span class="fa fa-chevron-down"></span></button>' +
 						'</div>' +
 					'</div>' +
 				'</div>';
+				
+				if(data[loop].access != null){
+					//-- access list
+					tempP = "";
+					for(var loopY = 0; loopY < data[loop].access.length; loopY++){
+						if(loopY ==  (data[loop].access.length - 1)) { tempP = "flush"; }
+						
+						switch(data[loop].access[loopY].status){
+							case "0"	 : tempR = "disabled"; break;
+							case "1"	 : tempR = "checked"; break;
+							default			 : tempR = ""; break;
+						}
+						
+						part[1] = part[1] +
+						'<div class="cards toggle-content ' + data[loop].id + '-group">' +
+							'<div class="list-box clear">' +
+								'<p class="list-text ' + data[loop].access[loopY].type + '">' + data[loop].access[loopY].label + '</p>' +
+								'<div class="switch-box clear fixed-position right">' +
+									'<input id="' + data[loop].access[loopY].id + '" type="checkbox" ' + tempR + ' />' +
+									'<label for="' + data[loop].access[loopY].id + '"></label>' +
+								'</div>' +
+							'</div>' +
+						'</div>';
 
-				if(loopY ==  (data.access.length - 1)) { 
-					part[1] = part[1] + 
-					'<div class="cards ' + tempP + ' toggle-content ' + data.id + '-group">' +
-						'<div class="list-box clear">' +
-							'<p class="list-text">' + 
-								'<span class="click text-cyan">Ubah</span> &nbsp; | &nbsp;' +
-								'<span class="click text-pink">Hapus</span>' +
-							'</p>' +
-						'</div>' +
-					'</div>';
+						if(loopY ==  (data[loop].access.length - 1)) { 
+							part[1] = part[1] + 
+							'<div class="cards ' + tempP + ' toggle-content ' + data[loop].id + '-group">' +
+								'<div class="list-box clear">' +
+									'<p class="list-text">' + 
+										'<span class="click text-cyan" id="' + data[loop].id  + '-group-edit"' +
+											'p-referencesKey="' + data[loop].username + '"' +
+											'p-container	="' + data[loop].id + '-group">Ubah</span> &nbsp; | &nbsp;' +
+										'<span class="click text-pink"id="' + data[loop].id  + '-group-hapus"' +
+											'p-label		="' + data[loop].nama + '"' + 
+											'p-id			="' + data[loop].username+ '"' +
+											'p-referencesKey=""' +
+											'p-group		="f3"' + 
+											'p-target		="f31"' +
+											'p-container	="' + data[loop].id + '-group">Hapus</span>' +
+									'</p>' +
+								'</div>' +
+							'</div>';
+						}
+					}
 				}
 			}
-		//}
+		}else{
+			part[1] = part[1] +
+			'<div class="cards">' +
+				'<div class="cards-header">' +
+					'<p class="fixed offset text-black">Data tidak ditemukan.</p>' +
+				'</div>' +
+			'</div>';
+		}
 		
-		part[0] = part[0] + '</div>';
+		part[0] = part[0] + '</div-->';
 		part[1] = part[1] + '</div>';
 		body	= body 	  + part[0] + part[1] + '</div></div>';
 		content = '<section id="">' + head + body + '</section>';
@@ -163,7 +185,39 @@ function r_f3Autentikasi() {
 		
 		//--command reactor
 		$(".back-button").unbind().on('click', function(){ r_navigateTo(0); });
-		$("#add-button").unbind().on('click', function(){ r_navigateTo(31); });
+		$("#add-button").unbind().on('click', function(){ profile_look_set(""); r_navigateTo(31); });
+
+		for(var loop = 0; loop < data.length; loop++){	
+			$('#' + data[loop].id + '-group-edit').unbind().on("click", function(e){
+				clearPacket();
+				pReferencesKey	= $(this).attr('p-referencesKey');
+				
+				hideOptionList(); 
+				r_f3userSectionEditor(pReferencesKey); 
+			});
+
+			$('#' + data[loop].id + '-group-hapus').unbind().on("click", function(e){
+				e.preventDefault(); 
+				if($("#" + $(this).attr('p-container') + " [name=p-id]").val() != ""){
+					showOptionConfirm('delete');
+					clearPacket();
+					pContainer		= $(this).attr('p-container');
+					pGroup 			= $(this).attr('p-group');
+					pTarget			= $(this).attr('p-target')
+					pId				= $(this).attr('p-id')
+					pLabel			= $(this).attr('p-label');
+					pReferencesKey	= $(this).attr('p-referencesKey');
+					$(".option-yes").unbind().on("click", function(){ 
+						hideOptionList(); 
+						if(p_removeData(pGroup, pTarget, pId, pReferencesKey) == 'success'){ 
+							$("#" + pContainer + ", ." + pContainer).remove();
+							clearPacket();
+						}; 
+					});
+				}
+			});
+		}
+		
 		searchBoxActivator();
 		toggleBoxActivator();
 		r_navbarReactor();
@@ -172,7 +226,7 @@ function r_f3Autentikasi() {
 
 //F3 FORM USER
 //=====================================
-function r_f3FormUser() {
+function r_f3FormUser(packet) {
 	$("body").prepend(preload);
 	$('main.parent').animate({'opacity': '0.6'},'fast','linear', function(){
 		mainPage.html('');
@@ -211,7 +265,7 @@ function r_f3FormUser() {
 				]
 			},
 			{
-				'module': 'pengatuanKelembagaan', 'group': "Pengaturan kelembagaan", "list": 
+				'module': 'pengaturanKelembagaan', 'group': "Pengaturan user", "list": 
 				[
 					{"id": "pengaturanKelembagaan-lihat", "state": "checked='checked'"},
 					{"id": "pengaturanKelembagaan-tambah", "state": ""},
@@ -238,7 +292,7 @@ function r_f3FormUser() {
 				]
 			},
 			{
-				'module': 'kofigurasi', 'group': "Konfigurasi & pemeliharaan aplikasi", "list": 
+				'module': 'konfigurasi', 'group': "Konfigurasi & pemeliharaan aplikasi", "list": 
 				[
 					{"id": "konfigurasi-lihat", "state": "checked='checked'"},
 					{"id": "konfigurasi-tambah", "state": ""},
@@ -249,6 +303,12 @@ function r_f3FormUser() {
 
 		];
 
+		//Cookie set
+		if(packet == undefined || packet == "" || packet == null || packet == "start"){
+			packet = profile_look_reader();
+		}
+
+		profile_look_set(packet);
 
 		//-- get data lingkup area
 		dataTemp 		  	= p_getData('f4', 'f401', '');
@@ -324,7 +384,7 @@ function r_f3FormUser() {
 							'</div>' +
 						'</div>' +
 						'<div class="input-box">' +
-							'<input name="telp" placeholder="Telp (*)" tabindex="2" type="text" value="" />' +
+							'<input name="telp" placeholder="Telp" tabindex="2" type="text" value="" />' +
 						'</div>' +
 						'<div class="input-box">' +
 							'<input name="email" placeholder="Email (*)" tabindex="2" type="text" value="" />' +
@@ -341,12 +401,20 @@ function r_f3FormUser() {
 							'<input name="re-password" placeholder="Password ulang (*)" tabindex="2" type="password" value="" />' +
 						'</div>' +
 						'<div class="input-box">' +
-							'<p>Batasi wilayah (optional)</p>' +
+							'<p>Batasi lingkup area (optional)</p>' +
+						'</div>' +
+						'<div class="select-box">' +
+							'<select name="batasArea" tabindex="1">' +
+								'<option value="" selected>Pilih lingkup area</option>' +
+								'<option value="3">Provinsi</option>' +
+								'<option value="2">Wilayah</option>' +
+								'<option value="1">Kecamatan</option>' +
+							'</select>' +
 						'</div>' +
 						'<div class="input-box">' +
 							'<div class="icon-box left">' +
-								'<input id="batasWilayah" name="wilayah" placeholder="Pilih wilayah" tabindex="1" type="text" value="" />' +
-								'<input id="batasWilayah_kode" name="kodeWilayah" tabindex="2" type="hidden" value="" />' +
+								'<input id="batasWilayah" name="batasWilayah" placeholder="Pilih area spesifik" tabindex="1" type="text" value="" />' +
+								'<input id="batasWilayah_kode" name="bataskodeWilayah" tabindex="2" type="hidden" value="" />' +
 								'<span class="fa fa-magic"></span>' +
 							'</div>' +
 						'</div>' +
@@ -412,7 +480,7 @@ function r_f3FormUser() {
 					'<div class="col-md-4">' +
 						'<div class="input-box">' +
 							'<p>' + dataAccess[loop].group + '</p>' +
-					  		'<input name="module" value="' + dataAccess[loop].module + '" type="hidden">' +
+					  		'<input name="module[]" value="' + dataAccess[loop].module + '" type="hidden">' +
 						'</div>' +
 					'</div>';
 			for(loopY=0; loopY<dataAccess[loop].list.length; loopY++){		
@@ -435,12 +503,12 @@ function r_f3FormUser() {
 		//--close
 		
 		//--gen
-		headPage.html(r_headPageHtml(3, 'Bentuk lembaga'));
+		headPage.html(r_headPageHtml(3, 'Form user'));
 		mainPage.html(content).animate({'opacity': '1'},'fast','linear');
 		$("#preload").remove();
 		
 		//--command reactor
-		$(".back-button").unbind().on('click', function(){ r_navigateTo(4); });
+		$(".back-button").unbind().on('click', function(){ r_navigateTo(3); });
 		$(".click-option").unbind().on("click", function(){ 
 			//packet session
 			clearPacket();
@@ -457,7 +525,7 @@ function r_f3FormUser() {
 			//-- option activator
 			$("#edit-card").unbind().on("click", function(){ 
 				hideOptionList(); 
-				r_f4KelembagaanSectionEditor(pTarget, pId, pLabel, pReferences, pDecription); 
+				r_f4userSectionEditor(pTarget, pId, pLabel, pReferences, pDecription); 
 			});
 			
 			$("#delete-card").unbind().on("click", function(){ 
@@ -496,9 +564,69 @@ function r_f3FormUser() {
 
 		//autocomplete
 		autoCompleteActivator("f111_lingkupArea", sourcesData, sourcesDetailData, "lingkupArea");
-		autoCompleteActivator("batasWilayah", sourcesWilayah, sourcesWilayahDetail, "batasWilayah");
-	
+		// autoCompleteActivator("batasWilayah", sourcesWilayah, sourcesWilayahDetail, "batasWilayah");
+		
 		//form reactor
-		p_formHandler("f-bentukLembaga-create" , "addData");
+		p_formHandler("f-user-create" , "addData");
+
+		//generate data for editing
+		if(packet != "start" && packet != "" && packet != null){ r_f3FormUserDataGenerator(packet); }	
 	});
+}
+
+function r_f3userSectionEditor(username){
+	r_navigateTo(31, username);
+} 
+
+
+function r_f3FormUserDataGenerator(packet){
+	data = p_getData('f3', 'f311', '', packet);
+	data = data.feedData;
+	
+	$("#f-user-create [name=noreg]").val(data.user.noRegistrasi);
+	$("#f-user-create [name=nama]").val(data.user.nama);
+	$("#f-user-create [name=jabatan]").val(data.user.jabatan);
+	$("#f-user-create [name=alamat]").val(data.user.alamat);
+	$("#f-user-create [name=rt]").val(data.user.noRt);
+	$("#f-user-create [name=rw]").val(data.user.noRw);
+	$("#f-user-create [name=kelurahan]").val(data.user.namaKelurahan);
+	$("#f-user-create [name=kodeKelurahan]").val(data.user.kodeKelurahan);
+	$("#f-user-create [name=kecamatan]").val(data.user.namaKecamatan);
+	$("#f-user-create [name=kodeKecamatan]").val(data.user.kodeKecamatan);
+	$("#f-user-create [name=wilayah]").val(data.user.namaWilayah);
+	$("#f-user-create [name=kodeWilayah]").val(data.user.kodeWilayah);
+	$("#f-user-create [name=provinsi]").val(data.user.namaProvinsi);
+	$("#f-user-create [name=kodeProvinsi]").val(data.user.kodeProvinsi);
+	$("#f-user-create [name=telp]").val(data.user.noTelp);
+	$("#f-user-create [name=email]").val(data.user.email);
+	$("#f-user-create [name=username]").val(data.user.username);
+	$("#f-user-create [name=bataskodeWilayah]").val(data.user.bataskodeWilayah);
+	$("#f-user-create [name=batasWilayah]").val(data.user.batasWilayah);
+	$("#f-user-create [viewer-id=v-user]").attr('src',(data.user.urlGambar != "" && data.user.urlGambar != null) ? 'img/avatar/'+data.user.urlGambar : "img/sources/picture.png");
+	$("#f-user-create [name=imageName]").html((data.user.urlGambar != "" && data.user.urlGambar != null) ? data.user.urlGambar : "berkas belum diunggah...");
+
+	$("#f-user-create [name=username]").attr('readonly', 'readonly');
+	if(data.user.urlGambar != "" && data.user.urlGambar != null){ 
+		$("[viewer-id=v-user]").removeClass('changed').addClass('changed'); 
+		$("[browser-id=v-user]").css('display', 'block'); 
+	}
+
+	if(data.user.noRegistrasi != "" && data.user.noRegistrasi != null){
+		$("#f-user-create [viewer-id=v-user]").attr('src',(data.user.urlGambar != "" && data.user.urlGambar != null) ? 'img/logo/'+data.user.urlGambar : "img/sources/picture.png");
+	}
+
+	$(':checkbox').each(function() { this.checked = false; });
+
+	var state = 0;
+	for(loop=0; loop<data.access.length; loop++){
+		if(data.access[loop].lihat == '1'){state++; $('#f-user-create [name=' + data.access[loop].module + '-lihat]').prop('checked', true);}
+		if(data.access[loop].tambah == '1'){state++; $('#f-user-create [name=' + data.access[loop].module + '-tambah]').prop('checked', true);}
+		if(data.access[loop].ubah == '1'){state++; $('#f-user-create [name=' + data.access[loop].module + '-ubah]').prop('checked', true);}
+		if(data.access[loop].hapus == '1'){state++; $('#f-user-create [name=' + data.access[loop].module + '-hapus]').prop('checked', true);}
+	}
+
+	if(state > 0) {$('#selectAll').html("Bersihkan");}
+
+	//form reactor
+	p_formHandler("f-user-create" , "updateData");
 }

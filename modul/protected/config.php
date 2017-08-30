@@ -3,7 +3,7 @@
 		$servername = "localhost";
 		$username   = "root";
 		$password   = "";
-		$dbname     = "dplega_2";
+		$dbname     = "dplega_pusdai_section";
 		
 		// Create connection
 		$gate = mysqli_connect($servername, $username, $password, $dbname);

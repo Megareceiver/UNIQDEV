@@ -2593,7 +2593,7 @@ function r_f4InfoPersonal() {
 				'<div class="desc-frame">' +
 					'<div class="desc-box">' +
 						'<div class="labels"><p class="text-set">Nama</p></div>' +
-						'<div class="divider"><p class="text-set">Megantara Narapadya</p></div>' +
+						'<div class="divider"><p class="text-set">...</p></div>' +
 					'</div>' +
 					'<div class="desc-box">' +
 						'<div class="labels"><p class="text-set">Jabatan</p></div>' +

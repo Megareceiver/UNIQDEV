@@ -1071,12 +1071,25 @@
 
 			closeGate($gate);
 
-			$option = array(
-				array("selector" => "download-card", "icon" => "download", "label" => "Unduh (.pdf)"),
-				array("selector" => "verification-card", "icon" => "check", "label" => "Verifikasi"),
-				array("selector" => "edit-card", "icon" => "pencil", "label" => "Ubah profil"),
-				array("selector" => "delete-card", "icon" => "trash", "label" => "Hapus lembaga")
-			);
+			if (session_status() == PHP_SESSION_NONE) {
+				session_start();
+			}
+
+			if($_SESSION["userLevel"] == '1'){
+				$option = array(
+					array("selector" => "download-card", "icon" => "download", "label" => "Unduh (.pdf) - non aktif"),
+					//array("selector" => "verification-card", "icon" => "check", "label" => "Verifikasi - non aktif"),
+					array("selector" => "edit-card", "icon" => "pencil", "label" => "Ubah profil"),
+					array("selector" => "logout-card", "icon" => "power-off", "label" => "Keluar"),
+				);
+			}else{
+				$option = array(
+					array("selector" => "download-card", "icon" => "download", "label" => "Unduh (.pdf)"),
+					array("selector" => "verification-card", "icon" => "check", "label" => "Verifikasi"),
+					array("selector" => "edit-card", "icon" => "pencil", "label" => "Ubah profil"),
+					array("selector" => "delete-card", "icon" => "trash", "label" => "Hapus lembaga")
+				);
+			}
 
 			$record = array(
 				"profile" => $profile,
@@ -1172,6 +1185,7 @@
 						l.`langitude`, 
 						l.`latitude`, 
 						l.`mediaSosial`, 
+						b.`namaBentukLembaga`, 
 						l.`kodeBentukLembaga`, 
 						l.`kodeBidangGerak`, 
 						l.`jumlahPengurus`, 
@@ -1220,6 +1234,7 @@
 										"langitude"			=> $row['langitude'],
 										"latitude"			=> $row['latitude'],
 										"mediaSosial"		=> $row['mediaSosial'],
+										"namaBentukLembaga"	=> $row['namaBentukLembaga'],
 										"kodeBentukLembaga"	=> $row['kodeBentukLembaga'],
 										"kodeBidangGerak"	=> $row['kodeBidangGerak'],
 										"jumlahPengurus"	=> $row['jumlahPengurus'],
@@ -2160,29 +2175,131 @@
 					$error	    = 0;
 					$resultType = "success";
 					$resultMsg  = "Input berhasil disimpan. ";
+					$imageStat	= 0;
+					$file_name  = "";
 
 					/*upload image*/
-					$validextensions = array("jpeg", "jpg", "png", "gif");
-					$temporary = explode(".", $_FILES["imageUrl"]["name"]);
-					$file_extension = end($temporary);
-					$file_name = "berkas belum diunggah...";					
-					if (in_array($file_extension, $validextensions)) {						
-						if ($_FILES["imageUrl"]["error"] > 0)
-						{
-							$upload_message = $_FILES["imageUrl"];
-						}
-						else
-						{		
-							$file_name = $idTemp."_logo.".$file_extension;			
-							$sourcePath = $_FILES['imageUrl']['tmp_name']; // Storing source path of the file in a variable
-							$targetPath = "img/logo/".$file_name; // Target path where file is to be stored
-							if(move_uploaded_file($sourcePath,"../".$targetPath)){ /*Moving Uploaded file*/
-								$sql = "UPDATE dplega_000_lembaga_temp SET urlGambarLogo = '".$file_name."' WHERE noRegistrasi = '".$idTemp."'";			
-								$result = mysqli_query($gate, $sql);									
-							}								
+					if(isset($_FILES["imageUrl"])){
+						$validextensions = array("jpeg", "jpg", "png", "gif");
+						$temporary = explode(".", $_FILES["imageUrl"]["name"]);
+						$file_extension = end($temporary);
+						$file_name = "berkas belum diunggah...";					
+						if (in_array($file_extension, $validextensions)) {						
+							if ($_FILES["imageUrl"]["error"] > 0)
+							{
+								$upload_message = $_FILES["imageUrl"];
+							}
+							else
+							{		
+								$file_name = $idTemp."_logo.".$file_extension;			
+								$sourcePath = $_FILES['imageUrl']['tmp_name']; // Storing source path of the file in a variable
+								$targetPath = "img/logo/".$file_name; // Target path where file is to be stored
+								if(move_uploaded_file($sourcePath,"../".$targetPath)){ /*Moving Uploaded file*/
+									$sql = "UPDATE dplega_000_lembaga_temp SET urlGambarLogo = '".$file_name."' WHERE noRegistrasi = '".$idTemp."'";			
+									$result = mysqli_query($gate, $sql);	
+									$imageStat = 1;
+								}								
+							}
 						}
 					}
 					/*upload end*/
+
+					/*create user*/
+					$dumbQuery = "";
+					$dumbValue = "";
+
+					if($imageStat == 1 && $file_name != ""){
+						$dumbQuery = "urlGambar,";
+						$dumbValue = "'".$file_name."',";
+					}
+
+					$sql = 
+					"	INSERT INTO dplega_910_user
+						(
+							noRegistrasi,
+							nama,
+							jabatan,
+							alamat,
+							noRt,
+							noRw,
+							kodeKelurahan,
+							kodeKecamatan,
+							kodeWilayah,
+							kodeProvinsi,
+							noTelp,
+							email,
+							username,
+							password,
+							userLevel,
+							statusActive,
+							".$dumbQuery."
+							createdBy
+						)
+						VALUES
+						(
+							'".$idTemp."',
+							'".$data['nama']."',
+							'Penanggung jawab Lembaga',
+							'".$data['alamat']."',
+							'".$data['rt']."',
+							'".$data['rw']."',
+							'".$data['kodeKelurahan']."',
+							'".$data['kodeKecamatan']."',
+							'".$data['kodeWilayah']."',
+							'".$data['kodeProvinsi']."',
+							'".$data['telp']."',
+							'".$data['email']."',
+							'".$idTemp."',
+							md5('jabarprov'),
+							'1',
+							'1',
+							".$dumbValue."
+							'TESTSESSION'
+						)
+					";
+
+					$result	  = mysqli_query($gate, $sql);
+					if($result){
+						/* access list*/
+						$sql = 
+						"	INSERT INTO dplega_911_useraccess
+							(
+								username,
+								idApps,
+								module,
+								lihat,
+								tambah,
+								ubah,
+								hapus,
+								createdBy
+							)
+							VALUES
+							(
+								'".$idTemp."',
+								'1',
+								'kelembagaan',
+								'1',
+								'0',
+								'1',
+								'0',
+								'TESTSESSION'
+							);
+						";
+
+						$result	  = mysqli_query($gate, $sql);
+						if(!$result){
+							//error state
+							$error		= 0;
+							$resultType = "warning";
+							$resultMsg	= "Berhasil menyimpan data lembaga dan membuat akun, gagal menyimpan acces-list";
+						}
+					}else{
+						//error state
+						$error		= 0;
+						$resultType = "warning";
+						$resultMsg	= "Success menyimpan data lembaga, gagal membuat akun!";
+					}
+					/*create end*/
 					
 				}else{
 					//error state
@@ -2237,6 +2354,8 @@
 		$dumbTable  = "";
 		$noreg 		= $data['noreg'];
 		$file_name	= "";
+		$nama 		= "";
+		$states		= "";
 
 		/* validation */
 		if( 
@@ -2251,15 +2370,17 @@
 			if($gate){
 				// connection = true
 				//checking lembaga exist
-				$sql 	= " SELECT noRegistrasi FROM dplega_000_lembaga WHERE noRegistrasi = '".$noreg."'";
+				$sql 	= " SELECT noRegistrasi, nama FROM dplega_000_lembaga WHERE noRegistrasi = '".$noreg."'";
 				$result = mysqli_query($gate, $sql);
 				if(mysqli_num_rows($result) > 0) {
 					$dumbTable = "";
+					while($row = mysqli_fetch_assoc($result)) { $nama = $row['nama']; }
 				}else{
-					$sql 	= " SELECT noRegistrasi FROM dplega_000_lembaga_temp WHERE noRegistrasi = '".$noreg."'";
+					$sql 	= " SELECT noRegistrasi, nama FROM dplega_000_lembaga_temp WHERE noRegistrasi = '".$noreg."'";
 					$result = mysqli_query($gate, $sql);
 					if(mysqli_num_rows($result) > 0) {
 						$dumbTable = "_temp";
+						while($row = mysqli_fetch_assoc($result)) { $nama = $row['nama']; }
 					}else{
 						//error state
 						$error		= 1;
@@ -2286,6 +2407,8 @@
 							WHERE
 								noRegistrasi 		= '".$noreg."' 
 							AND kodePersyaratan 	= '".$data['kodePersyaratan']."'";
+					
+							$states = "diubah";
 					}else{
 						$sql = 
 						"	INSERT INTO dplega_009_legalitas".$dumbTable."
@@ -2305,6 +2428,8 @@
 								'TESTSESSION'
 							)
 						";
+
+						$states = "ditambahkan";
 					}
 
 					$result	  = mysqli_query($gate, $sql);
@@ -2360,6 +2485,33 @@
 							}
 							/*upload end*/
 						}
+
+
+						/*add notif*/
+						$namaPersyaratan = "";
+						$sql 	= " SELECT namaPersyaratan FROM dplega_201_persyaratan WHERE kodePersyaratan = '".$data['kodePersyaratan']."'";
+						$result = mysqli_query($gate, $sql);
+						if(mysqli_num_rows($result) > 0) {
+							while($row = mysqli_fetch_assoc($result)) { $namaPersyaratan = $row['namaPersyaratan']; }
+						}
+						if (session_status() == PHP_SESSION_NONE) { session_start(); }
+						$sql = 
+						"	INSERT INTO dplega_901_notifications
+							(
+								deskripsi,
+								waktu,
+								createdBy
+							)
+							VALUES
+							(
+								'Legalitas (".$namaPersyaratan.") ".$nama." telah ".$states." oleh ".$_SESSION["nama"]."',
+								NOW(),
+								'".$_SESSION["username"]."'
+							)
+						";
+
+						$result	  = mysqli_query($gate, $sql);
+						/*end notif*/
 					}
 				}else{
 					//error state
@@ -2861,6 +3013,26 @@
 						}
 						/*upload end*/
 					}
+
+					/*add notif*/
+					if (session_status() == PHP_SESSION_NONE) { session_start(); }
+					$sql = 
+					"	INSERT INTO dplega_901_notifications
+						(
+							deskripsi,
+							waktu,
+							createdBy
+						)
+						VALUES
+						(
+							'Data ".$data['nama']." telah diubah oleh ".$_SESSION["nama"]."',
+							NOW(),
+							'".$_SESSION["username"]."'
+						)
+					";
+
+					$result	  = mysqli_query($gate, $sql);
+					/*end notif*/
 				}else{
 					//error state
 					$error		= 1;
@@ -3883,7 +4055,6 @@
 				}
 
 				if($error != 1){
-
 					$sql ="
 						UPDATE dplega_002_kepengurusan".$dumbTable."
 						SET
@@ -4516,8 +4687,24 @@
 						$sql 	= "DELETE FROM dplega_000_lembaga".$dumbTable." WHERE noRegistrasi = '".$noreg."'";
 						$dumbRes[12] = mysqli_query($gate, $sql);
 
+						$username = "";
+						$sql 	= " SELECT username FROM dplega_910_user WHERE noRegistrasi = '".$noreg."'";
+						$result = mysqli_query($gate, $sql);
+						if(mysqli_num_rows($result) > 0) {
+							while($row = mysqli_fetch_assoc($result)) {
+								$username = $row['username'];
+							}
+						}
+
+						$sql 	= "DELETE FROM dplega_911_useraccess WHERE username = '".$username."'";
+						$dumbRes[1] = mysqli_query($gate, $sql);
+
+						$sql 	= "DELETE FROM dplega_910_user WHERE username = '".$username."'";
+						$dumbRes[11] = mysqli_query($gate, $sql);
+
 					if(
 						   $dumbRes[0]
+						&& $dumbRes[1]
 						&& $dumbRes[2]
 						&& $dumbRes[3]
 						&& $dumbRes[4]
@@ -4527,6 +4714,7 @@
 						&& $dumbRes[8]
 						&& $dumbRes[9]
 						&& $dumbRes[10]
+						&& $dumbRes[11]
 						&& $dumbRes[12]
 					){
 						//mysqli_query("COMMIT");
@@ -5174,34 +5362,45 @@
 				}
 
 				if($error != 1){
-					$sql = " INSERT INTO dplega_011_hirarkilembaga".$dumbTable."
-						(
-							noRegistrasi,
-							hirarki,
-							noRegistrasiTarget,
-							createdBy
-						)
-						VALUES
-						(
-							'".$data['noreg']."',
-							'".$data['hirarki']."',
-							'".$data['noregTarget']."',
-							'TESTSESSION'
-						)
-					";
-				
-					$result	  = mysqli_query($gate, $sql);
-					if($result){	
-						$error	    = 0;
-						$resultType = "success";
-						$resultMsg  = "Input berhasil disimpan.";
-					}else{
-						//error state
-						$error		= 1;
-						$resultType = "danger";
-						$resultMsg	= "Terjadi kesalahan fatal, input gagal disimpan! ".$eresult;
+					if($data['hirarki'] == "0"){
+						$sql 	= " SELECT hirarki FROM dplega_011_hirarkilembaga".$dumbTable." WHERE noRegistrasi = '".$noreg."' AND hirarki = '0'";
+						$result = mysqli_query($gate, $sql);
+						if(mysqli_num_rows($result) > 0) {
+							$error = 1;
+							$resultType = "danger";
+							$resultMsg	= "Induk lembaga tidak bisa lebih dari satu! ";
+						}
 					}
 
+					if($error != 1){
+						$sql = " INSERT INTO dplega_011_hirarkilembaga".$dumbTable."
+							(
+								noRegistrasi,
+								hirarki,
+								noRegistrasiTarget,
+								createdBy
+							)
+							VALUES
+							(
+								'".$data['noreg']."',
+								'".$data['hirarki']."',
+								'".$data['noregTarget']."',
+								'TESTSESSION'
+							)
+						";
+					
+						$result	  = mysqli_query($gate, $sql);
+						if($result){	
+							$error	    = 0;
+							$resultType = "success";
+							$resultMsg  = "Input berhasil disimpan.";
+						}else{
+							//error state
+							$error		= 1;
+							$resultType = "danger";
+							$resultMsg	= "Terjadi kesalahan fatal, input gagal disimpan! ";
+						}
+					}
 				}else{
 					//error state
 					$error		= 1;
@@ -5342,6 +5541,7 @@
 		$counter	= "";
 		$dumbTable  = "";
 		$noreg 	  	= "";
+		$nama 	  	= "";
 
 		/* validation */
 		if(	
@@ -5355,15 +5555,17 @@
 				// connection = true
 				//checking section
 				$noreg  = $data['refferenceId'];
-				$sql 	= " SELECT noRegistrasi FROM dplega_000_lembaga WHERE noRegistrasi = '".$noreg."'";
+				$sql 	= " SELECT noRegistrasi,nama FROM dplega_000_lembaga WHERE noRegistrasi = '".$noreg."'";
 				$result = mysqli_query($gate, $sql);
 				if(mysqli_num_rows($result) > 0) {
 					$dumbTable = "";
+					while($row = mysqli_fetch_assoc($result)) { $nama = $row['nama']; }
 				}else{
-					$sql 	= " SELECT noRegistrasi FROM dplega_000_lembaga_temp WHERE noRegistrasi = '".$noreg."'";
+					$sql 	= " SELECT noRegistrasi,nama FROM dplega_000_lembaga_temp WHERE noRegistrasi = '".$noreg."'";
 					$result = mysqli_query($gate, $sql);
 					if(mysqli_num_rows($result) > 0) {
 						$dumbTable = "_temp";
+						while($row = mysqli_fetch_assoc($result)) { $nama = $row['nama']; }
 					}else{
 						//error state
 						$error		= 1;
@@ -5379,7 +5581,34 @@
 					if($result){	
 						$error	    = 0;
 						$resultType = "success";
-						$resultMsg  = "data berhasil dihapus.";		
+						$resultMsg  = "data berhasil dihapus.";	
+
+						/*add notif*/
+						$namaPersyaratan = "";
+						$sql 	= " SELECT namaPersyaratan FROM dplega_201_persyaratan WHERE kodePersyaratan = '".$data['pId']."'";
+						$result = mysqli_query($gate, $sql);
+						if(mysqli_num_rows($result) > 0) {
+							while($row = mysqli_fetch_assoc($result)) { $namaPersyaratan = $row['namaPersyaratan']; }
+						}
+
+						if (session_status() == PHP_SESSION_NONE) { session_start(); }
+						$sql = 
+						"	INSERT INTO dplega_901_notifications
+							(
+								deskripsi,
+								waktu,
+								createdBy
+							)
+							VALUES
+							(
+								'Legalitas (".$namaPersyaratan.") ".$nama." telah dihapus oleh ".$_SESSION["nama"]."',
+								NOW(),
+								'".$_SESSION["username"]."'
+							)
+						";
+
+						$result	  = mysqli_query($gate, $sql);
+						/*end notif*/
 					}else{
 						//error state
 						$error		= 1;
