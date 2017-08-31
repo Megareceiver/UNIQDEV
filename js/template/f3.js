@@ -102,7 +102,7 @@ function r_f3Autentikasi() {
 		var tempP = "";
 		var tempR = "";
 		var tempL = "";
-		console.log(data);
+		
 		if(data!= null && data.length != 0){
 			for(var loop = 0; loop < data.length; loop++){	
 				tempL = data[loop].noreg != "" ? 'Lembaga :: ' : '';

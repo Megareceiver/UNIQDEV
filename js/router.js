@@ -1321,6 +1321,9 @@ function r_bentukLembagaReader(){
 function profile_look_set(id){ r_setCookie('profile_look', id, 1); }
 function profile_look_reader(){	return String(r_getCookie('profile_look'));}
 
+function news_look_set(id){ r_setCookie('news_look', id, 1); }
+function news_look_reader(){ return String(r_getCookie('news_look'));}
+
 // function r_initCookie(){
 	//r_setCookie('profile_look', '', 1);
 // }
@@ -1364,5 +1367,6 @@ function r_clearCookies(){
 	r_setCookie('kodeBentukLembaga','',0.1);
 	r_setCookie('namaBentukLembaga','',0.1);
 	r_setCookie('profile_look','',1);
+	r_setCookie('news_look','',1);
 	// r_setCookie('header_log','',1);
 }

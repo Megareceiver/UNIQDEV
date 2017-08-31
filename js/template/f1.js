@@ -243,7 +243,7 @@ function r_f1LembagaEventctivator(){
 		//-- popup
 		$("#view-card").unbind().on("click", function(){ hideOptionList(); r_navigateTo(12, pId); });
 		$("#verification-card").unbind().on("click", function(){ hideOptionList(); r_navigateTo(13, pId); });
-		$("#edit-card").unbind().on("click", function(){ hideOptionList(); r_navigateTo(15, pId); });
+		$("#edit-card").unbind().on("click", function(){ hideOptionList(); r_tabSet(1); r_navigateTo(15, pId); });
 		$("#delete-card").unbind().on("click", function(){ 
 			hideOptionList(); 
 			showOptionConfirm('delete');
@@ -546,7 +546,7 @@ function r_f1DetailLembaga(packet) {
 
 			//-- popup
 			$("#verification-card").unbind().on("click", function(){ hideOptionList(); r_navigateTo(13, $(this).attr('p-id')); });
-			$("#edit-card").unbind().on("click", function(){ hideOptionList(); r_navigateTo(15, $(this).attr('p-id')); });
+			$("#edit-card").unbind().on("click", function(){ hideOptionList(); r_pageSet(1); r_navigateTo(15, $(this).attr('p-id')); });
 			$("#delete-card").unbind().on("click", function(){ 
 				hideOptionList(); 
 				showOptionConfirm('delete');

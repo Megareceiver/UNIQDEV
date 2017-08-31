@@ -468,7 +468,8 @@
 					idData,
 					judulBerita,
 					deskripsi,
-					urlGambar
+					urlGambar,
+					createdDate
 				FROM dplega_230_berita
 				";
 
@@ -478,7 +479,8 @@
 					idData,
 					judulBerita,
 					deskripsi,
-					urlGambar
+					urlGambar,
+					createdDate
 				fROM dplega_230_berita
 				WHERE idData = '".$key."'
 				";			
@@ -495,7 +497,8 @@
 									"idBerita" 		=> $row['idData'],
 									"judul"   	 	=> $row['judulBerita'],
 									"isiBerita" 	=> $row['deskripsi'],
-									"urlGambar" 	=> $row['urlGambar']
+									"urlGambar" 	=> $row['urlGambar'],
+									"createdDate" 	=> $row['createdDate']
 								);
 						
 						array_push($record, $fetch); 
@@ -659,10 +662,6 @@
 		$errorMsg	= "";
 	
 		/* refferences */
-		// f41 : provinsi
-		// f42 : wilayah
-		// f43 : kecamatan
-		// f44 : kelurahan
 		
 		switch($target){
 			case "f411": $resultList = createLingkupAreaSection($target, $data); break;

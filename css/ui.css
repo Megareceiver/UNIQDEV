@@ -941,14 +941,15 @@ footer.parent .author-box img { height: 30px; float: right }
 /**/
 .cards .article-box { position: relative }
 .cards .article-box .body { display: inline-block; padding: 20px 30px 5px 30px }
+.cards .article-box .body.full { display: inline-block; width: 100% }
 .cards .article-box .body.no-foot { padding: 20px 30px }
 .cards .article-box .single { padding: 20px 30px }
 .cards .article-box .single.center { text-align: center }
-.cards .article-box .body .title { font-size: 14px; font-weight: bold }
-.cards .article-box .body .content { color: rgba(0,0,0,0.5) }
+.cards .article-box .body .title { margin-bottom: 20px }
+.cards .article-box .body .content { color: rgba(0,0,0,0.5); margin: 20px 0; font-size: 16px; }
 .cards .article-box .foot { padding: 5px 30px 20px 30px }
 .cards .article-box .foot .btn-link { color: #EB1460 }
-.cards .article-box img { max-width: 40% }
+.cards .article-box img { /*max-width: 40%*/ width: 100% }
 .cards .article-box img.left { float: left; margin-right: 25px }
 .cards .article-box img.right { float: left; margin-left: 25px }
 

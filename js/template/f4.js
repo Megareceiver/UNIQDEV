@@ -2139,10 +2139,7 @@ function r_f4DaftarBerita() {
 		if(data !=null){
 			counter = data.length;
 		}
-		// data 	= [
-		// 	{'id': '1', 'title': 'Pembukaan Bantuan Dana Hibah 2017 telah dibuka !', 'description': 'Bantuan Dana Hibah kini telah dibuka, kepada para lembaga yang membutuhkan data, untuk segera mengirimkan proposal permohonan dan persyaratan-persyaratan yang diperlukan be ...'},
-		// 	{'id': '2', 'title': 'Penutupan Bantuan Dana Hibah 2016 !', 'description': 'Lembaga yang ikut serta diwajibkan melaporkan penggunaan dana secara lengkap dan baik, pelaporan dilakukan terakhir pada tanggal yang telah ditentukan sebelumnya, de ...'},
-		// ];
+		
 		//--open
 		head	= '';
 		body	= '<div class="row no-head"><div class="container">';
@@ -2154,7 +2151,7 @@ function r_f4DaftarBerita() {
 				'<h4>Berita</h4>' +
 				'<p class="offset">form untuk menambahkan berita.</p>' +
 				'<div class="btn-collapse right">' +
-					'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
+					'<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
 					'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
 				'</div>' +
 			'</div>' +
@@ -2164,12 +2161,12 @@ function r_f4DaftarBerita() {
 				'<div class="row default">' +
 					'<div class="col-md-12">' +
 						'<div class="input-box">' +
-							'<input name="judul" placeholder="Judul" tabindex="2" type="text" value="" />' +
+							'<input name="judul" placeholder="Judul berita (*)" tabindex="2" type="text" value="" />' +
 						'</div>' +
 					'</div>' +
 					'<div class="col-md-12">' +
 						'<div class="input-box rows-4">' +
-							'<textarea name="isiBerita" placeholder="Isi berita" tabindex="2" class="rows-4"></textarea>' +
+							'<textarea name="isiBerita" placeholder="Isi berita (*)" tabindex="2" class="rows-4"></textarea>' +
 						'</div>' +
 					'</div>' +
 					'<div class="col-md-12">' +
@@ -2254,12 +2251,16 @@ function r_f4DetailBerita(packet) {
 		body  	= '';
 		part	= ['',''];
 		content = '';
-		// data 	= [
-		// 	{'id': '1', 'title': 'Pembukaan Bantuan Dana Hibah 2017 telah dibuka !', 'picture': 'avatar-default.jpg', 'description': 'Bantuan Dana Hibah kini telah dibuka, kepada para lembaga yang membutuhkan data, untuk segera mengirimkan proposal permohonan dan persyaratan-persyaratan yang diperlukan berdasarkan PERGUB 2017'},
-		// ];
+		
+		if(packet == undefined || packet == "" || packet == null || packet == "start"){
+			packet = news_look_reader();
+		}
+
 		data = p_getData('f4','f441', packet);
 		data = data.feedData;
-		console.log(data);
+
+		news_look_set(packet);
+
 		//--open
 		head	= '';
 		body	= '<div class="row no-head"><div class="container">';
@@ -2270,12 +2271,13 @@ function r_f4DetailBerita(packet) {
 			body = body +
 			'<div class="cards clear">' +
 				'<div class="article-box">' +
-					'<div class="body no-foot">' +
-						'<p class="title">' + data[loop].judul + '</p>	';
+					'<div class="body full no-foot">' +
+						'<h2 class="title">' + data[loop].judul + '</h2>	' +
+						'<p>' + timeSince(new Date(Date.parse(data[loop].createdDate))) + '</p>	';
 			
 			if(data[loop].picture != ""){
 				body = body +
-				'<img class="left" src="img/news/' + data[loop].urlGambar + '"/>';
+				'<img src="img/news/' + data[loop].urlGambar + '"/>';
 			}
 			
 			body = body +
@@ -2645,11 +2647,14 @@ function r_f4InfoPersonal() {
 		part	= ['','','',''];
 		content = '';
 		data    = [
-			{'date': 'Kamis, 25 Mei 2017', 'time': '10:30 AM', 'duration': '10 menit'},
-			{'date': 'Kamis, 25 Mei 2017', 'time': '10:20 AM', 'duration': '10 menit'},
-			{'date': 'Kamis, 25 Mei 2017', 'time': '10:10 AM', 'duration': '10 menit'},
+			// {'date': 'Kamis, 25 Mei 2017', 'time': '10:30 AM', 'duration': '10 menit'},
+			// {'date': 'Kamis, 25 Mei 2017', 'time': '10:20 AM', 'duration': '10 menit'},
+			// {'date': 'Kamis, 25 Mei 2017', 'time': '10:10 AM', 'duration': '10 menit'},
 		];
-		
+
+		dataProfile = p_getData('f3', 'f312');
+		dataProfile = dataProfile.feedData;
+
 		//--open
 		head = '<div class="row head"><div class="container"><div class="col-md-8 col-md-offset-2">';
 		head = head +
@@ -2664,33 +2669,34 @@ function r_f4InfoPersonal() {
 		'</div>';
 		head = head + '</div></div></div>';
 		
+		var imgDir = ((dataProfile.noRegistrasi != "") ? 'img/logo/' : 'img/avatar/');
 		body = '<div class="row"><div class="container"><div class="col-md-8 col-md-offset-2">';
 		body = body + 
 		'<div class="cards fluid">' +
 			'<div class="col-md-4 text-center">' +
-				'<img src="img/avatar/avatar-default-x3.jpg" class="big-pic" />' +
+				'<img src="' + imgDir + ((dataProfile.urlGambar != "") ? dataProfile.urlGambar : 'avatar-default-x3.jpg') + '" class="big-pic" />' +
 			'</div>' +
 			'<div class="col-md-8">' +
 				'<div class="desc-frame">' +
 					'<div class="desc-box">' +
 						'<div class="labels"><p class="text-set">Nama</p></div>' +
-						'<div class="divider"><p class="text-set">...</p></div>' +
+						'<div class="divider"><p class="text-set">' + ((dataProfile.nama) ? dataProfile.nama : '...') + '</p></div>' +
 					'</div>' +
 					'<div class="desc-box">' +
 						'<div class="labels"><p class="text-set">Jabatan</p></div>' +
-						'<div class="divider"><p class="text-set">...</p></div>' +
+						'<div class="divider"><p class="text-set">' + ((dataProfile.jabatan) ? dataProfile.jabatan : '...') + '</p></div>' +
 					'</div>' +
 					'<div class="desc-box">' +
 						'<div class="labels"><p class="text-set">Alamat</p></div>' +
-						'<div class="divider"><p class="text-set">...</p></div>' +
+						'<div class="divider"><p class="text-set">' + ((dataProfile.alamat) ? dataProfile.alamat : '...') + '</p></div>' +
 					'</div>' +
 					'<div class="desc-box">' +
 						'<div class="labels"><p class="text-set">Telp</p></div>' +
-						'<div class="divider"><p class="text-set">...</p></div>' +
+						'<div class="divider"><p class="text-set">' + ((dataProfile.telp) ? dataProfile.telp : '...') + '</p></div>' +
 					'</div>' +
 					'<div class="desc-box">' +
 						'<div class="labels"><p class="text-set">Email</p></div>' +
-						'<div class="divider"><p class="text-set">...</p></div>' +
+						'<div class="divider"><p class="text-set">' + ((dataProfile.email) ? dataProfile.email : '...') + '</p></div>' +
 					'</div>' +
 				'</div>' +
 			'</div>' +
@@ -2708,24 +2714,23 @@ function r_f4InfoPersonal() {
 			'<div class="desc-frame">' +
 				'<div class="desc-box">' +
 					'<div class="labels"><p class="text-set">Username</p></div>' +
-					'<div class="divider"><p class="text-set">usernamex1</p></div>' +
+					'<div class="divider"><p class="text-set">' + ((dataProfile.username) ? dataProfile.username : '...') + '</p></div>' +
 				'</div>' +
 				'<div class="desc-box">' +
 					'<div class="labels"><p class="text-set">User level</p></div>' +
-					'<div class="divider"><p class="text-set">1</p></div>' +
-				'</div>' +
+					'<div class="divider"><p class="text-set">' + ((dataProfile.userLevel) ? dataProfile.userLevel : '...') + '</p></div>' +
+				'</div>';
+		if(dataProfile.access != null && dataProfile.access.length > 0){
+			for(loop=0; loop<dataProfile.access.length; loop++){
+				body = body + 
 				'<div class="desc-box">' +
-					'<div class="labels"><p class="text-set">Akses DPLEGA 2.0</p></div>' +
-					'<div class="divider"><p class="text-set">Aktif</p></div>' +
-				'</div>' +
-				'<div class="desc-box">' +
-					'<div class="labels"><p class="text-set">Akses TABAH 2.0</p></div>' +
-					'<div class="divider"><p class="text-set">Aktif</p></div>' +
-				'</div>' +
-				'<div class="desc-box">' +
-					'<div class="labels"><p class="text-set">Akses FKPAI Online</p></div>' +
-					'<div class="divider"><p class="text-set">-</p></div>' +
-				'</div>' +
+					'<div class="labels"><p class="text-set">' + dataProfile.access[loop].label + '</p></div>' +
+					'<div class="divider"><p class="text-set">' + ((dataProfile.access[loop].status == '1') ? 'Aktif' : 'Tidak aktif') + '</p></div>' +
+				'</div>';
+			}
+		}
+
+		body = body + 		
 			'</div>' +
 		'</div>' +
 		'<div class="cards-label plus">' +
@@ -2733,30 +2738,39 @@ function r_f4InfoPersonal() {
 				'<strong>Riwayat login</strong>' +
 			'</p>' +
 		'</div>';
-		
-		for(var loop = 0; loop < data.length; loop++){
+
+		if(data != null && data.length > 0){
+			for(var loop = 0; loop < data.length; loop++){
+				body = body + 
+				'<div class="cards bakcup-list">' +
+					'<div class="row default">' +
+						'<div class="col-xs-6">' +
+							'<div class="list-box clear">' +
+								'<p class="list-text">' + data[loop].date + '</p>' +
+							'</div>' +
+						'</div>' +
+						'<div class="col-xs-3">' +
+							'<div class="list-box clear">' +
+								'<p class="list-text">' + data[loop].time + '</p>' +
+							'</div>' +
+						'</div>' +
+						'<div class="col-xs-3">' +
+							'<div class="list-box clear">' +
+								'<p class="list-text">' + data[loop].duration + '</p>' +
+							'</div>' +
+						'</div>' +
+						'<div class="clearfix"></div>' +
+					'</div>' +
+				'</div>';
+			}	
+		}else{
 			body = body + 
-			'<div class="cards bakcup-list">' +
-				'<div class="row default">' +
-					'<div class="col-xs-6">' +
-						'<div class="list-box clear">' +
-							'<p class="list-text">' + data[loop].date + '</p>' +
-						'</div>' +
-					'</div>' +
-					'<div class="col-xs-3">' +
-						'<div class="list-box clear">' +
-							'<p class="list-text">' + data[loop].time + '</p>' +
-						'</div>' +
-					'</div>' +
-					'<div class="col-xs-3">' +
-						'<div class="list-box clear">' +
-							'<p class="list-text">' + data[loop].duration + '</p>' +
-						'</div>' +
-					'</div>' +
-					'<div class="clearfix"></div>' +
+			'<div class="cards">' +
+				'<div class="cards-header">' +
+					'<p class="fixed offset text-black">Data tidak ditemukan.</p>' +
 				'</div>' +
 			'</div>';
-		}	
+		}
 		
 		body	= body + '</div></div></div>';
 		content = '<section id="">' + head + body + '</section>';
@@ -2783,11 +2797,7 @@ function r_f4FormInfoPersonal() {
 		body  	= '';
 		part	= ['','','',''];
 		content = '';
-		data    = [
-			{'date': 'Kamis, 25 Mei 2017', 'time': '10:30 AM', 'duration': '10 menit'},
-			{'date': 'Kamis, 25 Mei 2017', 'time': '10:20 AM', 'duration': '10 menit'},
-			{'date': 'Kamis, 25 Mei 2017', 'time': '10:10 AM', 'duration': '10 menit'},
-		];
+		data    = [];
 		
 		//--open
 		head = '<div class="row head"><div class="container"><div class="col-md-8 col-md-offset-2">';

@@ -1,4 +1,8 @@
 <?php
+	if (session_status() == PHP_SESSION_NONE) {
+		session_start();
+	}
+
 	require_once('protected/config.php');
 	function getData($data, $target){
 		/* initial condition */
@@ -21,6 +25,7 @@
 		switch($target){
 			case "f31": $resultList = getAuth($data); break;
 			case "f311": $resultList = getFetchUser($data); break;
+			case "f312": $resultList = getProfileUser($data); break;
 			
 			default	   : $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Terjadi kesalahan fatal, proses dibatalkan!", "feedData" => array()); break;
 		}
@@ -66,27 +71,27 @@
 								ON u.idApps = a.idData
 								WHERE username = '".$row['username']."'";
 									
-							$results = mysqli_query($gate, $sqls);
-							if($results){
-								if(mysqli_num_rows($results) > 0) {
-									$temp = "";
-									while($rows = mysqli_fetch_assoc($results)) {
-										if($temp != $row['idData']){
-											$temp = $row['idData'];
-											$unReadData2 = array(
-												"id"   		=> $rows['idData'],
-												"label" 	=> $rows['appsName'],
-												"type" 		=> "parent",
-												"status" 	=> $rows['statusAktif']
-											);
+						$results = mysqli_query($gate, $sqls);
+						if($results){
+							if(mysqli_num_rows($results) > 0) {
+								$temp = "";
+								while($rows = mysqli_fetch_assoc($results)) {
+									if($temp != $row['idData']){
+										$temp = $row['idData'];
+										$unReadData2 = array(
+											"id"   		=> $rows['idData'],
+											"label" 	=> $rows['appsName'],
+											"type" 		=> "parent",
+											"status" 	=> $rows['statusAktif']
+										);
 
-											array_push($unReadData, $unReadData2);
-											unset($unReadData2);
-											$unReadData2 = array();
-										}
+										array_push($unReadData, $unReadData2);
+										unset($unReadData2);
+										$unReadData2 = array();
 									}
 								}
 							}
+						}
 
 						array_push($collectData, array(
 							"id"   			=> $row['idData'],
@@ -290,6 +295,146 @@
 				"user" 		=> $user,
 				"access"	=> $access
 			);
+
+			$resultList = array( "feedStatus" => "success", "feedMessage" => "Data ditemukan!", "feedData" => $record);
+		}
+
+		if($error == 1){
+			//error state
+			$resultList = array( "feedStatus" => "failed", "feedType" => $errorType, "feedMessage" => $errorMsg);
+		}
+		
+		/* result fetch */
+		$json = $resultList;
+		
+		return $json;
+	}
+
+	function getProfileUser($data){
+		/* initial condition */
+		$resultList = array();
+		$table 		= "";
+		$field 		= array();
+		$rows		= 0;
+		$condition 	= "";
+		$orderBy	= "";
+		$error		= 0;
+		$errorType  = "";
+		$errorMsg	= "";
+		$dumbTable  = "";
+		$username 	= $_SESSION['username'];
+		$unReadData	 = array();
+		$unReadData2 = array();
+		$collectData = array();
+
+		/* open connection */ 
+		$gate = openGate();
+		if($gate){		
+			// connection = true
+			//checking section
+			$sql 	= " SELECT username FROM dplega_910_user WHERE username = '".$username."'";
+			$result = mysqli_query($gate, $sql);
+			if(mysqli_num_rows($result) <= 0) {
+				$error = 1;
+			}
+
+			$record    		= array(); 
+			$fetch 	   		= array();  
+			$user 			= array();  
+			$access 		= array(); 
+
+			if($error != 1){
+				//user
+				$sql = 	"
+					SELECT 
+						l.`idData`, 
+						l.`noRegistrasi`, 
+						l.`nama`, 
+						l.`jabatan`, 
+						CONCAT_WS(' ', `alamat`, 'RT.',`noRt`, '/', 'RW.', `noRw`, `namaKelurahan`, `namaKecamatan`, `namaWilayah`, `namaProvinsi`) as alamat,
+						l.`noTelp`, 
+						l.`email`, 
+						l.`username`, 
+						l.`userLevel`, 
+						l.`urlGambar`
+					FROM
+						dplega_910_user l
+					LEFT JOIN
+						dplega_100_provinsi p ON l.kodeProvinsi = p.kodeProvinsi
+					LEFT JOIN
+						dplega_101_wilayah w ON l.kodeWilayah = w.kodeWilayah
+					LEFT JOIN
+						dplega_102_kecamatan kc ON l.kodeKecamatan = kc.kodeKecamatan
+					LEFT JOIN
+						dplega_103_kelurahan kl ON l.kodeKelurahan = kl.kodeKelurahan
+					WHERE
+						l.username = '".$username."'
+				";
+				$result = mysqli_query($gate, $sql);
+				if($result){
+					if(mysqli_num_rows($result) > 0) {
+						// output data of each row 
+						while($row = mysqli_fetch_assoc($result)) {
+							
+							$sqls = 	
+							"SELECT u.*, a.appsName FROM dplega_911_useraccess u
+								JOIN 
+									dplega_912_apps a 
+								ON u.idApps = a.idData
+								WHERE username = '".$username."'";
+									
+							$results = mysqli_query($gate, $sqls);
+							if($results){
+								if(mysqli_num_rows($results) > 0) {
+									$temp = "";
+									while($rows = mysqli_fetch_assoc($results)) {
+										if($temp != $row['idData']){
+											$temp = $row['idData'];
+											$unReadData2 = array(
+												"label" 	=> $rows['appsName'],
+												"status" 	=> $rows['statusAktif']
+											);
+
+											array_push($unReadData, $unReadData2);
+											unset($unReadData2);
+											$unReadData2 = array();
+										}
+									}
+								}
+							}
+
+							$user = array(
+										"noRegistrasi"   	=> $row['noRegistrasi'],
+										"nama" 				=> $row['nama'],
+										"jabatan" 			=> $row['jabatan'],
+										"alamat" 			=> $row['alamat'],
+										"noTelp"			=> $row['noTelp'],
+										"email"				=> $row['email'],
+										"username"			=> $row['username'],
+										"userLevel"			=> $row['userLevel'],
+										"urlGambar"			=> $row['urlGambar'],
+										"access"			=> $unReadData
+							);
+						}
+					}
+				}else{
+					//error state
+					$error		= 1;
+					$errorType  = "danger";
+					$errorMsg	= "Terjadi kesalahan, tidak dapat terhubung ke server!";
+				}	
+
+			//end		
+			}else{
+				//error state
+				$error		= 1;
+				$errorType  = "danger";
+				$errorMsg	= "Terjadi kesalahan, tidak dapat mengenali data!";
+			}
+
+			closeGate($gate);
+
+			$record = $user;
 
 			$resultList = array( "feedStatus" => "success", "feedMessage" => "Data ditemukan!", "feedData" => $record);
 		}
