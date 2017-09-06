@@ -192,9 +192,11 @@ function r_customCallBack(formType, group, target, recentId, formId, pId){
 			switch(target){
 				case 'f411':
 					dataFec = [{ 
-							'idData' : $('#f-provinsi-create input[name="idData"]').val(), 
-							'noreg'	 : $('#f-provinsi-create input[name="kode"]').val(), 
-							'caption': $('#f-provinsi-create input[name="nama"]').val(),
+							'idData' 		: recentId, 
+							'noreg'	 		: $('#f-provinsi-create input[name="kode"]').val(), 
+							'caption'		: $('#f-provinsi-create input[name="nama"]').val(),
+							'references' 	: '',
+							'referencesKey' : ''
 					}];
 					
 					r_f4LingkupAreaDataGenerator(formType, 'provinsi', dataFec, 'section-Provinsi');
@@ -203,6 +205,7 @@ function r_customCallBack(formType, group, target, recentId, formId, pId){
 				break;
 				case 'f412':
 					dataFec = [{ 
+							'idData' 		: recentId, 
 							'noreg'	 		: $('#f-wilayah-create input[name="kode"]').val(), 
 							'caption'		: $('#f-wilayah-create input[name="nama"]').val(),
 							'references'	: $('#f-wilayah-create select[name="referensi"] option:selected').text(),
@@ -214,6 +217,7 @@ function r_customCallBack(formType, group, target, recentId, formId, pId){
 				break;
 				case 'f413':
 					dataFec = [{ 
+							'idData' 		: recentId, 
 							'noreg'	 		: $('#f-kecamatan-create input[name="kode"]').val(), 
 							'caption'		: $('#f-kecamatan-create input[name="nama"]').val(),
 							'references'	: $('#f-kecamatan-create select[name="referensi"] option:selected').text(),
@@ -225,6 +229,7 @@ function r_customCallBack(formType, group, target, recentId, formId, pId){
 				break;
 				case 'f414':
 					dataFec = [{ 
+							'idData' 		: recentId, 
 							'noreg'	 		: $('#f-kelurahan-create input[name="kode"]').val(), 
 							'caption'		: $('#f-kelurahan-create input[name="nama"]').val(),
 							'references'	: $('#f-kelurahan-create select[name="referensi"] option:selected').text(),
@@ -299,8 +304,6 @@ function r_customCallBack(formType, group, target, recentId, formId, pId){
 		break;
 		case 'fLogin': //megan
 			if(recentId.userLevel == 1){
-
-				console.log(recentId.noRegistrasi);
 				r_navigateTo(12, recentId.noRegistrasi);
 				r_setCookie('userLevel', recentId.userLevel, 1);
 			}else if(recentId.userLevel != ""){
@@ -384,28 +387,28 @@ function r_optionDHtml(group){
 		case "provinsi": 
 			if(optionD != null && optionD[0].provinsi != undefined){
 				for(var loop=0; loop<optionD[0].provinsi.length; loop++){
-					optionHtml = optionHtml + '<option value="' + optionD[0].provinsi[loop].noreg + '">' + optionD[0].provinsi[loop].caption + '</option>';
+					optionHtml = optionHtml + '<option value="' + optionD[0].provinsi[loop].idData + '">' + optionD[0].provinsi[loop].caption + '</option>';
 				}
 			}
 		break;
 		case "wilayah": 
 			if(optionD != null && optionD[0].wilayah != undefined){
 				for(var loop=0; loop<optionD[0].wilayah.length; loop++){
-					optionHtml = optionHtml + '<option value="' + optionD[0].wilayah[loop].noreg + '">' + optionD[0].wilayah[loop].caption + '</option>';
+					optionHtml = optionHtml + '<option value="' + optionD[0].wilayah[loop].idData + '">' + optionD[0].wilayah[loop].caption + '</option>';
 				}
 			}
 		break;
 		case "kecamatan": 
 			if(optionD != null && optionD[0].kecamatan != undefined){
 				for(var loop=0; loop<optionD[0].kecamatan.length; loop++){
-					optionHtml = optionHtml + '<option value="' + optionD[0].kecamatan[loop].noreg + '">' + optionD[0].kecamatan[loop].caption + '</option>';
+					optionHtml = optionHtml + '<option value="' + optionD[0].kecamatan[loop].idData + '">' + optionD[0].kecamatan[loop].caption + '</option>';
 				}
 			}
 		break;
 		case "kelurahan": 
 			if(optionD != null && optionD[0].kelurahan != undefined){
 				for(var loop=0; loop<optionD[0].kelurahan.length; loop++){
-					optionHtml = optionHtml + '<option value="' + optionD[0].kelurahan[loop].noreg + '">' + optionD[0].kelurahan[loop].caption + '</option>';
+					optionHtml = optionHtml + '<option value="' + optionD[0].kelurahan[loop].idData + '">' + optionD[0].kelurahan[loop].caption + '</option>';
 				}
 			}
 		break;

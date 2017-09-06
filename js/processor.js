@@ -100,7 +100,7 @@ function p_getData(group, target, keyword, refferences){
 		data: { keyword : keyword, refferences: refferences },
 		success: function(result){
 			data = result;
-		}
+		},
 	});
 	
 	return data;
@@ -119,8 +119,10 @@ function p_removeData(group, target, pId, refferenceId){
 		success: function(data){
 			reStatus = data.feedStatus;
 			hideNotification('waiting');
-			showNotification(data.feedType, 'add', data.feedMessage);
-		}
+			showNotification(data.feedType, 'removed', data.feedMessage);
+		},
+		complete: function(xhr,status) { hideNotification('waiting'); },
+		error: function(xhr,status,error) { showNotification('danger', 'failure', 'Terjadi kesalahan, tidak ada respon dari server!'); }
 	});
 	
 	return reStatus;

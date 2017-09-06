@@ -58,13 +58,13 @@
 		$gate = openGate();
 		if($gate){		
 			// connection = true
-			$sql = 	"SELECT * from (select 'provinsi' as `group`, 'f411' as `target`, idData, kodeProvinsi as code, namaProvinsi as name, '' as `referencesKey`, '' as `references` FROM `dplega_100_provinsi` order by name) as table_1
+			$sql = 	"SELECT * from (select 'provinsi' as `group`, 'f411' as `target`, idData, kodeProvinsi as code, namaProvinsi as name, '' as `referencesKey`, '' as `references` FROM `dplega_100_provinsi` order by idData) as table_1
 					 UNION
-					 SELECT * from (SELECT 'wilayah' as `group`, 'f412' as `target`, a.idData, a.kodeWilayah as code, a.namaWilayah as name, a.idProvinsi as `referencesKey`, namaProvinsi as `references` FROM `dplega_101_wilayah` a LEFT JOIN  `dplega_100_provinsi` b ON a.idProvinsi = b.idData order by name) as table_2
+					 SELECT * from (SELECT 'wilayah' as `group`, 'f412' as `target`, a.idData, a.kodeWilayah as code, a.namaWilayah as name, a.idProvinsi as `referencesKey`, namaProvinsi as `references` FROM `dplega_101_wilayah` a LEFT JOIN  `dplega_100_provinsi` b ON a.idProvinsi = b.idData order by a.idData) as table_2
 					 UNION
-					 SELECT * from (SELECT 'kecamatan' as `group`, 'f413' as `target`, a.idData, a.kodeKecamatan as code, a.namaKecamatan as name, a.idWilayah as `referencesKey`, namaWilayah as `references` FROM `dplega_102_kecamatan` a LEFT JOIN  `dplega_101_wilayah` b ON a.idWilayah = b.idData order by name) as table_3
+					 SELECT * from (SELECT 'kecamatan' as `group`, 'f413' as `target`, a.idData, a.kodeKecamatan as code, a.namaKecamatan as name, a.idWilayah as `referencesKey`, namaWilayah as `references` FROM `dplega_102_kecamatan` a LEFT JOIN  `dplega_101_wilayah` b ON a.idWilayah = b.idData order by a.idData) as table_3
 					 UNION
-					 SELECT * from (SELECT 'kelurahan' as `group`, 'f414' as `target`, a.idData, a.kodeKelurahan as code, a.namaKelurahan as name, a.idKecamatan as `referencesKey`, namaKecamatan as `references` FROM `dplega_103_kelurahan` a LEFT JOIN  `dplega_102_kecamatan` b ON a.idKecamatan = b.idData order by name) as table_4";
+					 SELECT * from (SELECT 'kelurahan' as `group`, 'f414' as `target`, a.idData, a.kodeKelurahan as code, a.namaKelurahan as name, a.idKecamatan as `referencesKey`, namaKecamatan as `references` FROM `dplega_103_kelurahan` a LEFT JOIN  `dplega_102_kecamatan` b ON a.idKecamatan = b.idData order by a.idData) as table_4";
 						
 			$result = mysqli_query($gate, $sql);
 			if($result){
@@ -700,6 +700,7 @@
 		$resultType = "";
 		$resultMsg	= "";
 		$counter	= "";
+		$recentId	= "";
 		
 		/* validation */
 		if($target == "f411"){
@@ -793,6 +794,7 @@
 	
 				$result = mysqli_query($gate, $sql);
 				if($result){	
+					$recentId	= mysqli_insert_id($gate);
 					$error	    = 0;
 					$resultType = "success";
 					$resultMsg  = "Input berhasil disimpan.";		
@@ -821,7 +823,7 @@
 			//error state
 			$resultList = array( "feedStatus" => "failed", "feedType" => $resultType, "feedMessage" => $resultMsg);
 		}else{
-			$resultList = array( "feedStatus" => "success", "feedType" => $resultType, "feedMessage" => $resultMsg);
+			$resultList = array( "feedStatus" => "success", "feedType" => $resultType, "feedMessage" => $resultMsg, "feedId" => $recentId);
 		}
 		
 		/* result fetch */
@@ -1219,6 +1221,7 @@
 		$resultType = "";
 		$resultMsg	= "";
 		$counter	= "";
+		$recentId	= "";
 		
 		/* validation */
 		if($target == "f411"){
@@ -1258,7 +1261,7 @@
 						SET
 							kodeWilayah  = '".$data['kode']."',
 							namaWilayah  = '".$data['nama']."',
-							kodeProvinsi = '".$data['referensi']."',
+							idProvinsi 	 = '".$data['referensi']."',
 							changedBy 	 = '".$_SESSION['username']."',
 							changedDate  = NOW()
 						WHERE 
@@ -1270,7 +1273,7 @@
 						SET
 							kodeKecamatan = '".$data['kode']."',
 							namaKecamatan = '".$data['nama']."',
-							kodeWilayah   = '".$data['referensi']."',
+							idWilayah     = '".$data['referensi']."',
 							changedBy 	  = '".$_SESSION['username']."',
 							changedDate   = NOW()
 						WHERE 
@@ -1282,7 +1285,7 @@
 						SET
 							kodeKelurahan = '".$data['kode']."',
 							namaKelurahan = '".$data['nama']."',
-							kodeKecamatan = '".$data['referensi']."',
+							idKecamatan   = '".$data['referensi']."',
 							changedBy 	  = '".$_SESSION['username']."',
 							changedDate   = NOW()
 						WHERE 
@@ -1292,6 +1295,7 @@
 
 				$result = mysqli_query($gate, $sql);
 				if($result){	
+					$recentId	= $data['idData'];
 					$error	    = 0;
 					$resultType = "success";
 					$resultMsg  = "data berhasil diubah.";		
@@ -1299,7 +1303,7 @@
 					//error state
 					$error		= 1;
 					$resultType = "danger";
-					$resultMsg	= "Terjadi kesalahan fatal, data gagal diubah!";
+					$resultMsg	= "Terjadi kesalahan fatal, data gagal diubah!".mysqli_error($gate);
 				}
 				
 				closeGate($gate);
@@ -1320,7 +1324,7 @@
 			//error state
 			$resultList = array( "feedStatus" => "failed", "feedType" => $resultType, "feedMessage" => $resultMsg);
 		}else{
-			$resultList = array( "feedStatus" => "success", "feedType" => $resultType, "feedMessage" => $resultMsg);
+			$resultList = array( "feedStatus" => "success", "feedType" => $resultType, "feedMessage" => $resultMsg, "feedId" => $recentId);
 		}
 		
 		/* result fetch */
@@ -1618,28 +1622,28 @@
 					$sql = 	
 					" 	DELETE FROM dplega_100_provinsi
 						WHERE 
-							kodeProvinsi =
+							idData =
 							'".$data['pId']."'
 					";
 				}elseif($target == "f412"){
 					$sql = 	
 					" 	DELETE FROM dplega_101_wilayah
 						WHERE 
-							kodeWilayah =
+							idData =
 							'".$data['pId']."'
 					";
 				}elseif($target == "f413"){
 					$sql = 	
 					" 	DELETE FROM dplega_102_kecamatan
 						WHERE 
-							kodeKecamatan =
+							idData =
 							'".$data['pId']."'
 					";
 				}elseif($target == "f414"){
 					$sql = 	
 					" 	DELETE FROM dplega_103_kelurahan
 						WHERE 
-							kodeKelurahan =
+							idData =
 							'".$data['pId']."'
 					";
 				}

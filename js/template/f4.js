@@ -247,7 +247,7 @@ function r_f4LingkupArea() {
 				'</div>' +
 			'</div>' +
 		'</form>' +
-		'<div class="cards">' +
+		'<!--div class="cards">' +
 			'<div class="row default">' +
 				'<div class="col-md-12">' +
 					'<div class="input-box fixed">' +
@@ -258,7 +258,7 @@ function r_f4LingkupArea() {
 					'</div>' +
 				'</div>' +
 			'</div>' +
-		'</div>';
+		'</div-->';
 		
 		if(data != null && data[0].provinsi != undefined){
 			counter = data[0].provinsi.length;
@@ -282,7 +282,7 @@ function r_f4LingkupArea() {
 										'p-noreg		="' + data[0].provinsi[loop].noreg + '"' +
 										'p-group		="f4"' + 
 										'p-target		="' + data[0].provinsi[loop].group + '"' +
-										'p-container	="' + loop + 'provinsi-' + data[0].provinsi[loop].noreg + '">' +
+										'p-container	="' + loop + 'provinsi-' + data[0].provinsi[loop].idData + '">' +
 										'<span class="fa fa-ellipsis-v"></span>' +
 									'</div>' +
 								'</div>' +
@@ -344,7 +344,7 @@ function r_f4LingkupArea() {
 				'</div>' +
 			'</div>' +
 		'</form>' +
-		'<div class="cards">' +
+		'<!--div class="cards">' +
 			'<div class="row default">' +
 				'<div class="col-md-12">' +
 					'<div class="input-box fixed">' +
@@ -355,14 +355,14 @@ function r_f4LingkupArea() {
 					'</div>' +
 				'</div>' +
 			'</div>' +
-		'</div>';
+		'</div-->';
 		
 		if(data != null && data[0].wilayah != undefined){
 			counter = data[0].wilayah.length;
 			if(counter > 0){
 				for(var loop   = 0; loop < data[0].wilayah.length; loop++){
 					part[1] = part[1] + 
-					'<div class="cards wilayah-list list-edit" id="' + loop + 'wilayah-' + data[0].wilayah[loop].noreg + '">' +
+					'<div class="cards wilayah-list list-edit" id="' + loop + 'wilayah-' + data[0].wilayah[loop].idData + '">' +
 						'<div class="row default">' +
 							'<div class="col-xs-2">' +
 								'<div class="list-box">' +
@@ -381,10 +381,11 @@ function r_f4LingkupArea() {
 									'<div class="list-button click-option"' + 
 										'p-label		="' + data[0].wilayah[loop].caption + '"' + 
 										'p-id			="' + data[0].wilayah[loop].idData + '"' +
+										'p-noreg		="' + data[0].wilayah[loop].noreg + '"' +
 										'p-references	="' + data[0].wilayah[loop].referencesKey + '"' +
 										'p-group		="f4"' + 
 										'p-target		="' + data[0].wilayah[loop].group + '"' +
-										'p-container	="' + loop + 'wilayah-' + data[0].wilayah[loop].noreg + '">' +
+										'p-container	="' + loop + 'wilayah-' + data[0].wilayah[loop].idData + '">' +
 										'<span class="fa fa-ellipsis-v"></span>' +
 									'</div>' +
 								'</div>' +
@@ -446,7 +447,7 @@ function r_f4LingkupArea() {
 				'</div>' +
 			'</div>' +
 		'</form>' +
-		'<div class="cards">' +
+		'<!--div class="cards">' +
 			'<div class="row default">' +
 				'<div class="col-md-12">' +
 					'<div class="input-box fixed">' +
@@ -457,14 +458,14 @@ function r_f4LingkupArea() {
 					'</div>' +
 				'</div>' +
 			'</div>' +
-		'</div>';
+		'</div-->';
 		
 		if(data != null && data[0].kecamatan != undefined){
 			counter = data[0].kecamatan.length;
 			if(counter > 0){
 				for(var loop = 0; loop < data[0].kecamatan.length; loop++){
 					part[2] = part[2] + 
-					'<div class="cards kecamatan-list list-edit" id="' + loop + 'kecamatan-' + data[0].kecamatan[loop].noreg + '">' +
+					'<div class="cards kecamatan-list list-edit" id="' + loop + 'kecamatan-' + data[0].kecamatan[loop].idData + '">' +
 						'<div class="row default">' +
 							'<div class="col-xs-2">' +
 								'<div class="list-box">' +
@@ -483,10 +484,11 @@ function r_f4LingkupArea() {
 									'<div class="list-button click-option"' + 
 										'p-label		="' + data[0].kecamatan[loop].caption + '"' + 
 										'p-id			="' + data[0].kecamatan[loop].idData + '"' +
+										'p-noreg		="' + data[0].kecamatan[loop].noreg + '"' +
 										'p-references	="' + data[0].kecamatan[loop].referencesKey + '"' +
 										'p-group		="f4"' + 
 										'p-target		="' + data[0].kecamatan[loop].group + '"' +
-										'p-container	="' + loop + 'kecamatan-' + data[0].kecamatan[loop].noreg + '">' +
+										'p-container	="' + loop + 'kecamatan-' + data[0].kecamatan[loop].idData + '">' +
 										'<span class="fa fa-ellipsis-v"></span>' +
 									'</div>' +
 								'</div>' +
@@ -549,7 +551,7 @@ function r_f4LingkupArea() {
 				'</div>' +
 			'</div>' +
 		'</form>' +
-		'<div class="cards">' +
+		'<!--div class="cards">' +
 			'<div class="row default">' +
 				'<div class="col-md-12">' +
 					'<div class="input-box fixed">' +
@@ -560,14 +562,14 @@ function r_f4LingkupArea() {
 					'</div>' +
 				'</div>' +
 			'</div>' +
-		'</div>';
+		'</div-->';
 		
 		if(data != null && data[0].kelurahan != undefined){
 			counter = data[0].kelurahan.length;
 			if(counter > 0){
 				for(var loop = 0; loop < data[0].kelurahan.length; loop++){
 					part[3] = part[3] + 
-					'<div class="cards kelurahan-lis list-editt" id="' + loop + 'kelurahan-' + data[0].kelurahan[loop].noreg + '">' +
+					'<div class="cards kelurahan-lis list-editt" id="' + loop + 'kelurahan-' + data[0].kelurahan[loop].idData + '">' +
 						'<div class="row default">' +
 							'<div class="col-xs-2">' +
 								'<div class="list-box">' +
@@ -586,10 +588,11 @@ function r_f4LingkupArea() {
 									'<div class="list-button click-option"' + 
 										'p-label		="' + data[0].kelurahan[loop].caption + '"' + 
 										'p-id			="' + data[0].kelurahan[loop].idData + '"' +
+										'p-noreg		="' + data[0].kelurahan[loop].noreg + '"' +
 										'p-references	="' + data[0].kelurahan[loop].referencesKey + '"' +
 										'p-group		="f4"' + 
 										'p-target		="' + data[0].kelurahan[loop].group + '"' +
-										'p-container	="' + loop + 'kelurahan-' + data[0].kelurahan[loop].noreg + '">' +
+										'p-container	="' + loop + 'kelurahan-' + data[0].kelurahan[loop].idData + '">' +
 										'<span class="fa fa-ellipsis-v"></span>' +
 									'</div>' +
 								'</div>' +
@@ -655,7 +658,13 @@ function r_f4LingkupArea() {
 				$(".option-yes").unbind().on("click", function(){ 
 					hideOptionList(); 
 					if(p_removeData(pGroup, pTarget, pId) == 'success'){ 
-						$('#' + pContainer).remove(); 
+						$('#' + pContainer).remove();
+						var dataTemp = '';
+						if 	   (pTarget == "f411") dataTemp = optionD[0].provinsi; 
+						else if(pTarget == "f412") dataTemp = optionD[0].wilayah; 
+						else if(pTarget == "f413") dataTemp = optionD[0].kecamatan; 
+						else if(pTarget == "f414") dataTemp = optionD[0].kelurahan; 
+						r_f4RemoveLingkupAreaArray(dataTemp, pId);
 						clearPacket();
 					}; 
 				});
@@ -673,6 +682,7 @@ function r_f4LingkupArea() {
 		}
 		
 		tabActivator();
+		r_f4TabAdvance();
 		fileBrowserActivator();
 		r_navbarReactor();
 	
@@ -681,6 +691,23 @@ function r_f4LingkupArea() {
 		p_formHandler("f-wilayah-create"  , "addData");
 		p_formHandler("f-kecamatan-create", "addData");
 		p_formHandler("f-kelurahan-create", "addData");
+	});
+}
+
+function r_f4TabAdvance(){
+	$('.tab-navigator').on('click', function(){ 
+		var tabIndex = $(this).attr("tab-headIndex");
+		switch(tabIndex){
+			case '2': 
+				$("#f-wilayah-create [name=referensi]").html('<option value="" selected>Provinsi</option>' + r_optionDHtml('provinsi'));
+			break;
+			case '3': 
+				$("#f-kecamatan-create [name=referensi]").html('<option value="" selected>Wilayah</option>' + r_optionDHtml('wilayah'));
+			break;
+			case '4': 
+				$("#f-kelurahan-create [name=referensi]").html('<option value="" selected>Kecamatan</option>' + r_optionDHtml('kecamatan'));
+			break;
+		}
 	});
 }
 
@@ -694,21 +721,21 @@ function r_f4LingkupAreaEditor(target, id, noreg, label, referencesKey){
 		break;
 		case "f412":
 			$("#f-wilayah-create [name='idData']").val(id);
-			$("#f-wilayah-create [name='kode']").val(id);
+			$("#f-wilayah-create [name='kode']").val(noreg);
 			$("#f-wilayah-create [name='nama']").val(label);
 			$("#f-wilayah-create [name='referensi']").val(referencesKey);
 			p_formHandler("f-wilayah-create" , "updateData");
 		break;
 		case "f413":
 			$("#f-kecamatan-create [name='idData']").val(id);
-			$("#f-kecamatan-create [name='kode']").val(id);
+			$("#f-kecamatan-create [name='kode']").val(noreg);
 			$("#f-kecamatan-create [name='nama']").val(label);
 			$("#f-kecamatan-create [name='referensi']").val(referencesKey);
 			p_formHandler("f-kecamatan-create" , "updateData");
 		break;
 		case "f414":
 			$("#f-kelurahan-create [name='idData']").val(id);
-			$("#f-kelurahan-create [name='kode']").val(id);
+			$("#f-kelurahan-create [name='kode']").val(noreg);
 			$("#f-kelurahan-create [name='nama']").val(label);
 			$("#f-kelurahan-create [name='referensi']").val(referencesKey);
 			p_formHandler("f-kelurahan-create" , "updateData");
@@ -773,7 +800,8 @@ function r_f4LingkupAreaDataGenerator(formType, type, data, sectionId){
 								'<p class="list-text">' + data[loop].references + '</p>' +
 								'<div class="list-button click-option"' + 
 									'p-label		="' + data[loop].caption + '"' + 
-									'p-id			="' + data[loop].noreg + '"' +
+									'p-id			="' + data[loop].idData + '"' +
+									'p-noreg		="' + data[loop].noreg + '"' +
 									'p-references	="' + data[loop].referencesKey + '"' +
 									'p-group		="f4"' + 
 									'p-target		="' + vTemp + '"' +
@@ -803,8 +831,18 @@ function r_f4LingkupAreaDataGenerator(formType, type, data, sectionId){
 	if(formType == "addData"){
 		$("#" + sectionId + ' .emptyList').remove();
 		$("#" + sectionId).append(genHtml);
+
+		if(type=="provinsi") 	   r_f4AddLingkupAreaArray(optionD[0].provinsi,  data[0]);
+		else if(type=="wilayah")   r_f4AddLingkupAreaArray(optionD[0].wilayah,   data[0]);
+		else if(type=="kecamatan") r_f4AddLingkupAreaArray(optionD[0].kecamatan, data[0]);
+		else if(type=="kelurahan") r_f4AddLingkupAreaArray(optionD[0].kelurahan, data[0]);
 	}else if (formType == "updateData"){
 		$("#" + pContainer).replaceWith(genHtml);
+
+		if(type=="provinsi") 	   r_f4ChangeLingkupAreaArray(optionD[0].provinsi,  data[0], data[0].idData);
+		else if(type=="wilayah")   r_f4ChangeLingkupAreaArray(optionD[0].wilayah,   data[0], data[0].idData);
+		else if(type=="kecamatan") r_f4ChangeLingkupAreaArray(optionD[0].kecamatan, data[0], data[0].idData);
+		else if(type=="kelurahan") r_f4ChangeLingkupAreaArray(optionD[0].kelurahan, data[0], data[0].idData);
 	}
 	
 	//reactor
@@ -2875,4 +2913,31 @@ function r_f4FormInfoPersonal() {
 		fileBrowserActivator();
 		r_navbarReactor();
 	});
+}
+
+function r_f4AddLingkupAreaArray(data, dataAdd){
+	data.push(dataAdd); 
+	
+	return false;
+}
+
+function r_f4ChangeLingkupAreaArray(data, dataChange, id){
+	var indexArr = data.map(function(o){ return o.idData;}).indexOf(id); 
+	if(indexArr >= 0) {
+		data[indexArr].noreg = dataChange.noreg; 
+		data[indexArr].caption = dataChange.caption; 
+		data[indexArr].references = dataChange.references; 
+		data[indexArr].referencesKey = dataChange.referencesKey; 
+	}
+	
+	return false;
+}
+
+function r_f4RemoveLingkupAreaArray(data, id){
+	var indexArr = data.map(function(o){ return o.idData;}).indexOf(id); 
+	if(indexArr >= 0) {
+		data.splice(indexArr, 1); 
+	}
+	
+	return false;
 }
