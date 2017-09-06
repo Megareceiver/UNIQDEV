@@ -1,7 +1,5 @@
 <?php
-	if (session_status() == PHP_SESSION_NONE) {
-		session_start();
-	}
+	if (session_status() == PHP_SESSION_NONE) {session_start();} // session start
 
 	require_once('protected/config.php');
 	function getData($data, $target){
@@ -523,7 +521,7 @@
 							password,
 							userLevel,
 							statusActive,
-							createdBy
+							createdBy, createdDate
 						)
 						VALUES
 						(
@@ -543,7 +541,7 @@
 							md5('".$data['password']."'),
 							'2',
 							'1',
-							'TESTSESSION'
+							'".$_SESSION['username']."',NOW()
 						)
 					";
 
@@ -614,7 +612,7 @@
 										tambah,
 										ubah,
 										hapus,
-										createdBy
+										createdBy,createdDate
 									)
 									VALUES
 									(
@@ -625,7 +623,7 @@
 										'".$tambah."',
 										'".$ubah."',
 										'".$hapus."',
-										'TESTSESSION'
+										'".$_SESSION['username']."',NOW()
 									);
 								";
 
@@ -768,7 +766,7 @@
 								noTelp 				= '".$data['telp']."',
 								email 				= '".$data['email']."',
 								".$dumbQuery."
-								changedBy 			= 'TESTSESSION',
+								changedBy 			= '".$_SESSION['username']."',
 								changedDate			= NOW()
 							
 							WHERE
@@ -859,7 +857,7 @@
 											tambah = '".$tambah."',
 											ubah = '".$ubah."',
 											hapus = '".$hapus."',
-											changedBy = 'TESTSESSION',
+											changedBy = '".$_SESSION['username']."',
 											changedDate = NOW()
 										WHERE
 											username = '".$username."'

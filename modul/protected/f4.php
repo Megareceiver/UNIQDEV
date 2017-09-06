@@ -1,4 +1,5 @@
 <?php
+	if (session_status() == PHP_SESSION_NONE) {session_start();} // session start
 	require_once('protected/config.php');
 	function getData($data, $target){
 		/* initial condition */
@@ -160,13 +161,13 @@
 							dplega_100_provinsi pr
 						JOIN
 							dplega_101_wilayah wl
-							ON pr.kodeProvinsi = wl.kodeProvinsi
+							ON pr.kodeProvinsi = wl.idProvinsi
 						JOIN
 							dplega_102_kecamatan kc
-							ON wl.kodeWilayah = kc.kodeWilayah
+							ON wl.kodeWilayah = kc.idWilayah
 						JOIN
 							dplega_103_kelurahan kl
-							ON kc.kodeKecamatan = kl.kodeKecamatan
+							ON kc.kodeKecamatan = kl.idKecamatan
 						ORDER BY namaKelurahan ASC
 					";
 						
@@ -733,14 +734,14 @@
 						(
 							'".$data['kode']."',
 							'".$data['nama']."',
-							'TESTSESSION', NOW()
+							'".$_SESSION['username']."', NOW()
 						)
 					";
 				}elseif($target == "f412"){
 					$sql = 	
 					" 	INSERT INTO dplega_101_wilayah
 						(
-							kodeProvinsi,
+							idProvinsi,
 							kodeWilayah,
 							namaWilayah,
 							createdBy, createdDate
@@ -750,14 +751,14 @@
 							'".$data['referensi']."',
 							'".$data['kode']."',
 							'".$data['nama']."',
-							'TESTSESSION', NOW()
+							'".$_SESSION['username']."', NOW()
 						)
 					";
 				}elseif($target == "f413"){
 					$sql = 	
 					" 	INSERT INTO dplega_102_kecamatan
 						(
-							kodeWilayah,
+							idWilayah,
 							kodeKecamatan,
 							namaKecamatan,
 							createdBy, createdDate
@@ -767,14 +768,14 @@
 							'".$data['referensi']."',
 							'".$data['kode']."',
 							'".$data['nama']."',
-							'TESTSESSION', NOW()
+							'".$_SESSION['username']."', NOW()
 						)
 					";
 				}elseif($target == "f414"){
 					$sql = 	
 					" 	INSERT INTO dplega_103_kelurahan
 						(
-							kodeKecamatan,
+							idKecamatan,
 							kodeKelurahan,
 							namaKelurahan,
 							createdBy, createdDate
@@ -784,7 +785,7 @@
 							'".$data['referensi']."',
 							'".$data['kode']."',
 							'".$data['nama']."',
-							'TESTSESSION', NOW()
+							'".$_SESSION['username']."', NOW()
 						)
 					";
 				}
@@ -871,7 +872,7 @@
 						VALUES
 						(
 							'".$data['nama']."',
-							'TESTSESSION', NOW()
+							'".$_SESSION['username']."', NOW()
 						)
 					";
 				}elseif($target == "f422"){
@@ -886,7 +887,7 @@
 						(
 							'".$data['nama']."',
 							'".$data['referensi']."',
-							'TESTSESSION', NOW()
+							'".$_SESSION['username']."', NOW()
 						)
 					";
 				}
@@ -980,7 +981,7 @@
 						(
 							'".$data['nama']."',
 							'".$data['deskripsi']."',
-							'TESTSESSION', NOW()
+							'".$_SESSION['username']."', NOW()
 						)
 					";
 				}elseif($target == "f432"){
@@ -995,7 +996,7 @@
 						(
 							'".$data['nama']."',
 							'".$data['referensi']."',
-							'TESTSESSION', NOW()
+							'".$_SESSION['username']."', NOW()
 						)
 					";
 				}elseif($target == "f433"){
@@ -1008,7 +1009,7 @@
 						VALUES
 						(
 							'".$data['nama']."',
-							'TESTSESSION', NOW()
+							'".$_SESSION['username']."', NOW()
 						)
 					";
 				}
@@ -1091,7 +1092,7 @@
 					(
 						'".$data['judul']."',
 						'".$data['isiBerita']."',
-						'TESTSESSION', NOW()
+						'".$_SESSION['username']."', NOW()
 					)
 				";
 				
@@ -1245,7 +1246,9 @@
 					" 	UPDATE dplega_100_provinsi
 						SET
 							kodeProvinsi = '".$data['kode']."',
-							namaProvinsi = '".$data['nama']."'
+							namaProvinsi = '".$data['nama']."',
+							changedBy 	 = '".$_SESSION['username']."',
+							changedDate  = NOW()
 						WHERE 
 							idData = '".$data['idData']."'
 					";
@@ -1253,9 +1256,11 @@
 					$sql = 	
 					" 	UPDATE dplega_101_wilayah
 						SET
-							kodeWilayah = '".$data['kode']."',
-							namaWilayah = '".$data['nama']."',
-							kodeProvinsi = '".$data['referensi']."'
+							kodeWilayah  = '".$data['kode']."',
+							namaWilayah  = '".$data['nama']."',
+							kodeProvinsi = '".$data['referensi']."',
+							changedBy 	 = '".$_SESSION['username']."',
+							changedDate  = NOW()
 						WHERE 
 							idData = '".$data['idData']."'
 					";
@@ -1265,7 +1270,9 @@
 						SET
 							kodeKecamatan = '".$data['kode']."',
 							namaKecamatan = '".$data['nama']."',
-							kodeWilayah = '".$data['referensi']."'
+							kodeWilayah   = '".$data['referensi']."',
+							changedBy 	  = '".$_SESSION['username']."',
+							changedDate   = NOW()
 						WHERE 
 							idData = '".$data['idData']."'
 					";
@@ -1275,7 +1282,9 @@
 						SET
 							kodeKelurahan = '".$data['kode']."',
 							namaKelurahan = '".$data['nama']."',
-							kodeKecamatan = '".$data['referensi']."'
+							kodeKecamatan = '".$data['referensi']."',
+							changedBy 	  = '".$_SESSION['username']."',
+							changedDate   = NOW()
 						WHERE 
 							idData = '".$data['idData']."'
 					";
@@ -1362,7 +1371,9 @@
 					$sql = 	
 					" 	UPDATE dplega_220_grupVerifikasi
 						SET
-							namaGrupVerifikasi = '".$data['nama']."'
+							namaGrupVerifikasi = '".$data['nama']."',
+							changedBy 	 = '".$_SESSION['username']."',
+							changedDate  = NOW()
 						WHERE 
 							kodeGrupVerifikasi =
 							'".$data['pId']."'
@@ -1372,7 +1383,9 @@
 					" 	UPDATE dplega_221_verifikasi
 						SET
 							namaVerifikasi = '".$data['nama']."',
-							kodeGrupVerifikasi = '".$data['referensi']."'
+							kodeGrupVerifikasi = '".$data['referensi']."',
+							changedBy 	 = '".$_SESSION['username']."',
+							changedDate  = NOW()
 						WHERE 
 							kodeVerifikasi =
 							'".$data['pId']."'
@@ -1469,7 +1482,9 @@
 					" 	UPDATE dplega_200_bentukLembaga
 						SET
 							namaBentukLembaga = '".$data['nama']."',
-							deskripsi = '".$data['deskripsi']."'
+							deskripsi 	 = '".$data['deskripsi']."',
+							changedBy 	 = '".$_SESSION['username']."',
+							changedDate  = NOW()
 						WHERE 
 							kodeBentukLembaga = '".$data['pId']."'
 					";
@@ -1477,8 +1492,10 @@
 					$sql = 	
 					" 	UPDATE dplega_201_persyaratan
 						SET
-							namaPersyaratan = '".$data['nama']."',
-							kodeBentukLembaga = '".$data['referensi']."'
+							namaPersyaratan	  = '".$data['nama']."',
+							kodeBentukLembaga = '".$data['referensi']."',
+							changedBy 	 = '".$_SESSION['username']."',
+							changedDate  = NOW()
 						WHERE 
 							kodePersyaratan = '".$data['pId']."'
 					";
@@ -1487,6 +1504,8 @@
 					" 	UPDATE dplega_210_bidangGerak
 						SET
 							namaBidangGerak = '".$data['nama']."'
+							changedBy 	 	= '".$_SESSION['username']."',
+							changedDate  	= NOW()
 						WHERE 
 							kodeBidangGerak = '".$data['pId']."'
 					";

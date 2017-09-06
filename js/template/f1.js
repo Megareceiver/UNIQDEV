@@ -619,7 +619,7 @@ function r_f1FormKelembagaan(packet){
 		dataTemp 		  = p_getData('f4', 'f401', '');
 		sourcesData 	  = dataTemp.feedData[0];
 		sourcesDetailData = dataTemp.feedDataDetail;
-		
+
 		//-- get kode bentuk lembaga for legalitas
 		var bentukLembaga = r_bentukLembagaReader();
 		dataLegalitas = p_getData('f1','f1114','',bentukLembaga[0]);
@@ -640,7 +640,6 @@ function r_f1FormKelembagaan(packet){
 		//get list all list lembaga { WARNING:: it might be make it slower}
 		dataAllLembaga	= p_getData('f1','f11101');
 		dataAllLembaga	= lembagaFetchArray(dataAllLembaga.feedData);
-
 		//--open
 		head	= 
 		'<div class="row head">' +

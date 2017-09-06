@@ -265,7 +265,7 @@ function r_f4LingkupArea() {
 			if(counter > 0){
 				for(var loop = 0; loop < counter; loop++){
 					part[0] = part[0] + 
-					'<div class="cards provinsi-list list-edit" id ="' + loop + 'provinsi-' + data[0].provinsi[loop].noreg + '">' +
+					'<div class="cards provinsi-list list-edit" id ="'+ loop +'provinsi-' + data[0].provinsi[loop].idData + '">' +
 						'<div class="row default">' +
 							'<div class="col-xs-2">' +
 								'<div class="list-box">' +
@@ -279,6 +279,7 @@ function r_f4LingkupArea() {
 									'<div class="list-button click-option"' + 
 										'p-label		="' + data[0].provinsi[loop].caption + '"' + 
 										'p-id			="' + data[0].provinsi[loop].idData + '"' +
+										'p-noreg		="' + data[0].provinsi[loop].noreg + '"' +
 										'p-group		="f4"' + 
 										'p-target		="' + data[0].provinsi[loop].group + '"' +
 										'p-container	="' + loop + 'provinsi-' + data[0].provinsi[loop].noreg + '">' +
@@ -635,6 +636,7 @@ function r_f4LingkupArea() {
 			pGroup 			= $(this).attr('p-group');
 			pTarget			= $(this).attr('p-target')
 			pId				= $(this).attr('p-id');
+			pNoreg			= $(this).attr('p-noreg');
 			pLabel			= $(this).attr('p-label');
 			pContainer		= $(this).attr('p-container');
 			pReferences		= $(this).attr('p-references');
@@ -644,7 +646,7 @@ function r_f4LingkupArea() {
 			//-- option activator
 			$("#edit-card").unbind().on("click", function(){ 
 				hideOptionList(); 
-				r_f4LingkupAreaEditor(pTarget, pId, pLabel, pReferences); 
+				r_f4LingkupAreaEditor(pTarget, pId, pNoreg, pLabel, pReferences); 
 			});
 			
 			$("#delete-card").unbind().on("click", function(){ 
@@ -682,11 +684,11 @@ function r_f4LingkupArea() {
 	});
 }
 
-function r_f4LingkupAreaEditor(target, id, label, referencesKey){
+function r_f4LingkupAreaEditor(target, id, noreg, label, referencesKey){
 	switch(target){
 		case "f411":
 			$("#f-provinsi-create [name='idData']").val(id).attr('readonly','readonly');
-			$("#f-provinsi-create [name='kode']").val(id);
+			$("#f-provinsi-create [name='kode']").val(noreg);
 			$("#f-provinsi-create [name='nama']").val(label);
 			p_formHandler("f-provinsi-create" , "updateData");
 		break;
@@ -720,7 +722,7 @@ function r_f4LingkupAreaDataGenerator(formType, type, data, sectionId){
 		if(type == 'provinsi'){
 			for(var loop=0; loop<data.length; loop++){
 				genHtml = genHtml +
-				'<div class="cards provinsi-list list-edit" id ="provinsi-' + data[loop].noreg + '">' +
+				'<div class="cards provinsi-list list-edit" id ="provinsi-' + data[loop].idData + '">' +
 					'<div class="row default">' +
 						'<div class="col-xs-2">' +
 							'<div class="list-box">' +
@@ -733,10 +735,11 @@ function r_f4LingkupAreaDataGenerator(formType, type, data, sectionId){
 								'<p class="list-text">' + data[loop].caption + '</p>' +
 								'<div class="list-button click-option"' + 
 									'p-label		="' + data[loop].caption + '"' + 
-									'p-id			="' + data[loop].noreg + '"' +
+									'p-id			="' + data[loop].idData + '"' +
+									'p-noreg		="' + data[loop].noreg + '"' +
 									'p-group		="f4"' + 
 									'p-target		="f411"' +
-									'p-container	="provinsi-' + data[loop].noreg + '">' +
+									'p-container	="provinsi-' + data[loop].idData + '">' +
 									'<span class="fa fa-ellipsis-v"></span>' +
 								'</div>' +
 							'</div>' +
@@ -811,6 +814,7 @@ function r_f4LingkupAreaDataGenerator(formType, type, data, sectionId){
 		pGroup 		= $(this).attr('p-group');
 		pTarget		= $(this).attr('p-target')
 		pId			= $(this).attr('p-id');
+		pNoreg 		= $(this).attr('p-noreg');
 		pLabel		= $(this).attr('p-label');
 		pContainer		= $(this).attr('p-container');
 		pReferences		= $(this).attr('p-references');
@@ -820,7 +824,7 @@ function r_f4LingkupAreaDataGenerator(formType, type, data, sectionId){
 		//-- option activator
 		$("#edit-card").unbind().on("click", function(){ 
 			hideOptionList(); 
-			r_f4LingkupAreaEditor(pTarget, pId, pLabel, pReferences); 
+			r_f4LingkupAreaEditor(pTarget, pId, pNoreg, pLabel, pReferences); 
 		});
 
 		$("#delete-card").unbind().on("click", function(){ 

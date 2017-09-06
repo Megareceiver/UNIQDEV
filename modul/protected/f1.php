@@ -2159,7 +2159,7 @@
 						'".$data['misi']."',
 						'".$data['afiliasi']."',
 						'".$data['catatan']."',
-						'TESTSESSION', NOW()
+						'".$_SESSION['username']."', NOW()
 					)
 				";
 
@@ -2188,7 +2188,8 @@
 								$sourcePath = $_FILES['imageUrl']['tmp_name']; // Storing source path of the file in a variable
 								$targetPath = "img/logo/".$file_name; // Target path where file is to be stored
 								if(move_uploaded_file($sourcePath,"../".$targetPath)){ /*Moving Uploaded file*/
-									$sql = "UPDATE dplega_000_lembaga_temp SET urlGambarLogo = '".$file_name."' WHERE noRegistrasi = '".$idTemp."'";			
+									$sql = "UPDATE dplega_000_lembaga_temp SET urlGambarLogo = '".$file_name."'									
+									WHERE noRegistrasi = '".$idTemp."'";			
 									$result = mysqli_query($gate, $sql);	
 									$imageStat = 1;
 								}								
@@ -2247,7 +2248,7 @@
 							'1',
 							'1',
 							".$dumbValue."
-							'TESTSESSION', NOW()
+							'".$_SESSION['username']."', NOW()
 						)
 					";
 
@@ -2395,8 +2396,8 @@
 								kodePersyaratan 	= '".$data['kodePersyaratan']."',
 								noLegalitas 		= '".$data['nomorLegalitas']."',
 								tanggalLegalitas 	= '".$data['tanggalLegalitas']."',
-								changedBy 			= 'TESTSESSION',
-								changedDate 		= NOW()
+								changedBy 	  		= '".$_SESSION['username']."',
+								changedDate   		= NOW()
 							WHERE
 								noRegistrasi 		= '".$noreg."' 
 							AND kodePersyaratan 	= '".$data['kodePersyaratan']."'";
@@ -2418,7 +2419,7 @@
 								'".$data['kodePersyaratan']."',
 								'".$data['nomorLegalitas']."',
 								'".$data['tanggalLegalitas']."',
-								'TESTSESSION', NOW()
+								'".$_SESSION['username']."', NOW()
 							)
 						";
 
@@ -2499,7 +2500,7 @@
 							(
 								'Legalitas (".$namaPersyaratan.") ".$nama." telah ".$states." oleh ".$_SESSION["nama"]."',
 								NOW(),
-								'".$_SESSION["username"]."'
+								'".$_SESSION["username"]."',NOW()
 							)
 						";
 
@@ -2831,7 +2832,7 @@
 						'".$data['tahun']."',
 						'".$data['bantuanDari']."',
 						'".$data['deskripsi']."',
-						'TESTSESSION', NOW()
+						'".$_SESSION['username']."', NOW()
 					)
 				";
 
@@ -2950,7 +2951,7 @@
 						misiLembaga 		= '".$data['misi']."',
 						organisasiAfiliasi 	= '".$data['afiliasi']."',
 						catatanLain 		= '".$data['catatan']."',
-						changedBy 			= 'TESTSESSION',
+						changedBy 			= '".$_SESSION['username']."',
 						changedDate			= NOW()
 					
 					WHERE
@@ -3020,7 +3021,7 @@
 						(
 							'Data ".$data['nama']." telah diubah oleh ".$_SESSION["nama"]."',
 							NOW(),
-							'".$_SESSION["username"]."'
+							'".$_SESSION["username"]."',NOW()
 						)
 					";
 
@@ -3159,7 +3160,7 @@
 						'".$data['potensi']."',
 						'".$data['jenisWilayah']."',
 						'".$data['catatan']."',
-						'TESTSESSION', NOW()
+						'".$_SESSION['username']."', NOW()
 					)
 				";
 
@@ -3326,7 +3327,7 @@
 						potensiWilayah 					= '".$data['potensi']."',
 						jenisWilayah 					= '".$data['jenisWilayah']."',
 						catatanLain 					= '".$data['catatan']."',
-						changedBy 						= 'TESTSESSION',
+						changedBy 						= '".$_SESSION['username']."',
 						changedDate						= NOW()
 					WHERE
 						noRegistrasi = '".$noreg."'
@@ -3476,7 +3477,7 @@
 					UPDATE dplega_008_visualisasisarana".$dumbTable."
 					SET
 						deskripsi 						= '".$data['keterangan']."',
-						changedBy 						= 'TESTSESSION',
+						changedBy 						= '".$_SESSION['username']."',
 						changedDate						= NOW()
 					WHERE
 						noRegistrasi = '".$noreg."'
@@ -3627,7 +3628,7 @@
 					UPDATE dplega_007_visualisasiusaha".$dumbTable."
 					SET
 						deskripsi 						= '".$data['keterangan']."',
-						changedBy 						= 'TESTSESSION',
+						changedBy 						= '".$_SESSION['username']."',
 						changedDate						= NOW()
 					WHERE
 						noRegistrasi = '".$noreg."'
@@ -3785,7 +3786,7 @@
 						(
 							'".$noreg."',
 							'".$data['keterangan']."',
-							'TESTSESSION', NOW()
+							'".$_SESSION['username']."', NOW()
 						)
 					";
 
@@ -3951,7 +3952,7 @@
 							'".$data['pendidikan']."',
 							'".$data['kompetensi']."',
 							'".$data['catatan']."',
-							'TESTSESSION', NOW()
+							'".$_SESSION['username']."', NOW()
 						)
 					";
 
@@ -4069,7 +4070,7 @@
 							pendidikan 			= '".$data['pendidikan']."',
 							kompetensi 			= '".$data['kompetensi']."',
 							catatan 			= '".$data['catatan']."',
-							changedBy 			= 'TESTSESSION',
+							changedBy 			= '".$_SESSION['username']."',
 							changedDate			= NOW()
 						WHERE
 							noRegistrasi 		= '".$noreg."'
@@ -4186,7 +4187,7 @@
 							'".$data['detailUsaha']."',
 							'".$data['jumlahPekerja']."',
 							'".$data['catatan']."',
-							'TESTSESSION', NOW()
+							'".$_SESSION['username']."', NOW()
 						)
 					";
 				
@@ -4291,7 +4292,7 @@
 							detailUsaha		= '".$data['detailUsaha']."',
 							jumlahPekerja	= '".$data['jumlahPekerja']."',
 							catatan 		= '".$data['catatan']."',
-							changedBy 		= 'TESTSESSION',
+							changedBy 		= '".$_SESSION['username']."',
 							changedBy 		= NOW()
 						WHERE
 							noRegistrasi 	= '".$noreg."'
@@ -4401,7 +4402,7 @@
 						(
 							'".$data['noreg']."',
 							'".$data['keterangan']."',
-							'TESTSESSION', NOW()
+							'".$_SESSION['username']."', NOW()
 						)
 					";
 				
@@ -4540,7 +4541,7 @@
 							'".$data['jenisKoleksi']."',
 							'".$data['judulKoleksi']."',
 							'".$data['deskripsi']."',
-							'TESTSESSION', NOW()
+							'".$_SESSION['username']."', NOW()
 						)
 					";
 				
@@ -5255,7 +5256,7 @@
 						(
 							'".$data['noreg']."',
 							'".$data['deskripsi']."',
-							'TESTSESSION', NOW()
+							'".$_SESSION['username']."', NOW()
 						)
 					";
 				
@@ -5378,7 +5379,7 @@
 								'".$data['noreg']."',
 								'".$data['hirarki']."',
 								'".$data['noregTarget']."',
-								'TESTSESSION', NOW()
+								'".$_SESSION['username']."', NOW()
 							)
 						";
 					
@@ -5596,7 +5597,7 @@
 							(
 								'Legalitas (".$namaPersyaratan.") ".$nama." telah dihapus oleh ".$_SESSION["nama"]."',
 								NOW(),
-								'".$_SESSION["username"]."'
+								'".$_SESSION["username"]."',NOW()
 							)
 						";
 

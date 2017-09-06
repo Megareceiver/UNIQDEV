@@ -192,6 +192,7 @@ function r_customCallBack(formType, group, target, recentId, formId, pId){
 			switch(target){
 				case 'f411':
 					dataFec = [{ 
+							'idData' : $('#f-provinsi-create input[name="idData"]').val(), 
 							'noreg'	 : $('#f-provinsi-create input[name="kode"]').val(), 
 							'caption': $('#f-provinsi-create input[name="nama"]').val(),
 					}];
