@@ -1,36 +1,37 @@
 <?php 
-	require_once('config.php');
-	if(isset($_REQUEST['session']) && $_REQUEST['session'] != ""){
-		if($_REQUEST['session'] == "doLogin"){
-			return doLogin();
-		}
-	}
-
-	function doLogin(){
+	if (session_status() == PHP_SESSION_NONE) { session_start(); }
+	require_once('protected/config.php');
+	function doLogin($data){
 		/* initial condition */
-		$username   = $_POST['username'];
-		$password	= $_POST['password'];
-		$avatar 	= "";
-		$nama		= "";						
-		$userLevel	= "";	
-		$error		=  1;					
-		$noRegistrasi= "";	
+		$username  		= $data['username'];
+		$password		= $data['password'];
+		$avatar 		= "";
+		$nama			= "";						
+		$userLevel		= "";	
+		$error			=  1;	
+		$errorType  	= "";
+		$errorMsg		= "danger";				
+		$noRegistrasi	= "";	
+		$loginStatus	= "no";	
+		$resultList 	= array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "username atau password yang anda masukan salah!", "feedData" => array());
 
-				
+		//validation 
 		$gate = openGate();
-		if($gate && $username != "" && $password != ""){			
+		if($gate && $username != "" && $password !=""){			
 							
-			$sql    = 	"SELECT 
-							nama,
-							urlGambar,
-							userLevel,
-							noRegistrasi
-						FROM 
-							dplega_910_user u
-						WHERE 
-							u.username = '".$username."' 
-						AND u.password = md5('".$password."') 
-						AND u.statusActive = '1'";
+			$sql  = 
+			"	SELECT 
+					nama,
+					urlGambar,
+					userLevel,
+					noRegistrasi
+				FROM 
+					dplega_910_user u
+				WHERE 
+					u.username = '".$username."' 
+				AND u.password = md5('".$password."') 
+				AND u.statusActive = '1'
+			";
 						
 			$result = mysqli_query($gate, $sql);
 			if($result){
@@ -42,54 +43,43 @@
 						$userLevel 	= 	$row['userLevel'];
 						$noRegistrasi = $row['noRegistrasi'];
 					}
-					
+
+					$loginStatus = "yes";
 					$error = 0;
-				}else{
-					$error = 1;
 				}
-			}else{
-				$error = 1;
 			}			
 				
 			closeGate($gate);
-			if (session_status() == PHP_SESSION_NONE) {
-				session_start();
-				
-				$_SESSION["username"] = $username;
-				$_SESSION["userLevel"] = $userLevel;
-				$_SESSION["nama"] = $nama;
-				$_SESSION["urlGambar"] = $avatar;
-				$_SESSION["noRegistrasi"] = $noRegistrasi;
-			}
-
-			//$error = 0;
 		}
 		
 		/* result fetch */
-		if($error == 0){
-			$json = array( 
-				"username" 	=> $username, 
-				"nama" 		=> $nama, 
-				"avatar" 	=> $avatar, 
-				"noRegistrasi" 	=>$noRegistrasi, 
-				"userLevel" => $userLevel,
-				"feedStatus"=> "success"
-			);
-		}else{
-			$json = array( 
-				"feedMessage"=> "username atau password salah, silahkan coba lagi!",
-				"feedStatus"=> "failed"
-			);
-		}
-		
-		/* Send as JSON */
-		 header("Content-Type: application/json", true);
+		if($error == 0){	
+			$_SESSION["login"] 			= $loginStatus;
+			$_SESSION["username"] 		= $username;
+			$_SESSION["userLevel"] 		= $userLevel;
+			$_SESSION["nama"] 			= $nama;
+			$_SESSION["urlGambar"] 		= $avatar;
+			$_SESSION["noRegistrasi"] 	= $noRegistrasi;
 
-		/* Return JSON */
-		echo json_encode($json);
+			$feedData = array( 
+				"username" 		=> $username, 
+				"nama" 			=> $nama, 
+				"avatar" 		=> $avatar, 
+				"noRegistrasi" 	=> $noRegistrasi, 
+				"userLevel" 	=> $userLevel,
+				"feedStatus"	=> "success"
+			);
+
+			$resultList = array( "feedStatus" => "success", "feedType" => "success", "feedMessage" => "Selamat datang!", "feedId" => $feedData);
+		}
+
+		/* result fetch */
+		$json = $resultList;
+		
+		return $json;
 	}
 	
-	function logout(){
+	function logout($data){
 		$json = array( "status" => "failed");
 		if (session_status() == PHP_SESSION_NONE) { session_start(); }
 		// remove all session variables		

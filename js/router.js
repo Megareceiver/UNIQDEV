@@ -101,7 +101,7 @@ function r_navigateTo(index, packet, access) {
 function r_customCallBack(formType, group, target, recentId, formId, pId){
 	var dataFec = null;
 	switch(group){
-		case 'f1' : //yama
+		case 'f1' : //megan
 			switch(target){
 				case 'f111' :
 					$('#f-kelembagaan-create input[name="kelurahan"]').attr('readonly','readonly');
@@ -294,6 +294,25 @@ function r_customCallBack(formType, group, target, recentId, formId, pId){
 					$("#f-berita-create [browser-id=gambar-berita] ").css('display', 'none'); 
 					clearTargetForm('f-berita-create');
 				break;
+			}
+		break;
+		case 'fLogin': //megan
+			if(recentId.userLevel == 1){
+
+				console.log(recentId.noRegistrasi);
+				r_navigateTo(12, recentId.noRegistrasi);
+				r_setCookie('userLevel', recentId.userLevel, 1);
+			}else if(recentId.userLevel != ""){
+				r_navigateTo(0);
+				if(recentId.avatar == "" || recentId.avatar == null) { recentId.avatar = "avatar-default.jpg"; }
+				$("#navigation .user-frame img").attr('src', 'img/avatar/' + recentId.avatar);
+				$("#navigation .user-frame p.caption span").html(recentId.username);
+				$("#navigation .user-frame p.caption span.big").html(recentId.nama);
+
+				r_setCookie('avatar', recentId.avatar, 1);
+				r_setCookie('username', recentId.username, 1);
+				r_setCookie('nama', recentId.nama, 1);
+				r_setCookie('userLevel', recentId.userLevel, 1);
 			}
 		break;
 	}
@@ -651,20 +670,23 @@ function r_fHome() {
 		
 		//--render quick nav
 		var indexes = 0;
-		var dataT 	= p_getData('f4', 'f431'); 
+		var dataT 	= p_getData('f4', 'f431', '', ''); 
 		dataT 		= dataT.feedData; 
-		for(var loop = 0; loop < dataT.length; loop++){
-			//--content
-			part[indexes] = part[indexes] +
-			'<div class="cards">' +
-				'<div class="navigation-box">' +
-					'<div class="caption">' +
-						'<span>' + dataT[loop].caption + ' (' + dataT[loop].counter + ')</span>' +
+		
+		if(dataT != null){
+			for(var loop = 0; loop < dataT.length; loop++){
+				//--content
+				part[indexes] = part[indexes] +
+				'<div class="cards">' +
+					'<div class="navigation-box">' +
+						'<div class="caption">' +
+							'<span>' + dataT[loop].caption + ' (' + dataT[loop].counter + ')</span>' +
+						'</div>' +
 					'</div>' +
-				'</div>' +
-			'</div>';
-			indexes++;
-			if(indexes > 1){ indexes = 0; }
+				'</div>';
+				indexes++;
+				if(indexes > 1){ indexes = 0; }
+			}
 		}
 		
 		part[0]	= part[0] + '</div></div>';
@@ -785,7 +807,7 @@ function r_fLogin() {
 		//--open
 		head	= '';
 		body	= 
-		'<form id="f-login">' +
+		'<form id="f-login" f-group="fLogin" f-target="fLogin">' +
 			'<div class="row no-head">' +
 				'<div class="container">' +
 					'<div class="col-md-6 col-md-offset-3">' +
@@ -843,7 +865,7 @@ function r_fLogin() {
 		$(".back-button").unbind().on('click', function(){ r_navigateTo(); });
 		//$(".go-login").unbind().on('click', function(){ r_navigateTo(0); });
 
-		p_logIn('f-login');
+		p_formHandler('f-login', 'login');
 	});
 }
 
@@ -957,7 +979,7 @@ function r_f0Dashboard() {
 			
 		}];
 
-		dataT 	= p_getData('f4', 'f431'); 
+		dataT 	= p_getData('f4', 'f431', '', ''); 
 		dataT 	= dataT.feedData; 
 		
 		var counta = 0;
@@ -1018,44 +1040,46 @@ function r_f0Dashboard() {
 			'</div>' +
 		'</div>';
 		
-		for(var loop = 0; loop < dataT.length; loop++){
-			counta = counta + parseInt(dataT[loop].counter);
-			part[1] = part[1] +
-			'<div class="cards">' +
-				'<div class="row default">' +
-					'<div class="col-md-6">' +
-						'<div class="summary-box">' +
-							'<div class="caption">' +
-								'<span>' + dataT[loop].caption + '</span>' +
+		if(dataT != null){
+			for(var loop = 0; loop < dataT.length; loop++){
+				counta = counta + parseInt(dataT[loop].counter);
+				part[1] = part[1] +
+				'<div class="cards">' +
+					'<div class="row default">' +
+						'<div class="col-md-6">' +
+							'<div class="summary-box">' +
+								'<div class="caption">' +
+									'<span>' + dataT[loop].caption + '</span>' +
+								'</div>' +
+								'<div class="counter prime">' +
+									'<span id="countT">' + dataT[loop].counter + '</span>' +
+								'</div>' +
 							'</div>' +
-							'<div class="counter prime">' +
-								'<span id="countT">' + dataT[loop].counter + '</span>' +
+						'</div>' +
+						'<div class="col-md-3">' +
+							'<div class="summary-box">' +
+								'<div class="caption secondary">' +
+									'<span>Sudah verifikasi</span>' +
+								'</div>' +
+								'<div class="counter second">' +
+									'<span>0</span>' +
+								'</div>' +
+							'</div>' +
+						'</div>' +
+						'<div class="col-md-3">' +
+							'<div class="summary-box">' +
+								'<div class="caption secondary">' +
+									'<span>Ajuan</span>' +
+								'</div>' +
+								'<div class="counter">' +
+									'<span>' + dataT[loop].counter + '</span>' +
+								'</div>' +
 							'</div>' +
 						'</div>' +
 					'</div>' +
-					'<div class="col-md-3">' +
-						'<div class="summary-box">' +
-							'<div class="caption secondary">' +
-								'<span>Sudah verifikasi</span>' +
-							'</div>' +
-							'<div class="counter second">' +
-								'<span>0</span>' +
-							'</div>' +
-						'</div>' +
-					'</div>' +
-					'<div class="col-md-3">' +
-						'<div class="summary-box">' +
-							'<div class="caption secondary">' +
-								'<span>Ajuan</span>' +
-							'</div>' +
-							'<div class="counter">' +
-								'<span>' + dataT[loop].counter + '</span>' +
-							'</div>' +
-						'</div>' +
-					'</div>' +
-				'</div>' +
-				'<div class="clearfix"></div>' +
-			'</div>';
+					'<div class="clearfix"></div>' +
+				'</div>';
+			}
 		}
 		
 		part[0] = part[0] + '</div>';

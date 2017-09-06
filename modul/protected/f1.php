@@ -1,4 +1,5 @@
 <?php
+	if (session_status() == PHP_SESSION_NONE) {session_start();} // session start
 	require_once('protected/config.php');
 	function getData($data, $target){
 		/* initial condition */
@@ -13,10 +14,6 @@
 		$errorMsg	= "";
 	
 		/* refferences */
-		// f411 : provinsi
-		// f412 : wilayah
-		// f413 : kecamatan
-		// f414 : kelurahan
 		
 		switch($target){
 			case "f1110" : $resultList = getListLembagaan($data); break;
@@ -1071,23 +1068,19 @@
 
 			closeGate($gate);
 
-			if (session_status() == PHP_SESSION_NONE) {
-				session_start();
-			}
-
 			if($_SESSION["userLevel"] == '1'){
 				$option = array(
 					array("selector" => "download-card", "icon" => "download", "label" => "Unduh (.pdf) - non aktif"),
-					//array("selector" => "verification-card", "icon" => "check", "label" => "Verifikasi - non aktif"),
 					array("selector" => "edit-card", "icon" => "pencil", "label" => "Ubah profil"),
-					array("selector" => "logout-card", "icon" => "power-off", "label" => "Keluar"),
+					array("selector" => "logout-card", "icon" => "power-off", "label" => "Keluar")
 				);
 			}else{
 				$option = array(
 					array("selector" => "download-card", "icon" => "download", "label" => "Unduh (.pdf)"),
 					array("selector" => "verification-card", "icon" => "check", "label" => "Verifikasi"),
 					array("selector" => "edit-card", "icon" => "pencil", "label" => "Ubah profil"),
-					array("selector" => "delete-card", "icon" => "trash", "label" => "Hapus lembaga")
+					array("selector" => "delete-card", "icon" => "trash", "label" => "Hapus lembaga"),
+					array("selector" => "logout-card", "icon" => "power-off", "label" => "Keluar")
 				);
 			}
 
@@ -1102,7 +1095,7 @@
 
 		if($error == 1){
 			//error state
-			$resultList = array( "feedStatus" => "failed", "feedType" => $errorType, "feedMessage" => $errorMsg);
+			$resultList = array( "feedStatus" => "failed", "feedType" => $errorType, "feedMessage" => $errorMsg, "feedData" => array());
 		}
 		
 		/* result fetch */
@@ -1774,7 +1767,7 @@
 
 		if($error == 1){
 			//error state
-			$resultList = array( "feedStatus" => "failed", "feedType" => $errorType, "feedMessage" => $errorMsg);
+			$resultList = array( "feedStatus" => "failed", "feedType" => $errorType, "feedMessage" => $errorMsg, "feedData" => array());
 		}
 		
 		/* result fetch */
@@ -2140,7 +2133,7 @@
 						misiLembaga,
 						organisasiAfiliasi,
 						catatanLain,
-						createdBy
+						createdBy, createdDate
 					)
 					VALUES
 					(
@@ -2166,7 +2159,7 @@
 						'".$data['misi']."',
 						'".$data['afiliasi']."',
 						'".$data['catatan']."',
-						'TESTSESSION'
+						'TESTSESSION', NOW()
 					)
 				";
 
@@ -2233,7 +2226,7 @@
 							userLevel,
 							statusActive,
 							".$dumbQuery."
-							createdBy
+							createdBy, createdDate
 						)
 						VALUES
 						(
@@ -2254,7 +2247,7 @@
 							'1',
 							'1',
 							".$dumbValue."
-							'TESTSESSION'
+							'TESTSESSION', NOW()
 						)
 					";
 
@@ -2271,7 +2264,7 @@
 								tambah,
 								ubah,
 								hapus,
-								createdBy
+								createdBy, createdDate
 							)
 							VALUES
 							(
@@ -2282,7 +2275,7 @@
 								'0',
 								'1',
 								'0',
-								'TESTSESSION'
+								'TESTSESSION', NOW()
 							);
 						";
 
@@ -2417,7 +2410,7 @@
 								kodePersyaratan,
 								noLegalitas,
 								tanggalLegalitas,
-								createdBy
+								createdBy, createdDate
 							)
 							VALUES
 							(
@@ -2425,7 +2418,7 @@
 								'".$data['kodePersyaratan']."',
 								'".$data['nomorLegalitas']."',
 								'".$data['tanggalLegalitas']."',
-								'TESTSESSION'
+								'TESTSESSION', NOW()
 							)
 						";
 
@@ -2500,7 +2493,7 @@
 							(
 								deskripsi,
 								waktu,
-								createdBy
+								createdBy, createdDate
 							)
 							VALUES
 							(
@@ -2830,7 +2823,7 @@
 						tahun,
 						dibantuOleh,
 						deskripsi,
-						createdBy
+						createdBy, createdDate
 					)
 					VALUES
 					(
@@ -2838,7 +2831,7 @@
 						'".$data['tahun']."',
 						'".$data['bantuanDari']."',
 						'".$data['deskripsi']."',
-						'TESTSESSION'
+						'TESTSESSION', NOW()
 					)
 				";
 
@@ -3021,7 +3014,7 @@
 						(
 							deskripsi,
 							waktu,
-							createdBy
+							createdBy, createdDate
 						)
 						VALUES
 						(
@@ -3141,7 +3134,7 @@
 						potensiWilayah,
 						jenisWilayah,
 						catatanLain,
-						createdBy
+						createdBy, createdDate
 					)
 					VALUES
 					(
@@ -3166,7 +3159,7 @@
 						'".$data['potensi']."',
 						'".$data['jenisWilayah']."',
 						'".$data['catatan']."',
-						'TESTSESSION'
+						'TESTSESSION', NOW()
 					)
 				";
 
@@ -3786,13 +3779,13 @@
 						(
 							noRegistrasi,
 							deskripsi,
-							createdBy
+							createdBy, createdDate
 						)
 						VALUES
 						(
 							'".$noreg."',
 							'".$data['keterangan']."',
-							'TESTSESSION'
+							'TESTSESSION', NOW()
 						)
 					";
 
@@ -3935,7 +3928,7 @@
 							pendidikan,
 							kompetensi,
 							catatan,
-							createdBy
+							createdBy, createdDate
 						)
 						VALUES
 						(
@@ -3958,7 +3951,7 @@
 							'".$data['pendidikan']."',
 							'".$data['kompetensi']."',
 							'".$data['catatan']."',
-							'TESTSESSION'
+							'TESTSESSION', NOW()
 						)
 					";
 
@@ -4183,7 +4176,7 @@
 							detailUsaha,
 							jumlahPekerja,
 							catatan,
-							createdBy
+							createdBy, createdDate
 						)
 						VALUES
 						(
@@ -4193,7 +4186,7 @@
 							'".$data['detailUsaha']."',
 							'".$data['jumlahPekerja']."',
 							'".$data['catatan']."',
-							'TESTSESSION'
+							'TESTSESSION', NOW()
 						)
 					";
 				
@@ -4402,13 +4395,13 @@
 						(
 							noRegistrasi,
 							deskripsi,
-							createdBy
+							createdBy, createdDate
 						)
 						VALUES
 						(
 							'".$data['noreg']."',
 							'".$data['keterangan']."',
-							'TESTSESSION'
+							'TESTSESSION', NOW()
 						)
 					";
 				
@@ -4539,7 +4532,7 @@
 							jenisKoleksi,
 							judulKoleksi,
 							deskripsi,
-							createdBy
+							createdBy, createdDate
 						)
 						VALUES
 						(
@@ -4547,7 +4540,7 @@
 							'".$data['jenisKoleksi']."',
 							'".$data['judulKoleksi']."',
 							'".$data['deskripsi']."',
-							'TESTSESSION'
+							'TESTSESSION', NOW()
 						)
 					";
 				
@@ -5256,13 +5249,13 @@
 						(
 							noRegistrasi,
 							deskripsi,
-							createdBy
+							createdBy, createdDate
 						)
 						VALUES
 						(
 							'".$data['noreg']."',
 							'".$data['deskripsi']."',
-							'TESTSESSION'
+							'TESTSESSION', NOW()
 						)
 					";
 				
@@ -5378,14 +5371,14 @@
 								noRegistrasi,
 								hirarki,
 								noRegistrasiTarget,
-								createdBy
+								createdBy, createdDate
 							)
 							VALUES
 							(
 								'".$data['noreg']."',
 								'".$data['hirarki']."',
 								'".$data['noregTarget']."',
-								'TESTSESSION'
+								'TESTSESSION', NOW()
 							)
 						";
 					
@@ -5597,7 +5590,7 @@
 							(
 								deskripsi,
 								waktu,
-								createdBy
+								createdBy, createdDate
 							)
 							VALUES
 							(

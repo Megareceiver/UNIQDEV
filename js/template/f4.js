@@ -240,6 +240,7 @@ function r_f4LingkupArea() {
 					'</div>' +
 					'<div class="col-md-9">' +
 						'<div class="input-box">' +
+							'<input name="idData" tabindex="1" type="hidden" value="" />' +
 							'<input placeholder="Provinsi" name="nama" tabindex="1" type="text" value="" />' +
 						'</div>' +
 					'</div>' +
@@ -277,7 +278,7 @@ function r_f4LingkupArea() {
 									'<p class="list-text">' + data[0].provinsi[loop].caption + '</p>' +
 									'<div class="list-button click-option"' + 
 										'p-label		="' + data[0].provinsi[loop].caption + '"' + 
-										'p-id			="' + data[0].provinsi[loop].noreg + '"' +
+										'p-id			="' + data[0].provinsi[loop].idData + '"' +
 										'p-group		="f4"' + 
 										'p-target		="' + data[0].provinsi[loop].group + '"' +
 										'p-container	="' + loop + 'provinsi-' + data[0].provinsi[loop].noreg + '">' +
@@ -330,6 +331,7 @@ function r_f4LingkupArea() {
 					'<div class="clearfix"></div>' +
 					'<div class="col-md-3">' +
 						'<div class="input-box">' +
+							'<input name="idData" tabindex="1" type="hidden" value="" />' +
 							'<input placeholder="Kode wilayah" maxlength="2" name="kode" tabindex="1" type="text" value="" />' +
 						'</div>' +
 					'</div>' +
@@ -377,7 +379,7 @@ function r_f4LingkupArea() {
 									'<p class="list-text">' + data[0].wilayah[loop].references + '</p>' +
 									'<div class="list-button click-option"' + 
 										'p-label		="' + data[0].wilayah[loop].caption + '"' + 
-										'p-id			="' + data[0].wilayah[loop].noreg + '"' +
+										'p-id			="' + data[0].wilayah[loop].idData + '"' +
 										'p-references	="' + data[0].wilayah[loop].referencesKey + '"' +
 										'p-group		="f4"' + 
 										'p-target		="' + data[0].wilayah[loop].group + '"' +
@@ -431,6 +433,7 @@ function r_f4LingkupArea() {
 					'<div class="clearfix"></div>' +
 					'<div class="col-md-3">' +
 						'<div class="input-box">' +
+							'<input name="idData" tabindex="1" type="hidden" value="" />' +
 							'<input placeholder="Kode kecamatan" maxlength="2" name="kode" tabindex="1" type="text" value="" />' +
 						'</div>' +
 					'</div>' +
@@ -478,7 +481,7 @@ function r_f4LingkupArea() {
 									'<p class="list-text">' + data[0].kecamatan[loop].references + '</p>' +
 									'<div class="list-button click-option"' + 
 										'p-label		="' + data[0].kecamatan[loop].caption + '"' + 
-										'p-id			="' + data[0].kecamatan[loop].noreg + '"' +
+										'p-id			="' + data[0].kecamatan[loop].idData + '"' +
 										'p-references	="' + data[0].kecamatan[loop].referencesKey + '"' +
 										'p-group		="f4"' + 
 										'p-target		="' + data[0].kecamatan[loop].group + '"' +
@@ -533,6 +536,7 @@ function r_f4LingkupArea() {
 					'<div class="clearfix"></div>' +
 					'<div class="col-md-3">' +
 						'<div class="input-box">' +
+							'<input name="idData" tabindex="1" type="hidden" value="" />' +
 							'<input placeholder="Kode kelurahan" maxlength="2" name="kode" tabindex="1" type="text" value="" />' +
 						'</div>' +
 					'</div>' +
@@ -580,7 +584,7 @@ function r_f4LingkupArea() {
 									'<p class="list-text">' + data[0].kelurahan[loop].references + '</p>' +
 									'<div class="list-button click-option"' + 
 										'p-label		="' + data[0].kelurahan[loop].caption + '"' + 
-										'p-id			="' + data[0].kelurahan[loop].noreg + '"' +
+										'p-id			="' + data[0].kelurahan[loop].idData + '"' +
 										'p-references	="' + data[0].kelurahan[loop].referencesKey + '"' +
 										'p-group		="f4"' + 
 										'p-target		="' + data[0].kelurahan[loop].group + '"' +
@@ -681,24 +685,28 @@ function r_f4LingkupArea() {
 function r_f4LingkupAreaEditor(target, id, label, referencesKey){
 	switch(target){
 		case "f411":
-			$("#f-provinsi-create [name='kode']").val(id).attr('readonly','readonly');
+			$("#f-provinsi-create [name='idData']").val(id).attr('readonly','readonly');
+			$("#f-provinsi-create [name='kode']").val(id);
 			$("#f-provinsi-create [name='nama']").val(label);
 			p_formHandler("f-provinsi-create" , "updateData");
 		break;
 		case "f412":
-			$("#f-wilayah-create [name='kode']").val(id).attr('readonly','readonly');
+			$("#f-wilayah-create [name='idData']").val(id);
+			$("#f-wilayah-create [name='kode']").val(id);
 			$("#f-wilayah-create [name='nama']").val(label);
 			$("#f-wilayah-create [name='referensi']").val(referencesKey);
 			p_formHandler("f-wilayah-create" , "updateData");
 		break;
 		case "f413":
-			$("#f-kecamatan-create [name='kode']").val(id).attr('readonly','readonly');
+			$("#f-kecamatan-create [name='idData']").val(id);
+			$("#f-kecamatan-create [name='kode']").val(id);
 			$("#f-kecamatan-create [name='nama']").val(label);
 			$("#f-kecamatan-create [name='referensi']").val(referencesKey);
 			p_formHandler("f-kecamatan-create" , "updateData");
 		break;
 		case "f414":
-			$("#f-kelurahan-create [name='kode']").val(id).attr('readonly','readonly');
+			$("#f-kelurahan-create [name='idData']").val(id);
+			$("#f-kelurahan-create [name='kode']").val(id);
 			$("#f-kelurahan-create [name='nama']").val(label);
 			$("#f-kelurahan-create [name='referensi']").val(referencesKey);
 			p_formHandler("f-kelurahan-create" , "updateData");

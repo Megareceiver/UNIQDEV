@@ -297,9 +297,11 @@ function tabRouter(elem){
 
 function selectHtmlConverter(dataGrup){
 	var selectHtml = "";
-	for(var loop=0; loop<dataGrup.length;loop++){
-		selectHtml = selectHtml +
-		'<option value="' + dataGrup[loop].noreg + '">' + dataGrup[loop].caption + '</option>';
+	if(dataGrup!=null){
+		for(var loop=0; loop<dataGrup.length;loop++){
+			selectHtml = selectHtml +
+			'<option value="' + dataGrup[loop].noreg + '">' + dataGrup[loop].caption + '</option>';
+		}
 	}
 	
 	return selectHtml;

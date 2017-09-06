@@ -19,7 +19,7 @@
 		// f414 : kelurahan
 		
 		switch($target){
-			case "f40": $resultList = getLingkupAreaSection(); break;
+			case "f40" : $resultList = getLingkupAreaSection(); break;
 			case "f401": $resultList = getLingkupAreaListSection(); break;
 			case "f412": $resultList = getWilayahOnlyListSection($data); break;
 
@@ -57,13 +57,13 @@
 		$gate = openGate();
 		if($gate){		
 			// connection = true
-			$sql = 	"SELECT * from (select 'provinsi' as `group`, 'f411' as `target`, kodeProvinsi as code, namaProvinsi as name, '' as `referencesKey`, '' as `references` FROM `dplega_100_provinsi` order by name) as table_1
+			$sql = 	"SELECT * from (select 'provinsi' as `group`, 'f411' as `target`, idData, kodeProvinsi as code, namaProvinsi as name, '' as `referencesKey`, '' as `references` FROM `dplega_100_provinsi` order by name) as table_1
 					 UNION
-					 SELECT * from (SELECT 'wilayah' as `group`, 'f412' as `target`, a.kodeWilayah as code, a.namaWilayah as name, a.kodeProvinsi as `referencesKey`, namaProvinsi as `references` FROM `dplega_101_wilayah` a LEFT JOIN  `dplega_100_provinsi` b ON a.kodeProvinsi = b.kodeProvinsi order by name) as table_2
+					 SELECT * from (SELECT 'wilayah' as `group`, 'f412' as `target`, a.idData, a.kodeWilayah as code, a.namaWilayah as name, a.idProvinsi as `referencesKey`, namaProvinsi as `references` FROM `dplega_101_wilayah` a LEFT JOIN  `dplega_100_provinsi` b ON a.idProvinsi = b.idData order by name) as table_2
 					 UNION
-					 SELECT * from (SELECT 'kecamatan' as `group`, 'f413' as `target`, a.kodeKecamatan as code, a.namaKecamatan as name, a.kodeWilayah as `referencesKey`, namaWilayah as `references` FROM `dplega_102_kecamatan` a LEFT JOIN  `dplega_101_wilayah` b ON a.kodeWilayah = b.kodeWilayah order by name) as table_3
+					 SELECT * from (SELECT 'kecamatan' as `group`, 'f413' as `target`, a.idData, a.kodeKecamatan as code, a.namaKecamatan as name, a.idWilayah as `referencesKey`, namaWilayah as `references` FROM `dplega_102_kecamatan` a LEFT JOIN  `dplega_101_wilayah` b ON a.idWilayah = b.idData order by name) as table_3
 					 UNION
-					 SELECT * from (SELECT 'kelurahan' as `group`, 'f414' as `target`, a.kodeKelurahan as code, a.namaKelurahan as name, a.kodeKecamatan as `referencesKey`, namaKecamatan as `references` FROM `dplega_103_kelurahan` a LEFT JOIN  `dplega_102_kecamatan` b ON a.kodeKecamatan = b.kodeKecamatan order by name) as table_4";
+					 SELECT * from (SELECT 'kelurahan' as `group`, 'f414' as `target`, a.idData, a.kodeKelurahan as code, a.namaKelurahan as name, a.idKecamatan as `referencesKey`, namaKecamatan as `references` FROM `dplega_103_kelurahan` a LEFT JOIN  `dplega_102_kecamatan` b ON a.idKecamatan = b.idData order by name) as table_4";
 						
 			$result = mysqli_query($gate, $sql);
 			if($result){
@@ -88,6 +88,7 @@
 						}
 						
 						$fetch = array(
+									"idData"   		=> $row['idData'],
 									"noreg"   		=> $row['code'],
 									"group"   	 	=> $row['target'],
 									"caption" 	 	=> $row['name'],
@@ -561,7 +562,7 @@
 						(SELECT COUNT(noRegistrasi) FROM dplega_000_lembaga_temp lt WHERE lt.kodeBentukLembaga = b.kodeBentukLembaga)
 					) as `counter`
 				 FROM
-					dplega_200_bentukLembaga b
+					dplega_200_bentuklembaga b
 				 ORDER BY noreg ASC";
 			}elseif($target == "f432"){
 				$sql = 	
@@ -726,13 +727,13 @@
 						(
 							kodeProvinsi,
 							namaProvinsi,
-							createdBy
+							createdBy, createdDate
 						)
 						VALUES
 						(
 							'".$data['kode']."',
 							'".$data['nama']."',
-							'TESTSESSION'
+							'TESTSESSION', NOW()
 						)
 					";
 				}elseif($target == "f412"){
@@ -742,14 +743,14 @@
 							kodeProvinsi,
 							kodeWilayah,
 							namaWilayah,
-							createdBy
+							createdBy, createdDate
 						)
 						VALUES
 						(
 							'".$data['referensi']."',
 							'".$data['kode']."',
 							'".$data['nama']."',
-							'TESTSESSION'
+							'TESTSESSION', NOW()
 						)
 					";
 				}elseif($target == "f413"){
@@ -759,14 +760,14 @@
 							kodeWilayah,
 							kodeKecamatan,
 							namaKecamatan,
-							createdBy
+							createdBy, createdDate
 						)
 						VALUES
 						(
 							'".$data['referensi']."',
 							'".$data['kode']."',
 							'".$data['nama']."',
-							'TESTSESSION'
+							'TESTSESSION', NOW()
 						)
 					";
 				}elseif($target == "f414"){
@@ -776,14 +777,14 @@
 							kodeKecamatan,
 							kodeKelurahan,
 							namaKelurahan,
-							createdBy
+							createdBy, createdDate
 						)
 						VALUES
 						(
 							'".$data['referensi']."',
 							'".$data['kode']."',
 							'".$data['nama']."',
-							'TESTSESSION'
+							'TESTSESSION', NOW()
 						)
 					";
 				}
@@ -865,12 +866,12 @@
 					" 	INSERT INTO dplega_220_grupVerifikasi
 						(
 							namaGrupVerifikasi,
-							createdBy
+							createdBy, createdDate
 						)
 						VALUES
 						(
 							'".$data['nama']."',
-							'TESTSESSION'
+							'TESTSESSION', NOW()
 						)
 					";
 				}elseif($target == "f422"){
@@ -879,13 +880,13 @@
 						(
 							namaVerifikasi,
 							kodeGrupVerifikasi,
-							createdBy
+							createdBy, createdDate
 						)
 						VALUES
 						(
 							'".$data['nama']."',
 							'".$data['referensi']."',
-							'TESTSESSION'
+							'TESTSESSION', NOW()
 						)
 					";
 				}
@@ -973,13 +974,13 @@
 						(
 							namaBentukLembaga,
 							deskripsi,
-							createdBy
+							createdBy, createdDate
 						)
 						VALUES
 						(
 							'".$data['nama']."',
 							'".$data['deskripsi']."',
-							'TESTSESSION'
+							'TESTSESSION', NOW()
 						)
 					";
 				}elseif($target == "f432"){
@@ -988,13 +989,13 @@
 						(
 							namaPersyaratan,
 							kodeBentukLembaga,
-							createdBy
+							createdBy, createdDate
 						)
 						VALUES
 						(
 							'".$data['nama']."',
 							'".$data['referensi']."',
-							'TESTSESSION'
+							'TESTSESSION', NOW()
 						)
 					";
 				}elseif($target == "f433"){
@@ -1002,12 +1003,12 @@
 					" 	INSERT INTO dplega_210_bidangGerak
 						(
 							namaBidangGerak,
-							createdBy
+							createdBy, createdDate
 						)
 						VALUES
 						(
 							'".$data['nama']."',
-							'TESTSESSION'
+							'TESTSESSION', NOW()
 						)
 					";
 				}
@@ -1084,13 +1085,13 @@
 					(
 						judulBerita,
 						deskripsi,
-						createdBy
+						createdBy, createdDate
 					)
 					VALUES
 					(
 						'".$data['judul']."',
 						'".$data['isiBerita']."',
-						'TESTSESSION'
+						'TESTSESSION', NOW()
 					)
 				";
 				
@@ -1243,40 +1244,40 @@
 					$sql = 	
 					" 	UPDATE dplega_100_provinsi
 						SET
+							kodeProvinsi = '".$data['kode']."',
 							namaProvinsi = '".$data['nama']."'
 						WHERE 
-							kodeProvinsi =
-							'".$data['kode']."'
+							idData = '".$data['idData']."'
 					";
 				}elseif($target == "f412"){
 					$sql = 	
 					" 	UPDATE dplega_101_wilayah
 						SET
+							kodeWilayah = '".$data['kode']."',
 							namaWilayah = '".$data['nama']."',
 							kodeProvinsi = '".$data['referensi']."'
 						WHERE 
-							kodeWilayah =
-							'".$data['kode']."'
+							idData = '".$data['idData']."'
 					";
 				}elseif($target == "f413"){
 					$sql = 	
 					" 	UPDATE dplega_102_kecamatan
 						SET
+							kodeKecamatan = '".$data['kode']."',
 							namaKecamatan = '".$data['nama']."',
 							kodeWilayah = '".$data['referensi']."'
 						WHERE 
-							kodeKecamatan =
-							'".$data['kode']."'
+							idData = '".$data['idData']."'
 					";
 				}elseif($target == "f414"){
 					$sql = 	
 					" 	UPDATE dplega_103_kelurahan
 						SET
+							kodeKelurahan = '".$data['kode']."',
 							namaKelurahan = '".$data['nama']."',
 							kodeKecamatan = '".$data['referensi']."'
 						WHERE 
-							kodeKelurahan =
-							'".$data['kode']."'
+							idData = '".$data['idData']."'
 					";
 				}
 
