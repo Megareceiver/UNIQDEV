@@ -166,13 +166,13 @@
 							dplega_100_provinsi pr
 						JOIN
 							dplega_101_wilayah wl
-							ON pr.kodeProvinsi = wl.idProvinsi
+							ON pr.idData = wl.idProvinsi
 						JOIN
 							dplega_102_kecamatan kc
-							ON wl.kodeWilayah = kc.idWilayah
+							ON wl.idData = kc.idWilayah
 						JOIN
 							dplega_103_kelurahan kl
-							ON kc.kodeKecamatan = kl.idKecamatan
+							ON kc.idData = kl.idKecamatan
 						ORDER BY namaKelurahan ASC
 					";
 						

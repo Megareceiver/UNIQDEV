@@ -343,10 +343,15 @@ function r_autoCompleteCallback(targetIndex, sources, sourcesDetail, ui, targetI
 			$("#" + targetId + "_3").val(sourcesDetail.list[sources.indexOf(ui.item.value)].namaWilayah);
 			$("#" + targetId + "_4").val(sourcesDetail.list[sources.indexOf(ui.item.value)].namaProvinsi);
 			
-			$("#" + targetId + "_kode").val(sourcesDetail.list[sources.indexOf(ui.item.value)].kodeKelurahan);
-			$("#" + targetId + "_kode2").val(sourcesDetail.list[sources.indexOf(ui.item.value)].kodeKecamatan);
-			$("#" + targetId + "_kode3").val(sourcesDetail.list[sources.indexOf(ui.item.value)].kodeWilayah);
-			$("#" + targetId + "_kode4").val(sourcesDetail.list[sources.indexOf(ui.item.value)].kodeProvinsi);
+			$("#" + targetId + "_kode").val(sourcesDetail.list[sources.indexOf(ui.item.value)].idKelurahan);
+			$("#" + targetId + "_kode2").val(sourcesDetail.list[sources.indexOf(ui.item.value)].idKecamatan);
+			$("#" + targetId + "_kode3").val(sourcesDetail.list[sources.indexOf(ui.item.value)].idWilayah);
+			$("#" + targetId + "_kode4").val(sourcesDetail.list[sources.indexOf(ui.item.value)].idProvinsi);
+
+			$("#" + targetId + "_kodeArea").val(sourcesDetail.list[sources.indexOf(ui.item.value)].kodeKelurahan);
+			$("#" + targetId + "_kodeArea2").val(sourcesDetail.list[sources.indexOf(ui.item.value)].kodeKecamatan);
+			$("#" + targetId + "_kodeArea3").val(sourcesDetail.list[sources.indexOf(ui.item.value)].kodeWilayah);
+			$("#" + targetId + "_kodeArea4").val(sourcesDetail.list[sources.indexOf(ui.item.value)].kodeProvinsi);
 			
 			$("#" + targetId).on("keyup", function(){ 
 				if($(this).val() == ""){
@@ -357,6 +362,10 @@ function r_autoCompleteCallback(targetIndex, sources, sourcesDetail, ui, targetI
 					$("#" + targetId + "_kode2").val(""); 
 					$("#" + targetId + "_kode3").val(""); 
 					$("#" + targetId + "_kode4").val(""); 
+					$("#" + targetId + "_kodeArea").val(""); 
+					$("#" + targetId + "_kodeArea2").val(""); 
+					$("#" + targetId + "_kodeArea3").val(""); 
+					$("#" + targetId + "_kodeArea4").val(""); 
 				}
 			});
 		break;

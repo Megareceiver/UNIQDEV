@@ -184,23 +184,27 @@
 					SELECT * FROM (
 						SELECT  
 							'ajuan' as `group`,
-							`noRegistrasi` as id,
-							`noRegistrasi` as noreg,
-							`nama` as nama,
-							`noTelp` as telp,
-							`email` as email,
-							CONCAT_WS(' ', `alamat`, 'RT.',`noRt`, '/', 'RW.', `noRw`, `namaKelurahan`, `namaKecamatan`, `namaWilayah`, `namaProvinsi`) as alamat,
-							COALESCE(`urlGambarLogo`, 'avatar-default.jpg') as picture
+							l.`noRegistrasi` as id,
+							l.`noRegistrasi` as noreg,
+							l.`nama` as nama,
+							l.`noTelp` as telp,
+							l.`email` as email,
+							`username` as username,
+							CONCAT_WS(' ', l.`alamat`, 'RT.',l.`noRt`, '/', 'RW.', l.`noRw`, `namaKelurahan`, `namaKecamatan`, `namaWilayah`, `namaProvinsi`) as alamat,
+							COALESCE(`urlGambarLogo`, '') as picture,
+							l.createdDate as sort
 						FROM 
 							dplega_000_lembaga_temp l 
 						JOIN
-							dplega_100_provinsi p ON l.kodeProvinsi = p.kodeProvinsi
+							dplega_100_provinsi p ON l.kodeProvinsi = p.idData
 						JOIN
-							dplega_101_wilayah w ON l.kodeWilayah = w.kodeWilayah
+							dplega_101_wilayah w ON l.kodeWilayah = w.idData
 						JOIN
-							dplega_102_kecamatan kc ON l.kodeKecamatan = kc.kodeKecamatan
+							dplega_102_kecamatan kc ON l.kodeKecamatan = kc.idData
 						JOIN
-							dplega_103_kelurahan kl ON l.kodeKelurahan = kl.kodeKelurahan
+							dplega_103_kelurahan kl ON l.kodeKelurahan = kl.idData
+						JOIN
+							dplega_910_user u ON l.noRegistrasi = u.noRegistrasi
 						WHERE 
 							l.kodeBentukLembaga = '".$data['refferences']."' 
 						AND l.statusAktif = '1'
@@ -209,28 +213,33 @@
 						".$dumbQuery['wilayah'  ]."
 						".$dumbQuery['kecamatan']." 
 						".$dumbQuery['kelurahan']." 
+						 ORDER BY sort DESC
 					) as table_1
 					UNION
 					SELECT * FROM (
 						SELECT  
 							'perubahan' as `group`,
-							`noRegistrasi` as id,
-							`noRegistrasi` as noreg,
-							`nama` as nama,
-							`noTelp` as telp,
-							`email` as email,
-							CONCAT_WS(' ', `alamat`, 'RT.',`noRt`, '/', 'RW.', `noRw`, `namaKelurahan`, `namaKecamatan`, `namaWilayah`, `namaProvinsi`) as alamat,
-							COALESCE(`urlGambarLogo`, 'avatar-default.jpg') as picture
+							l.`noRegistrasi` as id,
+							l.`noRegistrasi` as noreg,
+							l.`nama` as nama,
+							l.`noTelp` as telp,
+							l.`email` as email,
+							`username` as username,
+							CONCAT_WS(' ', l.`alamat`, 'RT.',l.`noRt`, '/', 'RW.', l.`noRw`, `namaKelurahan`, `namaKecamatan`, `namaWilayah`, `namaProvinsi`) as alamat,
+							COALESCE(`urlGambarLogo`, 'avatar-default.jpg') as picture,
+							l.createdDate as sort
 						FROM 
 							dplega_000_lembaga_temp l 
 						JOIN
-							dplega_100_provinsi p ON l.kodeProvinsi = p.kodeProvinsi
+							dplega_100_provinsi p ON l.kodeProvinsi = p.idData
 						JOIN
-							dplega_101_wilayah w ON l.kodeWilayah = w.kodeWilayah
+							dplega_101_wilayah w ON l.kodeWilayah = w.idData
 						JOIN
-							dplega_102_kecamatan kc ON l.kodeKecamatan = kc.kodeKecamatan
+							dplega_102_kecamatan kc ON l.kodeKecamatan = kc.idData
 						JOIN
-							dplega_103_kelurahan kl ON l.kodeKelurahan = kl.kodeKelurahan
+							dplega_103_kelurahan kl ON l.kodeKelurahan = kl.idData
+						JOIN
+							dplega_910_user u ON l.noRegistrasi = u.noRegistrasi
 						WHERE 
 							l.kodeBentukLembaga = '".$data['refferences']."' 
 						AND l.statusAktif = '2'
@@ -239,28 +248,33 @@
 						".$dumbQuery['wilayah'  ]."
 						".$dumbQuery['kecamatan']." 
 						".$dumbQuery['kelurahan']." 
+						 ORDER BY sort DESC
 					) as table_2
 					UNION
 					SELECT * FROM (
 						SELECT  
 							'valid' as `group`,
-							`noRegistrasi` as id,
-							`noRegistrasi` as noreg,
-							`nama` as nama,
-							`noTelp` as telp,
-							`email` as email,
-							CONCAT_WS(' ', `alamat`, 'RT.',`noRt`, '/', 'RW.', `noRw`, `namaKelurahan`, `namaKecamatan`, `namaWilayah`, `namaProvinsi`) as alamat,
-							COALESCE(`urlGambarLogo`, 'avatar-default.jpg') as picture
+							l.`noRegistrasi` as id,
+							l.`noRegistrasi` as noreg,
+							l.`nama` as nama,
+							l.`noTelp` as telp,
+							l.`email` as email,
+							`username` as username,
+							CONCAT_WS(' ', l.`alamat`, 'RT.',l.`noRt`, '/', 'RW.', l.`noRw`, `namaKelurahan`, `namaKecamatan`, `namaWilayah`, `namaProvinsi`) as alamat,
+							COALESCE(`urlGambarLogo`, 'avatar-default.jpg') as picture,
+							l.createdDate as sort
 						FROM 
 							dplega_000_lembaga l 
 						JOIN
-							dplega_100_provinsi p ON l.kodeProvinsi = p.kodeProvinsi
+							dplega_100_provinsi p ON l.kodeProvinsi = p.idData
 						JOIN
-							dplega_101_wilayah w ON l.kodeWilayah = w.kodeWilayah
+							dplega_101_wilayah w ON l.kodeWilayah = w.idData
 						JOIN
-							dplega_102_kecamatan kc ON l.kodeKecamatan = kc.kodeKecamatan
+							dplega_102_kecamatan kc ON l.kodeKecamatan = kc.idData
 						JOIN
-							dplega_103_kelurahan kl ON l.kodeKelurahan = kl.kodeKelurahan
+							dplega_103_kelurahan kl ON l.kodeKelurahan = kl.idData
+						JOIN
+							dplega_910_user u ON l.noRegistrasi = u.noRegistrasi
 						WHERE 
 							l.kodeBentukLembaga = '".$data['refferences']."' 
 						AND l.statusAktif = '1'
@@ -269,6 +283,7 @@
 						".$dumbQuery['wilayah'  ]."
 						".$dumbQuery['kecamatan']." 
 						".$dumbQuery['kelurahan']." 
+						 ORDER BY sort DESC
 					) as table_3
 				";
 
@@ -297,6 +312,7 @@
 							
 							$fetch = array(
 										"id"   		=> $row['id'],
+										"username" 	=> $row['username'],
 										"noreg" 	=> $row['noreg'],
 										"nama" 		=> $row['nama'],
 										"telp" 		=> $row['telp'],
@@ -383,13 +399,13 @@
 					FROM 
 						dplega_000_lembaga_temp l
 					JOIN
-						dplega_100_provinsi p ON l.kodeProvinsi = p.kodeProvinsi
+						dplega_100_provinsi p ON l.kodeProvinsi = p.idData
 					JOIN
-						dplega_101_wilayah w ON l.kodeWilayah = w.kodeWilayah
+						dplega_101_wilayah w ON l.kodeWilayah = w.idData
 					JOIN
-						dplega_102_kecamatan kc ON l.kodeKecamatan = kc.kodeKecamatan
+						dplega_102_kecamatan kc ON l.kodeKecamatan = kc.idData
 					JOIN
-						dplega_103_kelurahan kl ON l.kodeKelurahan = kl.kodeKelurahan 
+						dplega_103_kelurahan kl ON l.kodeKelurahan = kl.idData 
 					JOIN
 						dplega_200_bentuklembaga b ON l.kodeBentukLembaga = b.kodeBentukLembaga 
 					WHERE 
@@ -404,13 +420,13 @@
 					FROM 
 						dplega_000_lembaga l 
 					JOIN
-						dplega_100_provinsi p ON l.kodeProvinsi = p.kodeProvinsi
+						dplega_100_provinsi p ON l.kodeProvinsi = p.idData
 					JOIN
-						dplega_101_wilayah w ON l.kodeWilayah = w.kodeWilayah
+						dplega_101_wilayah w ON l.kodeWilayah = w.idData
 					JOIN
-						dplega_102_kecamatan kc ON l.kodeKecamatan = kc.kodeKecamatan
+						dplega_102_kecamatan kc ON l.kodeKecamatan = kc.idData
 					JOIN
-						dplega_103_kelurahan kl ON l.kodeKelurahan = kl.kodeKelurahan 
+						dplega_103_kelurahan kl ON l.kodeKelurahan = kl.idData 
 					JOIN
 						dplega_200_bentuklembaga b ON l.kodeBentukLembaga = b.kodeBentukLembaga 
 					WHERE 
@@ -538,13 +554,13 @@
 				JOIN
 					dplega_200_bentuklembaga b ON l.kodeBentukLembaga = b.kodeBentukLembaga
 				JOIN
-					dplega_100_provinsi p ON l.kodeProvinsi = p.kodeProvinsi
+					dplega_100_provinsi p ON l.kodeProvinsi = p.idData
 				JOIN
-					dplega_101_wilayah w ON l.kodeWilayah = w.kodeWilayah
+					dplega_101_wilayah w ON l.kodeWilayah = w.idData
 				JOIN
-					dplega_102_kecamatan kc ON l.kodeKecamatan = kc.kodeKecamatan
+					dplega_102_kecamatan kc ON l.kodeKecamatan = kc.idData
 				JOIN
-					dplega_103_kelurahan kl ON l.kodeKelurahan = kl.kodeKelurahan
+					dplega_103_kelurahan kl ON l.kodeKelurahan = kl.idData
 				WHERE
 					l.noRegistrasi = '".$noreg."'
 			";
@@ -827,13 +843,13 @@
 					FROM
 						dplega_002_kepengurusan".$dumbTable." l
 					JOIN
-						dplega_100_provinsi p ON l.kodeProvinsi = p.kodeProvinsi
+						dplega_100_provinsi p ON l.kodeProvinsi = p.idData
 					JOIN
-						dplega_101_wilayah w ON l.kodeWilayah = w.kodeWilayah
+						dplega_101_wilayah w ON l.kodeWilayah = w.idData
 					JOIN
-						dplega_102_kecamatan kc ON l.kodeKecamatan = kc.kodeKecamatan
+						dplega_102_kecamatan kc ON l.kodeKecamatan = kc.idData
 					JOIN
-						dplega_103_kelurahan kl ON l.kodeKelurahan = kl.kodeKelurahan
+						dplega_103_kelurahan kl ON l.kodeKelurahan = kl.idData
 					WHERE
 					l.noRegistrasi = '".$noreg."'
 				";
@@ -1193,13 +1209,13 @@
 					JOIN
 						dplega_200_bentuklembaga b ON l.kodeBentukLembaga = b.kodeBentukLembaga
 					JOIN
-						dplega_100_provinsi p ON l.kodeProvinsi = p.kodeProvinsi
+						dplega_100_provinsi p ON l.kodeProvinsi = p.idData
 					JOIN
-						dplega_101_wilayah w ON l.kodeWilayah = w.kodeWilayah
+						dplega_101_wilayah w ON l.kodeWilayah = w.idData
 					JOIN
-						dplega_102_kecamatan kc ON l.kodeKecamatan = kc.kodeKecamatan
+						dplega_102_kecamatan kc ON l.kodeKecamatan = kc.idData
 					JOIN
-						dplega_103_kelurahan kl ON l.kodeKelurahan = kl.kodeKelurahan
+						dplega_103_kelurahan kl ON l.kodeKelurahan = kl.idData
 					WHERE
 						l.noRegistrasi = '".$noreg."'
 				";
@@ -1502,13 +1518,13 @@
 					FROM
 						dplega_002_kepengurusan".$dumbTable." l
 					JOIN
-						dplega_100_provinsi p ON l.kodeProvinsi = p.kodeProvinsi
+						dplega_100_provinsi p ON l.kodeProvinsi = p.idData
 					JOIN
-						dplega_101_wilayah w ON l.kodeWilayah = w.kodeWilayah
+						dplega_101_wilayah w ON l.kodeWilayah = w.idData
 					JOIN
-						dplega_102_kecamatan kc ON l.kodeKecamatan = kc.kodeKecamatan
+						dplega_102_kecamatan kc ON l.kodeKecamatan = kc.idData
 					JOIN
-						dplega_103_kelurahan kl ON l.kodeKelurahan = kl.kodeKelurahan
+						dplega_103_kelurahan kl ON l.kodeKelurahan = kl.idData
 					WHERE
 						l.noRegistrasi = '".$noreg."'
 				";
@@ -2071,14 +2087,14 @@
 			$gate = openGate();
 			if($gate){
 				// connection = true
+				$idTemp = $data["kodeAreaProvinsi"].$data["kodeAreaWilayah"].$data["kodeAreaKecamatan"];
+
 				$sql =
 				"
 					SELECT noRegistrasi
 					FROM dplega_000_lembaga_temp
 					WHERE 
-						kodeProvinsi   = '".$data["kodeProvinsi"]."' and
-						kodeWilayah    = '".$data["kodeWilayah"]."' and
-						kodeKecamatan  = '".$data["kodeKecamatan"]."'
+						noRegistrasi LIKE '".$data["kodeAreaProvinsi"].$data["kodeAreaWilayah"].$data["kodeAreaKecamatan"]."%'
 					ORDER BY noRegistrasi DESC LIMIT 1
 				";
 				$query	= mysqli_query($gate, $sql);
@@ -2089,23 +2105,23 @@
 					$str 	   = strlen($idTempC);
 					switch ($str) {
 						case 1:
-							$idTemp = $data["kodeProvinsi"].$data["kodeWilayah"].$data["kodeKecamatan"].'0000'.$idTempC;
+							$idTemp = $idTemp.'0000'.$idTempC;
 							break;
 						case 2:
-							$idTemp = $data["kodeProvinsi"].$data["kodeWilayah"].$data["kodeKecamatan"].'000'.$idTempC;
+							$idTemp = $idTemp.'000'.$idTempC;
 							break;
 						case 3:
-							$idTemp = $data["kodeProvinsi"].$data["kodeWilayah"].$data["kodeKecamatan"].'00'.$idTempC;
+							$idTemp = $idTemp.'00'.$idTempC;
 							break;
 						case 4:
-							$idTemp = $data["kodeProvinsi"].$data["kodeWilayah"].$data["kodeKecamatan"].'0'.$idTempC;
+							$idTemp = $idTemp.'0'.$idTempC;
 							break;
 						default:
-							$idTemp = $data["kodeProvinsi"].$data["kodeWilayah"].$data["kodeKecamatan"].$idTempC;
+							$idTemp = $idTemp.$idTempC;
 							break;
 					}
 				}else{
-					$idTemp = $data['kodeProvinsi'].$data['kodeWilayah'].$data['kodeKecamatan'].'00001';
+					$idTemp = $idTemp.'00001';
 				}
 
 				$sql = 
@@ -2207,6 +2223,9 @@
 						$dumbValue = "'".$file_name."',";
 					}
 
+					$usernameTemp = strtolower(preg_replace('/\s+/', '', $data['nama']));
+					if(strlen($usernameTemp) > 20){ $usernameTemp = substr($usernameTemp, 0, 19); }
+
 					$sql = 
 					"	INSERT INTO dplega_910_user
 						(
@@ -2243,7 +2262,7 @@
 							'".$data['kodeProvinsi']."',
 							'".$data['telp']."',
 							'".$data['email']."',
-							'".$idTemp."',
+							'".$usernameTemp."',
 							md5('jabarprov'),
 							'1',
 							'1',
@@ -2269,7 +2288,7 @@
 							)
 							VALUES
 							(
-								'".$idTemp."',
+								'".$usernameTemp."',
 								'1',
 								'kelembagaan',
 								'1',
@@ -3305,33 +3324,91 @@
 					}
 				}
 
-				$sql ="
-					UPDATE dplega_001_sejarah".$dumbTable."
-					SET
-						deskripsi 						= '".$data['sejarah']."',
-						tanggalDidirikan 				= '".$data['tanggalBerdiri']."',
-						kepemilikan 					= '".$data['kepemilikan']."',
-						statusTanah 					= '".$data['statusTanah']."',
-						statusSertifikasi 				= '".$data['sertifikasi']."',
-						luasTanah 						= '".$data['luasTanah']."',
-						satuanLuasTanah 				= '".$data['satuanT']."',
-						luasBangunan 					= '".$data['luasBangun']."',
-						SatuanLuasBangunan 				= '".$data['satuanB']."',
-						kondisiBangunan 				= '".$data['kondisiBangunan']."',
-						jumlahBangunan 					= '".$data['jumlahBangunan']."',
-						statusSarana 					= '".$data['saranaPrasarana']."',
-						bahasaPengantar 				= '".$data['bahasa']."',
-						statusSensus 					= '".$data['sensus']."',
-						statusBantuanPemerintah 		= '".$data['bantuan']."',
-						kondisiGeografis				= '".$data['kondisiGeo']."',
-						potensiWilayah 					= '".$data['potensi']."',
-						jenisWilayah 					= '".$data['jenisWilayah']."',
-						catatanLain 					= '".$data['catatan']."',
-						changedBy 						= '".$_SESSION['username']."',
-						changedDate						= NOW()
-					WHERE
-						noRegistrasi = '".$noreg."'
-				";
+				$sql 	= " SELECT noRegistrasi FROM dplega_001_sejarah".$dumbTable." WHERE noRegistrasi = '".$noreg."'";
+				$result = mysqli_query($gate, $sql);
+				if(mysqli_num_rows($result) > 0) {
+					$sql ="
+						UPDATE dplega_001_sejarah".$dumbTable."
+						SET
+							deskripsi 						= '".$data['sejarah']."',
+							tanggalDidirikan 				= '".$data['tanggalBerdiri']."',
+							kepemilikan 					= '".$data['kepemilikan']."',
+							statusTanah 					= '".$data['statusTanah']."',
+							statusSertifikasi 				= '".$data['sertifikasi']."',
+							luasTanah 						= '".$data['luasTanah']."',
+							satuanLuasTanah 				= '".$data['satuanT']."',
+							luasBangunan 					= '".$data['luasBangun']."',
+							SatuanLuasBangunan 				= '".$data['satuanB']."',
+							kondisiBangunan 				= '".$data['kondisiBangunan']."',
+							jumlahBangunan 					= '".$data['jumlahBangunan']."',
+							statusSarana 					= '".$data['saranaPrasarana']."',
+							bahasaPengantar 				= '".$data['bahasa']."',
+							statusSensus 					= '".$data['sensus']."',
+							statusBantuanPemerintah 		= '".$data['bantuan']."',
+							kondisiGeografis				= '".$data['kondisiGeo']."',
+							potensiWilayah 					= '".$data['potensi']."',
+							jenisWilayah 					= '".$data['jenisWilayah']."',
+							catatanLain 					= '".$data['catatan']."',
+							changedBy 						= '".$_SESSION['username']."',
+							changedDate						= NOW()
+						WHERE
+							noRegistrasi = '".$noreg."'
+					";
+
+				}else{
+					$sql   = " 
+						INSERT INTO dplega_001_sejarah".$dumbTable."
+						(
+							noRegistrasi,
+							deskripsi,
+							tanggalDidirikan,
+							kepemilikan,
+							statusTanah,
+							statusSertifikasi,
+							luasTanah,
+							satuanLuasTanah,
+							luasBangunan,
+							SatuanLuasBangunan,
+							statusStrukturKepengurusan,
+							kondisiBangunan,
+							jumlahBangunan,
+							statusSarana,
+							bahasaPengantar,
+							statusSensus,
+							statusBantuanPemerintah,
+							kondisiGeografis,
+							potensiWilayah,
+							jenisWilayah,
+							catatanLain,
+							createdBy, createdDate
+						)
+						VALUES
+						(
+							'".$data['noreg']."',
+							'".$data['sejarah']."',
+							'".$data['tanggalBerdiri']."',
+							'".$data['kepemilikan']."',
+							'".$data['statusTanah']."',
+							'".$data['sertifikasi']."',
+							'".$data['luasTanah']."',
+							'".$data['satuanT']."',
+							'".$data['luasBangun']."',
+							'".$data['satuanB']."',
+							'Tidak Ada',
+							'".$data['kondisiBangunan']."',
+							'".$data['jumlahBangunan']."',
+							'".$data['saranaPrasarana']."',
+							'".$data['bahasa']."',
+							'".$data['sensus']."',
+							'".$data['bantuan']."',
+							'".$data['kondisiGeo']."',
+							'".$data['potensi']."',
+							'".$data['jenisWilayah']."',
+							'".$data['catatan']."',
+							'".$_SESSION['username']."', NOW()
+						)
+					";
+				}
 
 				$result	  = mysqli_query($gate, $sql);
 				if($result){	
@@ -4049,32 +4126,84 @@
 				}
 
 				if($error != 1){
-					$sql ="
-						UPDATE dplega_002_kepengurusan".$dumbTable."
-						SET
-							penanggungJawab 	= '".$data['penanggungJawab']."',
-							alamat 				= '".$data['alamat']."',
-							noRt 				= '".$data['rt']."',
-							noRw 				= '".$data['rw']."',
-							kodeKelurahan 		= '".$data['kodeKelurahan']."',
-							kodeKecamatan 		= '".$data['kodeKecamatan']."',
-							kodeWilayah 		= '".$data['kodeWilayah']."',
-							kodeProvinsi 		= '".$data['kodeProvinsi']."',
-							noTelp 				= '".$data['telp']."',
-							kewarganegaraan 	= '".$data['wargaNegara']."',
-							tempatLahir 		= '".$data['tempatLahir']."',
-							tanggalLahir 		= '".$data['tanggalLahir']."',
-							jenisKelamin 		= '".$data['jenisKelamin']."',
-							agama 				= '".$data['agama']."',
-							jabatanLain 		= '".$data['jabatanLain']."',
-							pendidikan 			= '".$data['pendidikan']."',
-							kompetensi 			= '".$data['kompetensi']."',
-							catatan 			= '".$data['catatan']."',
-							changedBy 			= '".$_SESSION['username']."',
-							changedDate			= NOW()
-						WHERE
-							noRegistrasi 		= '".$noreg."'
-					";
+					$sql 	= " SELECT noRegistrasi FROM dplega_002_kepengurusan".$dumbTable." WHERE noRegistrasi = '".$noreg."'";
+					$result = mysqli_query($gate, $sql);
+					if(mysqli_num_rows($result) > 0) {
+						$sql ="
+							UPDATE dplega_002_kepengurusan".$dumbTable."
+							SET
+								penanggungJawab 	= '".$data['penanggungJawab']."',
+								alamat 				= '".$data['alamat']."',
+								noRt 				= '".$data['rt']."',
+								noRw 				= '".$data['rw']."',
+								kodeKelurahan 		= '".$data['kodeKelurahan']."',
+								kodeKecamatan 		= '".$data['kodeKecamatan']."',
+								kodeWilayah 		= '".$data['kodeWilayah']."',
+								kodeProvinsi 		= '".$data['kodeProvinsi']."',
+								noTelp 				= '".$data['telp']."',
+								kewarganegaraan 	= '".$data['wargaNegara']."',
+								tempatLahir 		= '".$data['tempatLahir']."',
+								tanggalLahir 		= '".$data['tanggalLahir']."',
+								jenisKelamin 		= '".$data['jenisKelamin']."',
+								agama 				= '".$data['agama']."',
+								jabatanLain 		= '".$data['jabatanLain']."',
+								pendidikan 			= '".$data['pendidikan']."',
+								kompetensi 			= '".$data['kompetensi']."',
+								catatan 			= '".$data['catatan']."',
+								changedBy 			= '".$_SESSION['username']."',
+								changedDate			= NOW()
+							WHERE
+								noRegistrasi 		= '".$noreg."'
+						";
+					}else{
+						$sql = " INSERT INTO dplega_002_kepengurusan".$dumbTable."
+							(
+								noRegistrasi,
+								penanggungJawab,
+								alamat,
+								noRt,
+								noRw,
+								kodeKelurahan,
+								kodeKecamatan,
+								kodeWilayah,
+								kodeProvinsi,
+								noTelp,
+								kewarganegaraan,
+								tempatLahir,
+								tanggalLahir,
+								jenisKelamin,
+								agama,
+								jabatanLain,
+								pendidikan,
+								kompetensi,
+								catatan,
+								createdBy, createdDate
+							)
+							VALUES
+							(
+								'".$noreg."',
+								'".$data['penanggungJawab']."',
+								'".$data['alamat']."',
+								'".$data['rt']."',
+								'".$data['rw']."',
+								'".$data['kodeKelurahan']."',
+								'".$data['kodeKecamatan']."',
+								'".$data['kodeWilayah']."',
+								'".$data['kodeProvinsi']."',
+								'".$data['telp']."',
+								'".$data['wargaNegara']."',
+								'".$data['tempatLahir']."',
+								'".$data['tanggalLahir']."',
+								'".$data['jenisKelamin']."',
+								'".$data['agama']."',
+								'".$data['jabatanLain']."',
+								'".$data['pendidikan']."',
+								'".$data['kompetensi']."',
+								'".$data['catatan']."',
+								'".$_SESSION['username']."', NOW()
+							)
+						";
+					}
 
 					$result	  = mysqli_query($gate, $sql);
 					if($result){	
@@ -4284,19 +4413,46 @@
 				}
 
 				if($error != 1){
-					$sql ="
-						UPDATE dplega_003_usaha".$dumbTable."
-						SET
-							namaUsaha		= '".$data['namaUsaha']."',
-							jenisUsaha		= '".$data['jenisUsaha']."',
-							detailUsaha		= '".$data['detailUsaha']."',
-							jumlahPekerja	= '".$data['jumlahPekerja']."',
-							catatan 		= '".$data['catatan']."',
-							changedBy 		= '".$_SESSION['username']."',
-							changedBy 		= NOW()
-						WHERE
-							noRegistrasi 	= '".$noreg."'
-					";
+					$sql 	= " SELECT noRegistrasi FROM dplega_003_usaha".$dumbTable." WHERE noRegistrasi = '".$noreg."'";
+					$result = mysqli_query($gate, $sql);
+					if(mysqli_num_rows($result) > 0) {
+						$sql ="
+							UPDATE dplega_003_usaha".$dumbTable."
+							SET
+								namaUsaha		= '".$data['namaUsaha']."',
+								jenisUsaha		= '".$data['jenisUsaha']."',
+								detailUsaha		= '".$data['detailUsaha']."',
+								jumlahPekerja	= '".$data['jumlahPekerja']."',
+								catatan 		= '".$data['catatan']."',
+								changedBy 		= '".$_SESSION['username']."',
+								changedBy 		= NOW()
+							WHERE
+								noRegistrasi 	= '".$noreg."'
+						";
+					}else{
+						$sql = " INSERT INTO dplega_003_usaha".$dumbTable."
+							(
+								noRegistrasi,
+								namaUsaha,
+								jenisUsaha,
+								detailUsaha,
+								jumlahPekerja,
+								catatan,
+								createdBy, createdDate
+							)
+							VALUES
+							(
+								'".$noreg."',
+								'".$data['namaUsaha']."',
+								'".$data['jenisUsaha']."',
+								'".$data['detailUsaha']."',
+								'".$data['jumlahPekerja']."',
+								'".$data['catatan']."',
+								'".$_SESSION['username']."', NOW()
+							)
+						";
+					}
+
 					$result	  = mysqli_query($gate, $sql);
 					if($result){	
 						$error	    = 0;

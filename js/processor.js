@@ -101,6 +101,8 @@ function p_getData(group, target, keyword, refferences){
 		success: function(result){
 			data = result;
 		},
+		complete: function(xhr,status) { hideNotification('waiting'); },
+		error: function(xhr,status,error) { showNotification('danger', 'failure', 'Terjadi kesalahan, tidak ada respon dari server!'); }
 	});
 	
 	return data;

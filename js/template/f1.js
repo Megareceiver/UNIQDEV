@@ -284,9 +284,11 @@ function r_f1LembagaGenerator(data){
 				'</p>' +
 			'</div>';
 			var temPic = "";
-			for(var loopY = 0; loopY < data.lembaga[loop].list.length; loopY++){	
-				temPic = (data.lembaga[loop].list[loopY].picture != "") ? 'img/logo/' + data.lembaga[loop].list[loopY].picture : 'img/logo/avatar-5.jpg';
-				genHtml = genHtml +
+			for(var loopY = 0; loopY < data.lembaga[loop].list.length; loopY++){
+				var placeImg = data.lembaga[loop].list[loopY].noreg;
+				placeImg = placeImg.substr((placeImg.length-1), 1);
+				temPic   = (data.lembaga[loop].list[loopY].picture != "") ? 'img/logo/' + data.lembaga[loop].list[loopY].picture : 'img/logo/avatar-' + placeImg + '.jpg';
+				genHtml  = genHtml +
 				'<div id="' + data.lembaga[loop].list[loopY].id + '" class="cards clear">' +
 					'<div class="description-box">' +
 						'<div class="click-frame">' +
@@ -306,6 +308,10 @@ function r_f1LembagaGenerator(data){
 						'<span class="fa fa-ellipsis-v"></span></button>' +
 					'</div>' +
 					'<div class="detail-box">' +
+						'<div class="list-box">' +
+							'<div class="list-icon"><span class="fa fa-lock"></span></div>' +
+							'<p class="list-text">' + data.lembaga[loop].list[loopY].username + '</p>' +
+						'</div>' +
 						'<div class="list-box">' +
 							'<div class="list-icon"><span class="fa fa-phone"></span></div>' +
 							'<p class="list-text">' + data.lembaga[loop].list[loopY].telp + '</p>' +
@@ -617,8 +623,8 @@ function r_f1FormKelembagaan(packet){
 		
 		//-- get data lingkup area
 		dataTemp 		  = p_getData('f4', 'f401', '');
-		sourcesData 	  = dataTemp.feedData[0];
-		sourcesDetailData = dataTemp.feedDataDetail;
+		sourcesData 	  = (dataTemp.feedData != null) ? dataTemp.feedData[0] : null;
+		sourcesDetailData = (dataTemp.feedDataDetail != null) ? dataTemp.feedDataDetail : null;
 
 		//-- get kode bentuk lembaga for legalitas
 		var bentukLembaga = r_bentukLembagaReader();
@@ -701,6 +707,7 @@ function r_f1FormKelembagaan(packet){
 				'<div class="icon-box left">' +
 					'<input id="f111_lingkupArea" name="kelurahan" placeholder="Kelurahan (*)" tabindex="1" type="text" value="" />' +
 					'<input id="f111_lingkupArea_kode" name="kodeKelurahan" tabindex="1" type="hidden" value="" />' +
+					'<input id="f111_lingkupArea_kodeArea" name="kodeAreaKelurahan" tabindex="1" type="hidden" value="" />' +
 					'<span class="fa fa-magic"></span>' +
 				'</div>' +
 			'</div>' +
@@ -708,6 +715,7 @@ function r_f1FormKelembagaan(packet){
 				'<div class="icon-box left">' +
 					'<input id="f111_lingkupArea_2" name="kecamatan" placeholder="Kecamatan (*)" tabindex="1" type="text" value="" readonly />' +
 					'<input id="f111_lingkupArea_kode2" name="kodeKecamatan" tabindex="1" type="hidden" value="" readonly />' +
+					'<input id="f111_lingkupArea_kodeArea2" name="kodeAreaKecamatan" tabindex="1" type="hidden" value="" readonly />' +
 					'<span class="fa fa-repeat"></span>' +
 				'</div>' +
 			'</div>' +
@@ -715,6 +723,7 @@ function r_f1FormKelembagaan(packet){
 				'<div class="icon-box left">' +
 					'<input id="f111_lingkupArea_3" name="wilayah" placeholder="Wilayah (*)" tabindex="1" type="text" value="" readonly />' +
 					'<input id="f111_lingkupArea_kode3" name="kodeWilayah" tabindex="1" type="hidden" value="" readonly />' +
+					'<input id="f111_lingkupArea_kodeArea3" name="kodeAreaWilayah" tabindex="1" type="hidden" value="" readonly />' +
 					'<span class="fa fa-repeat"></span>' +
 				'</div>' +
 			'</div>' +
@@ -722,6 +731,7 @@ function r_f1FormKelembagaan(packet){
 				'<div class="icon-box left">' +
 					'<input id="f111_lingkupArea_4" name="provinsi" placeholder="Provinsi (*)" tabindex="1" type="text" value="" readonly />' +
 					'<input id="f111_lingkupArea_kode4" name="kodeProvinsi" tabindex="1" type="hidden" value="" readonly />' +
+					'<input id="f111_lingkupArea_kodeArea4" name="kodeAreaProvinsi" tabindex="1" type="hidden" value="" readonly />' +
 					'<span class="fa fa-repeat"></span>' +
 				'</div>' +
 			'</div>' +
