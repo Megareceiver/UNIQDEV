@@ -355,7 +355,7 @@ function r_f1DetailLembaga(packet) {
 		profile_look_set(packet);
 		
 		//data = p_getData('f1', 'f1111', '', '12121300001');
-		data = p_getData('f1', 'f1111', '', packet); console.log(data)
+		data = p_getData('f1', 'f1111', '', packet);
 		data = data.feedData;
 		
 		//-- set option list on a session

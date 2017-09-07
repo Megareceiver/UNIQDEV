@@ -360,11 +360,13 @@ function r_autoCompleteCallback(targetIndex, sources, sourcesDetail, ui, targetI
 				}
 			});
 		break;
-		case "batasWilayah": 
-			$("#" + targetId).val(sourcesDetail.list[sources.indexOf(ui.item.value)].namaWilayah);
-			$("#" + targetId + "_kode").val(sourcesDetail.list[sources.indexOf(ui.item.value)].kodeWilayah);
+		case "batasArea": 
+			$("#" + targetId).val(sourcesDetail[sources.indexOf(ui.item.value)].nama);
+			$("#" + targetId + "_id").val(sourcesDetail[sources.indexOf(ui.item.value)].idData);
 			$("#" + targetId).on("keyup", function(){ 
-				$("#" + targetId + "_kode").val(""); 
+				if($(this).val() == ""){
+					$("#" + targetId + "_id").val(""); 
+				}
 			});
 		break;
 	}

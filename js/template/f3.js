@@ -312,12 +312,12 @@ function r_f3FormUser(packet) {
 
 		//-- get data lingkup area
 		dataTemp 		  	= p_getData('f4', 'f401', '');
-		sourcesData 	  	= dataTemp.feedData[0];
-		sourcesDetailData 	= dataTemp.feedDataDetail;
+		sourcesData 	  	= (dataTemp.feedData != null) ? dataTemp.feedData[0] : ""; 
+		sourcesDetailData 	= (dataTemp.feedData != null) ? dataTemp.feedDataDetail : "";
 
 		dataTemp 		  	= p_getData('f4', 'f412', '');
-		sourcesWilayah 		= dataTemp.feedData[0];
-		sourcesWilayahDetail= dataTemp.feedDataDetail;
+		sourcesWilayah 		= (dataTemp.feedData != null) ? dataTemp.feedData[0] : "";
+		sourcesWilayahDetail= (dataTemp.feedData != null) ? dataTemp.feedDataDetail : "";
 
 		counter = 0;
 		data = p_getData('f4', 'f431', '');
@@ -404,7 +404,7 @@ function r_f3FormUser(packet) {
 							'<p>Batasi lingkup area (optional)</p>' +
 						'</div>' +
 						'<div class="select-box">' +
-							'<select name="batasArea" tabindex="1">' +
+							'<select name="lingkupArea" tabindex="1">' +
 								'<option value="" selected>Pilih lingkup area</option>' +
 								'<option value="3">Provinsi</option>' +
 								'<option value="2">Wilayah</option>' +
@@ -413,8 +413,8 @@ function r_f3FormUser(packet) {
 						'</div>' +
 						'<div class="input-box">' +
 							'<div class="icon-box left">' +
-								'<input id="batasWilayah" name="batasWilayah" placeholder="Pilih area spesifik" tabindex="1" type="text" value="" />' +
-								'<input id="batasWilayah_kode" name="bataskodeWilayah" tabindex="2" type="hidden" value="" />' +
+								'<input id="batasArea" name="batasArea" placeholder="Pilih area spesifik" tabindex="1" type="text" value="" />' +
+								'<input id="batasArea_id" name="idBatasArea" tabindex="2" type="hidden" value="" />' +
 								'<span class="fa fa-magic"></span>' +
 							'</div>' +
 						'</div>' +
@@ -558,6 +558,25 @@ function r_f3FormUser(packet) {
 		  	}
 		});
 
+		dataTemp  	= p_getData('f4', 'f402', '');
+		sData 	    = dataTemp.feedData;
+		sDetailData = dataTemp.feedDataDetail;
+
+		$("#f-user-create [name=lingkupArea]").on('change', function(){  
+			$("#batasArea, #batasArea_id").val("");
+			if($(this).val() != ''){
+				var temp  = sData;
+				var tempD = sDetailData;
+				
+				if 	   ($(this).val() == '3') { temp = sData.provinsi; 	tempD = sDetailData.provinsi; }
+				else if($(this).val() == '2') { temp = sData.wilayah; 	tempD = sDetailData.wilayah; }
+				else if($(this).val() == '1') { temp = sData.kecamatan; tempD = sDetailData.kecamatan; }
+				autoCompleteActivator("batasArea", temp, tempD, "batasArea");
+			}else{
+				$("#batasArea").autocomplete("destroy");
+			}
+		});
+
 		fileBrowserActivator();
 		imagePreviewActivator();
 		r_navbarReactor();
@@ -600,8 +619,9 @@ function r_f3FormUserDataGenerator(packet){
 	$("#f-user-create [name=telp]").val(data.user.noTelp);
 	$("#f-user-create [name=email]").val(data.user.email);
 	$("#f-user-create [name=username]").val(data.user.username);
-	$("#f-user-create [name=bataskodeWilayah]").val(data.user.bataskodeWilayah);
-	$("#f-user-create [name=batasWilayah]").val(data.user.batasWilayah);
+	$("#f-user-create [name=lingkupArea]").val(data.user.lingkupArea);
+	$("#f-user-create [name=batasArea]").val(data.user.batasArea);
+	$("#f-user-create [name=batasArea_id]").val(data.user.idBatasArea);
 	$("#f-user-create [viewer-id=v-user]").attr('src',(data.user.urlGambar != "" && data.user.urlGambar != null) ? 'img/avatar/'+data.user.urlGambar : "img/sources/picture.png");
 	$("#f-user-create [name=imageName]").html((data.user.urlGambar != "" && data.user.urlGambar != null) ? data.user.urlGambar : "berkas belum diunggah...");
 

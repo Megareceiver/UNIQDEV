@@ -21,7 +21,7 @@
 		// f414 : kelurahan
 		
 		switch($target){
-			case "f31": $resultList = getAuth($data); break;
+			case "f31" : $resultList = getUserList($data); break;
 			case "f311": $resultList = getFetchUser($data); break;
 			case "f312": $resultList = getProfileUser($data); break;
 			
@@ -34,7 +34,7 @@
 		return $json;
 	}
 
-	function getAuth($data){
+	function getUserList($data){
 		/* initial condition */
 		$resultList  = array();
 		$table 		 = "";
@@ -185,6 +185,8 @@
 						`namaProvinsi`,  
 						l.`noTelp`, 
 						l.`email`, 
+						l.`lingkupArea`, 
+						l.`idBatasArea`, 
 						l.`username`, 
 						l.`urlGambar`
 					FROM
@@ -205,6 +207,19 @@
 					if(mysqli_num_rows($result) > 0) {
 						// output data of each row 
 						while($row = mysqli_fetch_assoc($result)) {
+
+							$batasArea = "";
+							$dumbTable = "";
+							$dumbField = "";
+							if($row['idBatasArea'] != "0"){
+								if($row['lingkupArea'] == '3') { $dumbTable = "dplega_100_provinsi"; $dumbField = "namaProvinsi"; }
+								if($row['lingkupArea'] == '2') { $dumbTable = "dplega_101_wilayah";  $dumbField = "namaWilayah";  }
+								if($row['lingkupArea'] == '1') { $dumbTable = "dplega_102_kecamatan";$dumbField = "namaKecamatan";}
+
+								$batasArea = mysqli_fetch_assoc(mysqli_query($gate, "SELECT ".$dumbField." FROM ".$dumbTable." WHERE idData = '".$row['idBatasArea']."'"));
+								$batasArea = $batasArea[$dumbField];
+							}
+
 							$user = array(
 										"idData"   			=> $row['idData'],
 										"noRegistrasi"   	=> $row['noRegistrasi'],
@@ -224,6 +239,9 @@
 										"noTelp"			=> $row['noTelp'],
 										"email"				=> $row['email'],
 										"username"			=> $row['username'],
+										"lingkupArea"		=> $row['lingkupArea'],
+										"idBatasArea"		=> $row['idBatasArea'],
+										"batasArea"			=> $batasArea,
 										"urlGambar"			=> $row['urlGambar']
 							);
 						}
@@ -520,6 +538,8 @@
 							username,
 							password,
 							userLevel,
+							lingkupArea,
+							idBatasArea,
 							statusActive,
 							createdBy, createdDate
 						)
@@ -540,6 +560,8 @@
 							'".$data['username']."',
 							md5('".$data['password']."'),
 							'2',
+							'".$data['lingkupArea']."',
+							'".$data['idBatasArea']."',
 							'1',
 							'".$_SESSION['username']."',NOW()
 						)
@@ -765,6 +787,8 @@
 								kodeProvinsi 		= '".$data['kodeProvinsi']."',
 								noTelp 				= '".$data['telp']."',
 								email 				= '".$data['email']."',
+								idBatasArea			= '".$data['idBatasArea']."',
+								lingkupArea			= '".$data['lingkupArea']."',
 								".$dumbQuery."
 								changedBy 			= '".$_SESSION['username']."',
 								changedDate			= NOW()

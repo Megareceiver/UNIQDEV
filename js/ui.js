@@ -12,37 +12,6 @@ $(function(){
 	});
 
 	init();
-	
-	var availableTags = [
-      "ActionScript - Test",
-      "AppleScript",
-      "Asp",
-      "BASIC",
-      "C",
-      "C++",
-      "Clojure",
-      "COBOL",
-      "ColdFusion",
-      "Erlang",
-      "Fortran",
-      "Groovy",
-      "Haskell",
-      "Java",
-      "JavaScript",
-      "Lisp",
-      "Perl",
-      "PHP",
-      "Python",
-      "Ruby",
-      "Scala",
-      "Scheme"
-    ];
-    $( "#tags, #tags2" ).autocomplete({
-      source: availableTags,
-	  select: function(event, ui){
-		availableTags.indexOf(ui.item);
-	  }
-    });
 });
 
 function init(){
