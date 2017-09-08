@@ -54,18 +54,53 @@
 		$error		= 0;
 		$errorType  = "";
 		$errorMsg	= "";
+		$dumbFieldS	= "";
+		$dumbQueryS	= "";
+		$dumbQuery['provinsi'] 	= ""; 
+		$dumbQuery['wilayah'] 	= ""; 
+		$dumbQuery['kecamatan'] = ""; 
+		$dumbQuery['kelurahan'] = ""; 
 	
 		/* open connection */ 
 		$gate = openGate();
 		if($gate){		
 			// connection = true
-			$sql = 	"SELECT * from (select 'provinsi' as `group`, 'f411' as `target`, idData, kodeProvinsi as code, namaProvinsi as name, '' as `referencesKey`, '' as `references` FROM `dplega_100_provinsi` order by idData) as table_1
+			/* AUTHENTICATION */
+			if(
+				   isset($_SESSION['login']) && $_SESSION['login'] == "yes" 
+				&& isset($_SESSION['userLevel']) && $_SESSION['userLevel'] != "7"){
+				
+				switch ($_SESSION['lingkupArea']) {
+					case '3': 
+						$dumbQuery['provinsi']  = "WHERE a.idData = '".$_SESSION['idBatasArea']."'"; 
+						$dumbQuery['wilayah']   = "WHERE b.idData = '".$_SESSION['idBatasArea']."'"; 
+						$dumbQuery['kecamatan'] = "WHERE c.idData = '".$_SESSION['idBatasArea']."'"; 
+						$dumbQuery['kelurahan'] = "WHERE d.idData = '".$_SESSION['idBatasArea']."'"; 
+					break;
+					case '2': 
+						$dumbQuery['provinsi']  = "WHERE b.idData = '".$_SESSION['idBatasArea']."'"; 
+						$dumbQuery['wilayah']   = "WHERE a.idData = '".$_SESSION['idBatasArea']."'"; 
+						$dumbQuery['kecamatan'] = "WHERE b.idData = '".$_SESSION['idBatasArea']."'"; 
+						$dumbQuery['kelurahan'] = "WHERE c.idData = '".$_SESSION['idBatasArea']."'"; 
+					break;
+					case '1': 
+						$dumbQuery['provinsi']  = "WHERE c.idData = '".$_SESSION['idBatasArea']."'"; 
+						$dumbQuery['wilayah']   = "WHERE c.idData = '".$_SESSION['idBatasArea']."'"; 
+						$dumbQuery['kecamatan'] = "WHERE a.idData = '".$_SESSION['idBatasArea']."'"; 
+						$dumbQuery['kelurahan'] = "WHERE b.idData = '".$_SESSION['idBatasArea']."'"; 
+					break;
+					default: break;
+				}
+			}
+			/* AUTHENTICATION END */
+
+			$sql = 	"SELECT * from (select 'provinsi' as `group`, 'f411' as `target`, a.idData, kodeProvinsi as code, namaProvinsi as name, '' as `referencesKey`, '' as `references` FROM `dplega_100_provinsi` a LEFT JOIN  `dplega_101_wilayah` b ON a.idData = b.idProvinsi LEFT JOIN  `dplega_102_kecamatan` c ON b.idData = c.idWilayah ".$dumbQuery['provinsi']." order by a.idData) as table_1
 					 UNION
-					 SELECT * from (SELECT 'wilayah' as `group`, 'f412' as `target`, a.idData, a.kodeWilayah as code, a.namaWilayah as name, a.idProvinsi as `referencesKey`, namaProvinsi as `references` FROM `dplega_101_wilayah` a LEFT JOIN  `dplega_100_provinsi` b ON a.idProvinsi = b.idData order by a.idData) as table_2
+					 SELECT * from (SELECT 'wilayah' as `group`, 'f412' as `target`, a.idData, a.kodeWilayah as code, a.namaWilayah as name, a.idProvinsi as `referencesKey`, namaProvinsi as `references` FROM `dplega_101_wilayah` a LEFT JOIN  `dplega_100_provinsi` b ON a.idProvinsi = b.idData LEFT JOIN  `dplega_102_kecamatan` c ON c.idWilayah = a.idData ".$dumbQuery['wilayah']." order by a.idData) as table_2
 					 UNION
-					 SELECT * from (SELECT 'kecamatan' as `group`, 'f413' as `target`, a.idData, a.kodeKecamatan as code, a.namaKecamatan as name, a.idWilayah as `referencesKey`, namaWilayah as `references` FROM `dplega_102_kecamatan` a LEFT JOIN  `dplega_101_wilayah` b ON a.idWilayah = b.idData order by a.idData) as table_3
+					 SELECT * from (SELECT 'kecamatan' as `group`, 'f413' as `target`, a.idData, a.kodeKecamatan as code, a.namaKecamatan as name, a.idWilayah as `referencesKey`, namaWilayah as `references` FROM `dplega_102_kecamatan` a LEFT JOIN  `dplega_101_wilayah` b ON a.idWilayah = b.idData LEFT JOIN  `dplega_100_provinsi` c ON b.idProvinsi = c.idData ".$dumbQuery['kecamatan']." order by a.idData) as table_3
 					 UNION
-					 SELECT * from (SELECT 'kelurahan' as `group`, 'f414' as `target`, a.idData, a.kodeKelurahan as code, a.namaKelurahan as name, a.idKecamatan as `referencesKey`, namaKecamatan as `references` FROM `dplega_103_kelurahan` a LEFT JOIN  `dplega_102_kecamatan` b ON a.idKecamatan = b.idData order by a.idData) as table_4";
+					 SELECT * from (SELECT 'kelurahan' as `group`, 'f414' as `target`, a.idData, a.kodeKelurahan as code, a.namaKelurahan as name, a.idKecamatan as `referencesKey`, namaKecamatan as `references` FROM `dplega_103_kelurahan` a LEFT JOIN  `dplega_102_kecamatan` b ON a.idKecamatan = b.idData  LEFT JOIN `dplega_101_wilayah` c ON b.idWilayah = c.idData  LEFT JOIN  `dplega_100_provinsi` d ON c.idProvinsi = d.idData ".$dumbQuery['kelurahan']." order by a.idData) as table_4";
 						
 			$result = mysqli_query($gate, $sql);
 			if($result){
@@ -688,6 +723,8 @@
 		$error		= 0;
 		$errorType  = "";
 		$errorMsg	= "";
+		$dumbFieldS	= "";
+		$dumbQueryS	= "";
 	
 		/* open connection */ 
 		$gate = openGate();
@@ -695,6 +732,22 @@
 			// connection = true
 			$sql = 	"";
 			if($target == "f431"){
+
+				/* AUTHENTICATION */
+				if(
+					   isset($_SESSION['login']) && $_SESSION['login'] == "yes" 
+					&& isset($_SESSION['userLevel']) && $_SESSION['userLevel'] != "7"){
+					switch ($_SESSION['lingkupArea']) {
+						case '3': $dumbFieldS = "kodeProvinsi"; break;
+						case '2': $dumbFieldS = "kodeWilayah"; break;
+						case '1': $dumbFieldS = "kodeKecamatan"; break;
+						default: break;
+					}
+
+					$dumbQueryS = ($dumbFieldS != "") ? "AND ".$dumbFieldS." = '".$_SESSION['idBatasArea']."'" : '';
+				}
+				/* AUTHENTICATION END */
+
 				$sql = 	
 				"SELECT 
 					b.kodeBentukLembaga as `noreg`,
@@ -702,8 +755,8 @@
 					b.deskripsi as `description`,
 					COALESCE(b.urlGambar, 'icon-1.png') as `picture`,
 					(
-						(SELECT COUNT(noRegistrasi) FROM dplega_000_lembaga l WHERE l.kodeBentukLembaga = b.kodeBentukLembaga) +
-						(SELECT COUNT(noRegistrasi) FROM dplega_000_lembaga_temp lt WHERE lt.kodeBentukLembaga = b.kodeBentukLembaga)
+						(SELECT COUNT(noRegistrasi) FROM dplega_000_lembaga l WHERE l.kodeBentukLembaga = b.kodeBentukLembaga ".$dumbQueryS.") +
+						(SELECT COUNT(noRegistrasi) FROM dplega_000_lembaga_temp lt WHERE lt.kodeBentukLembaga = b.kodeBentukLembaga ".$dumbQueryS.")
 					) as `counter`
 				 FROM
 					dplega_200_bentuklembaga b

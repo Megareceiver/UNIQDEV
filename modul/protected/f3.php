@@ -110,8 +110,6 @@
 						$unReadData = array();
 					}
 					
-					
-
 					$resultList = array( "feedStatus" => "succes", "feedMessage" => "Data ditemukan!", "feedData" => $collectData);
 				}else {
 					$resultList = array( "feedStatus" => "succes", "feedMessage" => "Data tidak ditemukan!", "feedData" => []);
@@ -767,11 +765,11 @@
 			if($gate){
 			// connection = true
 				//checking section
-				if(isset($data['password']) && $data['password'] != $data['re-password']){
+				if(isset($data['password']) && $data['password']!= "" && $data['password'] != $data['re-password']){
 					$error = 1;
 					$resultType = "danger";
 					$resultMsg	= "Password tidak cocok!";
-				}elseif(isset($data['password']) && $data['password'] == $data['re-password']){
+				}elseif(isset($data['password']) && $data['password']!= "" && $data['password'] == $data['re-password']){
 					$dumbQuery = "password = md5('".$data['password']."'),";
 				}
 

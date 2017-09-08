@@ -148,6 +148,8 @@
 		$dumbQuery['wilayah'] 	= ""; 
 		$dumbQuery['kecamatan'] = ""; 
 		$dumbQuery['kelurahan'] = ""; 
+		$dumbFieldS	= "";
+		$dumbQueryS	= "";
 
 		//validation 
 		if(isset($data['refferences']) && $data['refferences'] != ""){	
@@ -155,7 +157,6 @@
 			$gate = openGate();
 			if($gate){		
 				// connection = true
-
 				$dumb = explode(',', $data['refferences']);
 				if($dumb[0] == 'single') { $data['refferences'] = $dumb[1]; }
 				else {
@@ -167,7 +168,32 @@
 					if(isset($dumb[5]) && $dumb[5] != "") { $dumbQuery['kelurahan']	= "AND l.kodeKelurahan = '".$dumb[5]."'"; }
 				}
 
+				/* AUTHENTICATION */
+				if(
+					   isset($_SESSION['login']) && $_SESSION['login'] == "yes" 
+					&& isset($_SESSION['userLevel']) && $_SESSION['userLevel'] != "7"){
+					switch ($_SESSION['lingkupArea']) {
+						case '3': 
+							$dumbFieldS = "l.kodeProvinsi"; 
+							$dumbQueryS = ($dumbFieldS != "") ? "AND ".$dumbFieldS." = '".$_SESSION['idBatasArea']."'" : '';
+							$dumbQuery['provinsi' ] = $dumbQueryS;
+						break;
+						case '2': 
+							$dumbFieldS = "l.kodeWilayah"; 
+							$dumbQueryS = ($dumbFieldS != "") ? "AND ".$dumbFieldS." = '".$_SESSION['idBatasArea']."'" : '';
+							$dumbQuery['wilayah' ] = $dumbQueryS;
+						break;
+						case '1': 
+							$dumbFieldS = "l.kodeKecamatan"; 
+							$dumbQueryS = ($dumbFieldS != "") ? "AND ".$dumbFieldS." = '".$_SESSION['idBatasArea']."'" : '';
+							$dumbQuery['kecamatan' ] = $dumbQueryS;
+						break;
+						default: break;
+					}
 
+					
+				}
+				/* AUTHENTICATION END */
 
 				if(isset($data['keyword']) && $data['keyword'] != ""){	
 					$dumbQuery['keyword'] = "

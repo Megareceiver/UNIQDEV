@@ -17,15 +17,12 @@
 		if($error != 1){
 			switch($_GET['session']){
 				case 'login':  
-					$json = doLogin($_POST);
-					//$json = array( "feedStatus" => "forbidden", "feedType" => "danger", "feedMessage" => "Akses ditolak!", "feedData" => $_POST);
+					$json = login($_POST);
 				break;
 				
-				// case 'logout':  
-					// require_once('protected/authentication.php');
-					// $json = logout();
-
-				// break;
+				case 'logout':  
+					$json = logout();
+				break;
 				
 				case 'addData':
 					if(authChecker() == 0) $json = createData($_POST, $_GET['target']);

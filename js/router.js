@@ -18,6 +18,8 @@ var sourcesData			= [];
 var sourcesDetailData	= []; 
 var maxForm 			= 4; //set max form
 var lembagaCounter		= 0;
+var moduleCounter		= 0;
+var moduleActive		= [];
 
 /* packet data variable */
 var pGroup  		= "";
@@ -30,8 +32,9 @@ var pReferencesKey	= "";
 var pDecription		= "";
 
 $(function(){
-	// r_clearCookies(); 
+	//r_clearCookies(); 
 	r_navigateTo(r_pageReader(), 'start');
+	//r_navigateTo(0, 'start');
 	// r_pageSet(0);
 	// keeping data provinsi, wilayah, kecamatan, kelurahan to global variable
 	optionD = p_getData('f4', 'f40', '');
@@ -305,18 +308,37 @@ function r_customCallBack(formType, group, target, recentId, formId, pId){
 		case 'fLogin': //megan
 			if(recentId.userLevel == 1){
 				r_navigateTo(12, recentId.noRegistrasi);
-				r_setCookie('userLevel', recentId.userLevel, 1);
 			}else if(recentId.userLevel != ""){
 				r_navigateTo(0);
-				if(recentId.avatar == "" || recentId.avatar == null) { recentId.avatar = "avatar-default.jpg"; }
+				if(recentId.avatar == "" || recentId.avatar == null) { 
+					recentId.avatar = "avatar-default.jpg"; 
+				}
 				$("#navigation .user-frame img").attr('src', 'img/avatar/' + recentId.avatar);
 				$("#navigation .user-frame p.caption span").html(recentId.username);
 				$("#navigation .user-frame p.caption span.big").html(recentId.nama);
+			}
 
-				r_setCookie('avatar', recentId.avatar, 1);
-				r_setCookie('username', recentId.username, 1);
-				r_setCookie('nama', recentId.nama, 1);
-				r_setCookie('userLevel', recentId.userLevel, 1);
+			if(recentId != null && recentId.length > 0){
+				r_setCookie('login'			, recentId.login, 		1);
+				r_setCookie('noRegistrasi'	, recentId.noRegistrasi,1);
+				r_setCookie('username'		, recentId.username, 	1);
+				r_setCookie('nama'			, recentId.nama, 		1);
+				r_setCookie('userLevel'		, recentId.userLevel, 	1);
+				r_setCookie('urlGambar'		, recentId.avatar, 		1);
+				r_setCookie('lingkupArea'	, recentId.lingkupArea, 1);
+				r_setCookie('idBatasArea'	, recentId.idBatasArea, 1);
+				r_setCookie('statusActive'	, recentId.statusActive,1);
+
+				var accessList = recentId.accessList;
+				for(var look=0; look<accessList.length; look++){
+					r_setCookie(accessList[look].module + 'Lihat', accessList[look].lihat, 1);
+					r_setCookie(accessList[look].module + 'Tambah',accessList[look].tambah,1);
+					r_setCookie(accessList[look].module + 'Ubah',  accessList[look].ubah,  1);
+					r_setCookie(accessList[look].module + 'Hapus', accessList[look].hapus, 1);
+				}
+
+				moduleActive  = accessList;
+				moduleCounter = accessList.length;
 			}
 		break;
 	}
@@ -1275,7 +1297,7 @@ function r_navbarReactor(){
 	$("#option.syncnav .autentikasi").unbind().on("click", function(){ r_navigateTo(3); });
 	$("#option.syncnav .pengaturan") .unbind().on("click", function(){ r_navigateTo(4); });
 	$("#option.syncnav .bantuan") 	 .unbind().on("click", function(){ r_navigateTo(0.1); });
-	$("#option.syncnav .log-off")	 .unbind().on("click", function(){ r_clearCookies(); r_navigateTo(); });
+	$("#option.syncnav .log-off")	 .unbind().on("click", function(){ p_logout(); r_navigateTo(); });
 	
 	$("#notif-ring").unbind().on("click", function(){ r_navigateTo(999); });
 }
@@ -1360,12 +1382,28 @@ function r_getCookie(cname) {
 // }
 
 function r_clearCookies(){
-	r_setCookie('page','',0.1);
-	r_setCookie('pagePrevious','',0.1);
-	r_setCookie('tab','',0.1);
-	r_setCookie('kodeBentukLembaga','',0.1);
-	r_setCookie('namaBentukLembaga','',0.1);
-	r_setCookie('profile_look','',1);
-	r_setCookie('news_look','',1);
-	// r_setCookie('header_log','',1);
+	r_setCookie('page'				,'', 0.1);
+	r_setCookie('pagePrevious'		,'', 0.1);
+	r_setCookie('tab'				,'', 0.1);
+	r_setCookie('kodeBentukLembaga'	,'', 0.1);
+	r_setCookie('namaBentukLembaga'	,'', 0.1);
+	r_setCookie('profile_look'		,'', 0.1);
+	r_setCookie('news_look'			,'', 0.1);
+
+	r_setCookie('login'			, '', 0.1);
+	r_setCookie('noRegistrasi'	, '', 0.1);
+	r_setCookie('username'		, '', 0.1);
+	r_setCookie('nama'			, '', 0.1);
+	r_setCookie('userLevel'		, '', 0.1);
+	r_setCookie('urlGambar'		, '', 0.1);
+	r_setCookie('lingkupArea'	, '', 0.1);
+	r_setCookie('idBatasArea'	, '', 0.1);
+	r_setCookie('statusActive'	, '', 0.1);
+
+	for(var look=0; look<moduleCounter; look++){
+		r_setCookie(moduleActive[look].module + 'Lihat', '', 0.1);
+		r_setCookie(moduleActive[look].module + 'Tambah','', 0.1);
+		r_setCookie(moduleActive[look].module + 'Ubah',  '', 0.1);
+		r_setCookie(moduleActive[look].module + 'Hapus', '', 0.1);
+	}
 }
