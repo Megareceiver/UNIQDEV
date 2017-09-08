@@ -293,3 +293,44 @@ function openMaps(lng,lat){
 	var url = "https://maps.google.com/?q=" + lat + "," + lng;
 	window.open(url);
 }
+
+/* option */
+function showOptionConfirm(type){
+	var optionHtml  = '';
+	var confirmText = '';
+	switch(type){
+		case "delete": confirmText = "menghapus data"; break;
+		case "status": confirmText = "mengubah status"; break;
+	}
+	
+	optionHtml = '<div class="option-pop">';
+	
+	optionHtml = optionHtml +
+	'<div id="option-confirm" class="option-list">' +
+		'<div class="option-frame col-md-4 col-sm-8">' +
+			'<ul>' +
+				'<li class="head text-center">Apa anda yakin ' + confirmText + ' ?</li>' +
+			'</ul>' +
+			'<div class="button-box">' +
+				'<div class="col-xs-6 border-right">' +
+					'<button type="button" class="clear square option-cancel">Tidak</button>' +
+				'</div>' +
+				'<div class="col-xs-6">' +
+					'<button type="button" class="clear square option-yes">Ya</button>' +
+				'</div>' +
+			'</div>' +
+		'</div>' +
+	'</div>' +
+	'<div class="option-layer"></div>';
+	
+	optionHtml = optionHtml + '</div>';
+	
+	$("body").append(optionHtml);
+	$(".option-layer, .option-cancel").unbind().on("click", function(){ hideOptionList() });
+	$("html, body").css("overflow","hidden");
+}
+
+function hideOptionList(){
+	$(".option-pop").remove();
+	$("html, body").css("overflow","initial");
+}

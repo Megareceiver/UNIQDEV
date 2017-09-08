@@ -195,13 +195,13 @@
 							l.createdDate as sort
 						FROM 
 							dplega_000_lembaga_temp l 
-						JOIN
+						LEFT JOIN
 							dplega_100_provinsi p ON l.kodeProvinsi = p.idData
-						JOIN
+						LEFT JOIN
 							dplega_101_wilayah w ON l.kodeWilayah = w.idData
-						JOIN
+						LEFT JOIN
 							dplega_102_kecamatan kc ON l.kodeKecamatan = kc.idData
-						JOIN
+						LEFT JOIN
 							dplega_103_kelurahan kl ON l.kodeKelurahan = kl.idData
 						JOIN
 							dplega_910_user u ON l.noRegistrasi = u.noRegistrasi
@@ -230,13 +230,13 @@
 							l.createdDate as sort
 						FROM 
 							dplega_000_lembaga_temp l 
-						JOIN
+						LEFT JOIN
 							dplega_100_provinsi p ON l.kodeProvinsi = p.idData
-						JOIN
+						LEFT JOIN
 							dplega_101_wilayah w ON l.kodeWilayah = w.idData
-						JOIN
+						LEFT JOIN
 							dplega_102_kecamatan kc ON l.kodeKecamatan = kc.idData
-						JOIN
+						LEFT JOIN
 							dplega_103_kelurahan kl ON l.kodeKelurahan = kl.idData
 						JOIN
 							dplega_910_user u ON l.noRegistrasi = u.noRegistrasi
@@ -265,13 +265,13 @@
 							l.createdDate as sort
 						FROM 
 							dplega_000_lembaga l 
-						JOIN
+						LEFT JOIN
 							dplega_100_provinsi p ON l.kodeProvinsi = p.idData
-						JOIN
+						LEFT JOIN
 							dplega_101_wilayah w ON l.kodeWilayah = w.idData
-						JOIN
+						LEFT JOIN
 							dplega_102_kecamatan kc ON l.kodeKecamatan = kc.idData
-						JOIN
+						LEFT JOIN
 							dplega_103_kelurahan kl ON l.kodeKelurahan = kl.idData
 						JOIN
 							dplega_910_user u ON l.noRegistrasi = u.noRegistrasi

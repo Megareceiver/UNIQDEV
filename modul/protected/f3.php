@@ -55,7 +55,7 @@
 		$gate = openGate();
 		if($gate){		
 			// connection = true
-			$sql = "SELECT * FROM dplega_910_user WHERE username != 'admin'";
+			$sql = "SELECT * FROM dplega_910_user WHERE username != 'admin' AND userLevel != '".$_SESSION['userLevel']."' ORDER BY userLevel DESC, nama ASC";
 					
 			$result = mysqli_query($gate, $sql);
 			if($result){
@@ -78,6 +78,7 @@
 										$temp = $row['idData'];
 										$unReadData2 = array(
 											"id"   		=> $rows['idData'],
+											"appId"   	=> $rows['idData'],
 											"label" 	=> $rows['appsName'],
 											"type" 		=> "parent",
 											"status" 	=> $rows['statusAktif']
@@ -96,7 +97,12 @@
 							"nama" 			=> $row['nama'],
 							"noreg" 		=> $row['noRegistrasi'],
 							"username" 		=> $row['username'],
+							"userLevel" 	=> $row['userLevel'],
 							"rule" 			=> "Pengguna level ".$row['userLevel'],
+							"picture" 		=> $row['urlGambar'],
+							"telp" 			=> $row['noTelp'],
+							"email" 		=> $row['email'],
+							"statusActive" 	=> $row['statusActive'],
 							"access"		=> $unReadData
 						)) ;
 						
@@ -512,6 +518,7 @@
 			|| $data['email'] == ""
 			|| $data['username'] == ""
 			|| $data['password'] == "" || $data['re-password'] == ""
+			|| $data['lingkupArea'] == "" || $data['idBatasArea'] == ""
 		){ $error = 1; }
 
 		if($error != 1){
@@ -714,8 +721,9 @@
 		/* refferences */
 		
 		switch($target){
-			case "f31": $resultList = changeUserSection($target, $data); break;
-			default	  : $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Terjadi kesalahan fatal, proses dibatalkan!"); break;
+			case "f31" : $resultList = changeUserSection($target, $data); break;
+			case "f311": $resultList = changeUserStatus($target, $data); break;
+			default	   : $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Terjadi kesalahan fatal, proses dibatalkan!"); break;
 		}
 		
 		/* result fetch */
@@ -747,7 +755,11 @@
 			   $data['nama'] == ""
 			|| $data['email'] == ""
 			|| $data['username'] == ""
-		){ $error = 1; }
+			|| $data['lingkupArea'] == "" || $data['idBatasArea'] == ""
+		){ 
+			$error = 1; 
+			$resultType = "danger";
+			$resultMsg	= "Terjadi kesalahan, mandatory tidak boleh kosong!";}
 
 		if($error != 1){
 			/* open connection */
@@ -906,6 +918,115 @@
 						}
 					}
 				}
+				closeGate($gate);
+			}else{
+				//error state
+				$error		= 1;
+				$resultType = "danger";
+				$resultMsg	= "Terjadi kesalahan, tidak dapat terhubung ke server!";
+			}
+
+		}else{
+			//error state
+			$error		= 1;
+			$errorType  = "danger";
+			$errorMsg	= "Terjadi kesalahan, tidak dapat mengenali data!";
+		}
+		
+		if($error == 1){
+			//error state
+			$resultList = array( "feedStatus" => "failed", "feedType" => $resultType, "feedMessage" => $resultMsg);
+		}else{
+			$resultList = array( "feedStatus" => "success", "feedType" => $resultType, "feedMessage" => $resultMsg, "feedId" => $file_name, "feedPId" => "");
+		}
+		
+		/* result fetch */
+		$json = $resultList;
+		
+		return $json;
+	}
+
+	function changeUserStatus($target, $data){
+		/* initial condition */
+		$resultList = array();
+		$table 		= "";
+		$field 		= array();
+		$rows		= 0;
+		$condition 	= "";
+		$orderBy	= "";
+		$error		= 0;
+		$resultType = "";
+		$resultMsg	= "";
+		$counter	= "";
+		$idRecent	= "";
+		$idTemp		= "";
+		$dumbTable  = "";
+		$noreg		= "";
+		$file_name	= "";
+		$dumbQuery	= "";
+		
+		if(
+				$data['pId'] == ""
+			||	$data['refferenceId'] == ""
+		){ 
+			$error = 1; 
+			$resultType = "danger";
+			$resultMsg	= "Terjadi kesalahan, mandatory tidak boleh kosong!";}
+
+		if($error != 1){
+			/* open connection */
+			$gate = openGate();
+			if($gate){
+			// connection = true
+				//checking section
+				$username = $data['pId'];
+				$sql 	= " SELECT username FROM dplega_910_user WHERE username = '".$username."'";
+				$result = mysqli_query($gate, $sql);
+				if(mysqli_num_rows($result) <= 0) {
+					$error = 1;
+					$resultType = "danger";
+					$resultMsg	= "Terjadi kesalahan fatal, tidak dapat mengenali data!";
+				}
+
+				if($error != 1){
+
+					$sql = 
+					"	UPDATE dplega_910_user
+						SET
+							statusActive		= '".$data['refferenceId']."',
+							changedBy 			= '".$_SESSION['username']."',
+							changedDate			= NOW()
+						
+						WHERE
+							username = '".$username."'
+					";
+
+					$result	  = mysqli_query($gate, $sql);
+					if($result){	
+						$error	    = 0;
+						$resultType = "success";
+						$resultMsg  = "data berhasil diubah.";
+
+						$sql = 
+						"	UPDATE dplega_911_useraccess
+							SET
+								statusAktif 		= '".$data['refferenceId']."',
+								changedBy 			= '".$_SESSION['username']."',
+								changedDate			= NOW()
+							
+							WHERE
+								username = '".$username."'
+						";
+						$result	  = mysqli_query($gate, $sql);
+
+					}else{
+						//error state
+						$error		= 1;
+						$resultType = "danger";
+						$resultMsg	= "Terjadi kesalahan fatal, data gagal diubah!";
+					}
+				}
+				
 				closeGate($gate);
 			}else{
 				//error state

@@ -93,27 +93,43 @@ function r_f3Autentikasi() {
 			'</form>' +
 		'</div>';
 		
-		// part[1] = part[1] +
-		// '<div class="cards-label">' +
-		// 	'<p><strong>Pemilik akun (0)</strong></p>' +
-		// '</div>';
-		
 		//--render data
-		var tempP = "";
-		var tempR = "";
-		var tempL = "";
+		var tempP 	= "";
+		var tempR 	= "";
+		var tempL 	= "";
+		var tempH 	= "";
+		var placeImg= "";
 		
 		if(data!= null && data.length != 0){
 			for(var loop = 0; loop < data.length; loop++){	
-				tempL = data[loop].noreg != "" ? 'Lembaga :: ' : '';
-				part[1] = part[1] +
-				'<div class="cards" id="' + data[loop].id + '-group">' +
-					'<div class="cards-header">' +
-						'<h4>' + tempL + data[loop].nama + '</h4>' +
-						'<p>' + data[loop].username + ' | ' + data[loop].rule + '</p>' +
-						'<div class="btn-collapse right">' +
-							'<button class="toggle-click clear" toggle-target="' + data[loop].id + '-group" type="button"><span class="fa fa-chevron-down"></span></button>' +
+				placeImg 	= (data[loop].noreg != "") ? data[loop].noreg : data[loop].id;
+				placeImg 	= placeImg.substr((placeImg.length-1), 1);
+
+				tempL	 	= (data[loop].noreg != "") ? 'Lembaga :: ' : '';
+				temPic   	= (data[loop].picture != "" && data[loop].picture != null) ? 'img/logo/' + data[loop].picture : 'img/logo/avatar-' + placeImg + '.jpg';
+				
+
+				if(tempH != data[loop].userLevel){
+					part[1] = part[1] +
+					'<div class="cards-label ' + ((loop > 0) ? 'plus' : '') + '">' +
+						'<p><strong>' + data[loop].rule + '</strong></p>' +
+					'</div>';
+
+					tempH = data[loop].userLevel;
+				}
+
+				part[1]  	= part[1] +
+				'<div class="cards clear" id="' + data[loop].id + '-group">' +
+					'<div class="description-box">' +
+						'<div class="">' +
+							'<img class="icon-set" src="' + temPic + '"/>' +
+							'<p class="title-set">' + data[loop].nama + '</p>' +
+							'<div class="text-set">' +
+								'<span class="id-set">' + data[loop].username + '</span>' +
+								'<span class="desc-text">' + data[loop].email + '</span>' +
+							'</div>' +
 						'</div>' +
+						'<button class="click-option btn-set toggle-click clear" toggle-target="' + data[loop].id + '-group" type="button"><span class="fa fa-chevron-down"></span></button>' +
 					'</div>' +
 				'</div>';
 				
@@ -121,33 +137,39 @@ function r_f3Autentikasi() {
 					//-- access list
 					tempP = "";
 					for(var loopY = 0; loopY < data[loop].access.length; loopY++){
+						tempPR = "";
 						if(loopY ==  (data[loop].access.length - 1)) { tempP = "flush"; }
+						if(loopY ==  (data[loop].access.length - 1) && data[loop].userLevel == '1') { tempPR = "flush"; }
 						
 						switch(data[loop].access[loopY].status){
-							case "0"	 : tempR = "disabled"; break;
+							case "0"	 : tempR = ""; break;
 							case "1"	 : tempR = "checked"; break;
-							default			 : tempR = ""; break;
+							default		 : tempR = ""; break;
 						}
 						
 						part[1] = part[1] +
-						'<div class="cards toggle-content ' + data[loop].id + '-group">' +
+						'<div class="cards toggle-content ' + data[loop].id + '-group ' + tempPR + '">' +
 							'<div class="list-box clear">' +
 								'<p class="list-text ' + data[loop].access[loopY].type + '">' + data[loop].access[loopY].label + '</p>' +
 								'<div class="switch-box clear fixed-position right">' +
-									'<input id="' + data[loop].access[loopY].id + '" type="checkbox" ' + tempR + ' />' +
+									'<input id="' + data[loop].access[loopY].id + '" pId="' + data[loop].username + '" class="userActivator" type="checkbox" ' + tempR + ' />' +
 									'<label for="' + data[loop].access[loopY].id + '"></label>' +
 								'</div>' +
 							'</div>' +
 						'</div>';
 
-						if(loopY ==  (data[loop].access.length - 1)) { 
+						if(loopY ==  (data[loop].access.length - 1) && data[loop].userLevel != '1') { 
 							part[1] = part[1] + 
 							'<div class="cards ' + tempP + ' toggle-content ' + data[loop].id + '-group">' +
 								'<div class="list-box clear">' +
-									'<p class="list-text">' + 
+									'<p class="list-text">';
+
+										part[1] = part[1] + 
 										'<span class="click text-cyan" id="' + data[loop].id  + '-group-edit"' +
 											'p-referencesKey="' + data[loop].username + '"' +
-											'p-container	="' + data[loop].id + '-group">Ubah</span> &nbsp; | &nbsp;' +
+											'p-container	="' + data[loop].id + '-group">Ubah</span> &nbsp; | &nbsp;'
+
+										part[1] = part[1] + 
 										'<span class="click text-pink"id="' + data[loop].id  + '-group-hapus"' +
 											'p-label		="' + data[loop].nama + '"' + 
 											'p-id			="' + data[loop].username+ '"' +
@@ -191,7 +213,6 @@ function r_f3Autentikasi() {
 			$('#' + data[loop].id + '-group-edit').unbind().on("click", function(e){
 				clearPacket();
 				pReferencesKey	= $(this).attr('p-referencesKey');
-				
 				hideOptionList(); 
 				r_f3userSectionEditor(pReferencesKey); 
 			});
@@ -203,8 +224,8 @@ function r_f3Autentikasi() {
 					clearPacket();
 					pContainer		= $(this).attr('p-container');
 					pGroup 			= $(this).attr('p-group');
-					pTarget			= $(this).attr('p-target')
-					pId				= $(this).attr('p-id')
+					pTarget			= $(this).attr('p-target');
+					pId				= $(this).attr('p-id');
 					pLabel			= $(this).attr('p-label');
 					pReferencesKey	= $(this).attr('p-referencesKey');
 					$(".option-yes").unbind().on("click", function(){ 
@@ -217,6 +238,25 @@ function r_f3Autentikasi() {
 				}
 			});
 		}
+
+		$(".userActivator").unbind().on("click", function(){ 
+			hideOptionList(); 
+			showOptionConfirm('status');
+			clearPacket();
+			pTarget	= $(this);
+			pId 	= $(this).attr('pId');
+			pReferencesKey = (pTarget.prop('checked') == true ? '1' : '0');
+			$(".option-yes").unbind().on("click", function(){ 
+				hideOptionList(); 
+				if(p_changeData('f3', 'f311', pId, pReferencesKey) == 'success'){ 
+					state = (pTarget.prop('checked') == true ? false : true);
+					pTarget.prop('checked', state);
+					clearPacket();
+				}; 
+				
+			});
+			 return false;
+		});
 		
 		searchBoxActivator();
 		toggleBoxActivator();
@@ -405,7 +445,7 @@ function r_f3FormUser(packet) {
 						'</div>' +
 						'<div class="select-box">' +
 							'<select name="lingkupArea" tabindex="1">' +
-								'<option value="" selected>Pilih lingkup area</option>' +
+								'<option value="" selected>Pilih lingkup area (*)</option>' +
 								'<option value="3">Provinsi</option>' +
 								'<option value="2">Wilayah</option>' +
 								'<option value="1">Kecamatan</option>' +
@@ -413,7 +453,7 @@ function r_f3FormUser(packet) {
 						'</div>' +
 						'<div class="input-box">' +
 							'<div class="icon-box left">' +
-								'<input id="batasArea" name="batasArea" placeholder="Pilih area spesifik" tabindex="1" type="text" value="" />' +
+								'<input id="batasArea" name="batasArea" placeholder="Pilih area spesifik (*)" tabindex="1" type="text" value="" />' +
 								'<input id="batasArea_id" name="idBatasArea" tabindex="2" type="hidden" value="" />' +
 								'<span class="fa fa-magic"></span>' +
 							'</div>' +
@@ -621,7 +661,7 @@ function r_f3FormUserDataGenerator(packet){
 	$("#f-user-create [name=username]").val(data.user.username);
 	$("#f-user-create [name=lingkupArea]").val(data.user.lingkupArea);
 	$("#f-user-create [name=batasArea]").val(data.user.batasArea);
-	$("#f-user-create [name=batasArea_id]").val(data.user.idBatasArea);
+	$("#f-user-create [name=idBatasArea]").val(data.user.idBatasArea);
 	$("#f-user-create [viewer-id=v-user]").attr('src',(data.user.urlGambar != "" && data.user.urlGambar != null) ? 'img/avatar/'+data.user.urlGambar : "img/sources/picture.png");
 	$("#f-user-create [name=imageName]").html((data.user.urlGambar != "" && data.user.urlGambar != null) ? data.user.urlGambar : "berkas belum diunggah...");
 

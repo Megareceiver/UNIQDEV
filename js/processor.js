@@ -130,6 +130,28 @@ function p_removeData(group, target, pId, refferenceId){
 	return reStatus;
 }
 
+function p_changeData(group, target, pId, refferenceId, dataFetch){
+	var reStatus = null;
+
+	showNotification('info', 'waiting', 'sedang memproses...', false);
+	$.ajax({
+		url: 'modul/router.php?session=updateData&group=' + group + '&target=' + target,
+		type: 'post',
+		dataType: 'json',
+		async: false,
+		data: { pId : pId, refferenceId: refferenceId, dataFetch: dataFetch },
+		success: function(data){
+			reStatus = data.feedStatus;
+			hideNotification('waiting');
+			showNotification(data.feedType, 'changed', data.feedMessage);
+		},
+		complete: function(xhr,status) { hideNotification('waiting'); },
+		error: function(xhr,status,error) { showNotification('danger', 'failure', 'Terjadi kesalahan, tidak ada respon dari server!'); }
+	});
+	
+	return reStatus;
+}
+
 function p_formHandler(formId, type){
 	$("#" + formId).unbind().on('submit', function(e) {
 		showNotification('info', 'waiting', 'sedang memproses...', false);
