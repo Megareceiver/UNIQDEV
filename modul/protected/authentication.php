@@ -27,7 +27,6 @@
 		//validation 
 		$gate = openGate();
 		if($gate && $username != "" && $password !=""){			
-							
 			$sql  = 
 			"	SELECT 
 					idData,
@@ -81,7 +80,7 @@
 						$noRegistrasi	= $row['noRegistrasi'];
 						$nama 			= $row['nama'];
 						$userLevel 		= $row['userLevel'];
-						$avatar 		= $row['urlGambar'];
+						$avatar 		= (($row['urlGambar'] != null) ? $row['urlGambar'] : 'avatar-'.substr($row['idData'], strlen($row['idData']) -1, 1).".jpg");
 						$lingkupArea	= $row['lingkupArea'];
 						$idBatasArea	= $row['idBatasArea'];
 						$statusActive 	= $row['statusActive'];
@@ -133,7 +132,7 @@
 		return $json;
 	}
 	
-	function logout($data){
+	function logout(){
 		$json = array( "status" => "failed");
 
 		// remove all session variables		

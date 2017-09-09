@@ -15,10 +15,6 @@
 		$errorMsg	= "";
 	
 		/* refferences */
-		// f411 : provinsi
-		// f412 : wilayah
-		// f413 : kecamatan
-		// f414 : kelurahan
 		
 		switch($target){
 			case "f31" : $resultList = getUserList($data); break;
@@ -50,12 +46,29 @@
 		$error		 = 0;
 		$errorType   = "";
 		$errorMsg	 = "";
+		$dumbFieldS	 = "";
+		$dumbQueryS	 = "";
 	
 		/* open connection  */
 		$gate = openGate();
 		if($gate){		
 			// connection = true
-			$sql = "SELECT * FROM dplega_910_user WHERE username != 'admin' AND userLevel != '".$_SESSION['userLevel']."' ORDER BY userLevel DESC, nama ASC";
+			/* AUTHENTICATION */
+			if(
+				   isset($_SESSION['login']) && $_SESSION['login'] == "yes" 
+				&& isset($_SESSION['userLevel']) && $_SESSION['userLevel'] != "7"){
+				switch ($_SESSION['lingkupArea']) {
+					case '3': $dumbFieldS = "kodeProvinsi"; break;
+					case '2': $dumbFieldS = "kodeWilayah"; break;
+					case '1': $dumbFieldS = "kodeKecamatan"; break;
+					default: break;
+				}
+
+				$dumbQueryS = ($dumbFieldS != "") ? "AND ".$dumbFieldS." = '".$_SESSION['idBatasArea']."'" : '';
+			}
+			/* AUTHENTICATION END */
+
+			$sql = "SELECT * FROM dplega_910_user WHERE username != 'admin' AND userLevel != '".$_SESSION['userLevel']."' ".$dumbQueryS." ORDER BY userLevel DESC, nama ASC";
 					
 			$result = mysqli_query($gate, $sql);
 			if($result){

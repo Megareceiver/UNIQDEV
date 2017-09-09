@@ -6,9 +6,11 @@ $(function(){
 /* authentication */
 /* =============================================================================================== */
 function p_logout(){
+	hideNotification('0');
+	showNotification('success', '0', 'Terima kasih telah menggunakan layanan kami.');
 	var	reStatus = "";
 	$.ajax({
-		url: 'modul/router.php?session=logout&group=fLogin',
+		url: 'modul/router.php?session=logout&group=fLogin&target=',
 		type: 'post',
 		dataType: 'json',
 		async: false,
@@ -16,8 +18,8 @@ function p_logout(){
 		success: function(result){
 			reStatus = result.status;
 		},
-		complete: function(xhr,status) { hideNotification('waiting'); },
-		error: function(xhr,status,error) { showNotification('danger', 'failure', 'Terjadi kesalahan, tidak ada respon dari server!' + error); }
+		complete: function(xhr,status) { },
+		error: function(xhr,status,error) { console.log(xhr); showNotification('danger', 'failure', 'Terjadi kesalahan, tidak ada respon dari server! ' + error); }
 	});
 
 	return reStatus;

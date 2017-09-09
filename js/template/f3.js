@@ -490,22 +490,22 @@ function r_f3FormUser(packet) {
 							'<p><b>Akses menu</b> &nbsp; <span class="click text-pink" id="selectAll">Pilih semua</span></p>' +
 						'</div>' +
 					'</div>' +
-					'<div class="col-md-2">' +
+					'<div class="col-md-2 col-xs-3">' +
 						'<div class="input-box">' +
 							'<p><b>Lihat</b></p>' +
 						'</div>' +
 					'</div>' +
-					'<div class="col-md-2">' +
+					'<div class="col-md-2 col-xs-3">' +
 						'<div class="input-box">' +
 							'<p><b>Tambah</b></p>' +
 						'</div>' +
 					'</div>' +
-					'<div class="col-md-2">' +
+					'<div class="col-md-2 col-xs-3">' +
 						'<div class="input-box">' +
 							'<p><b>Ubah</b></p>' +
 						'</div>' +
 					'</div>' +
-					'<div class="col-md-2">' +
+					'<div class="col-md-2 col-xs-3">' +
 						'<div class="input-box">' +
 							'<p><b>Hapus</b></p>' +
 						'</div>' +
@@ -525,7 +525,7 @@ function r_f3FormUser(packet) {
 					'</div>';
 			for(loopY=0; loopY<dataAccess[loop].list.length; loopY++){		
 				body = body + 
-				'<div class="col-md-2">' +
+				'<div class="col-md-2 col-xs-3">' +
 					'<div class="check-box">' +
 					  '<input id="' + dataAccess[loop].list[loopY].id + '" name="' + dataAccess[loop].list[loopY].id + '" value="1" type="checkbox" ' + dataAccess[loop].list[loopY].state + '>' +
 					  '<label for="' + dataAccess[loop].list[loopY].id + '"><span class="inner"></span><span class="icon"></span></label>' +

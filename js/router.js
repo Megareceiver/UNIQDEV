@@ -306,25 +306,13 @@ function r_customCallBack(formType, group, target, recentId, formId, pId){
 			}
 		break;
 		case 'fLogin': //megan
-			if(recentId.userLevel == 1){
-				r_navigateTo(12, recentId.noRegistrasi);
-			}else if(recentId.userLevel != ""){
-				r_navigateTo(0);
-				if(recentId.avatar == "" || recentId.avatar == null) { 
-					recentId.avatar = "avatar-default.jpg"; 
-				}
-				$("#navigation .user-frame img").attr('src', 'img/avatar/' + recentId.avatar);
-				$("#navigation .user-frame p.caption span").html(recentId.username);
-				$("#navigation .user-frame p.caption span.big").html(recentId.nama);
-			}
-
-			if(recentId != null && recentId.length > 0){
+			if(recentId != null){
 				r_setCookie('login'			, recentId.login, 		1);
 				r_setCookie('noRegistrasi'	, recentId.noRegistrasi,1);
 				r_setCookie('username'		, recentId.username, 	1);
 				r_setCookie('nama'			, recentId.nama, 		1);
 				r_setCookie('userLevel'		, recentId.userLevel, 	1);
-				r_setCookie('urlGambar'		, recentId.avatar, 		1);
+				r_setCookie('avatar'		, recentId.avatar, 		1);
 				r_setCookie('lingkupArea'	, recentId.lingkupArea, 1);
 				r_setCookie('idBatasArea'	, recentId.idBatasArea, 1);
 				r_setCookie('statusActive'	, recentId.statusActive,1);
@@ -339,6 +327,18 @@ function r_customCallBack(formType, group, target, recentId, formId, pId){
 
 				moduleActive  = accessList;
 				moduleCounter = accessList.length;
+			}
+
+			if(recentId.userLevel == 1){
+				r_navigateTo(12, recentId.noRegistrasi);
+			}else if(recentId.userLevel != ""){
+				r_navigateTo(0);
+				if(recentId.avatar == "" || recentId.avatar == null) { 
+					recentId.avatar = "avatar-default.jpg"; 
+				}
+				$("#navigation .user-frame img").attr('src', 'img/avatar/' + recentId.avatar);
+				$("#navigation .user-frame p.caption span").html(recentId.username);
+				$("#navigation .user-frame p.caption span.big").html(recentId.nama);
 			}
 		break;
 	}
@@ -604,6 +604,7 @@ function r_fHome() {
 			'</div>' +
 			'<div class="col-md-9 jumbotron-content bg-black-mirror">' +
 				'<div class="jumbotron-bg text-shadow">' +
+					'<div class="logo-container"><img class="logo-user" src="img/logo_jabar.png"></div>' +
 					'<h1>PUSAT DATA POTENSI LEMBAGA KEAGAMAAN DI JAWA BARAT</h1>' +
 					'<h5>BIRO PELAYANAN DAN PENGEMBANGAN SOSIAL</h5>' +
 					'<p>' +
@@ -613,12 +614,11 @@ function r_fHome() {
 						'masyarakat untuk menyediakan data kelembagaan yang telah tercatat secara legal serta telah melewati proses ' +
 						'verifikasi sehingga dinyatakan sah sebagai suatu kelembagaan.' +
 					'</p>' +
-					'<img class="logo-user" src="img/logo_jabar.png">' +
 				'</div>' +
 			'</div>' +
 			'<div class="clearfix"></div>' +
 			'<div class="jumbotron-button">' +
-				'<div class="col-md-9 col-md-offset-3">' +
+				'<div class="col-md-12">' +
 					'<button type="button" class="btn-link text-white go-scroll"><i class="fa fa-angle-double-down fa-3x"></i></button>' +
 				'</div>' +
 			'</div>' +
@@ -806,7 +806,7 @@ function r_fHome() {
 		//--command reactor
 		$(".go-login").unbind().on('click', function(){ r_navigateTo(99); });
 		$(".more-click").unbind().on('click', function(){ r_navigateTo(44); });
-		$(".detail-click").unbind().on('click', function(){ r_navigateTo(441, $(this).attr('p-id')); });
+		// $(".detail-click").unbind().on('click', function(){ r_navigateTo(441, $(this).attr('p-id')); });
 		
 		//scrolling
 		var sec1 = $(window).innerHeight();
@@ -824,7 +824,8 @@ function r_fHome() {
 	
 		
 		//--css mod
-		$(".jumbotron-ground").css('height', ($(window).innerHeight()*1));
+		if(sec1 >= 600) $(".jumbotron-ground").css('height', ($(window).innerHeight()*1));
+		else $(".jumbotron-ground").css('height', 694);
 	});
 }
 

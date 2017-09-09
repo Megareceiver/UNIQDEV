@@ -126,7 +126,7 @@ function notificationTimer(notifId, timerAction){
 	if(timerAction != false){
 		setTimeout(function(){  
 			hideNotification(notifId);
-		}, 3500);
+		}, 5000);
 	}
 }
 
