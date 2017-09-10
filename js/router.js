@@ -50,55 +50,135 @@ $(function(){
 
 /* navigation */
 function r_navigateTo(index, packet, access) {
-	/*-- syncnav js*/ syncnavClose();
-	/*-- clear frame on page */ r_pageClear();
+		syncnavClose(); /*-- syncnav js*/ 
 
-	switch(index){
-		case 0  : r_f0Dashboard(); 					break;
-		case 0.1: r_f0Bantuan(); 					break;
-		
-		case 1  : r_f1Kelembagaan(); 				break;
-		case 11 : r_f1DaftarLembaga(packet); 		break;
-		case 12 : r_f1DetailLembaga(packet); 		break;
-		case 13 : r_f1VerifikasiLembaga(packet);	break;
-		case 14 : r_f1KoleksiLembaga(); 			break;
-		case 16 : r_f1PrestasiLembaga(); 			break;
-		case 15 : r_f1FormKelembagaan(packet);		break;
-		
-		case 3  : r_f3Autentikasi(); 				break;
-		case 31 : r_f3FormUser(packet);				break;
-		
-		case 4  : r_f4Pengaturan();					break;
-		case 41 : r_f4LingkupArea();				break;
-		case 411: r_f4TransferLembaga();			break;
-		
-		case 42 : r_f4DaftarVerifikasi();			break;
-		case 421: r_f4GrupVerifikasi();				break;
-		
-		case 43 : r_f4BentukLembaga();				break;
-		case 431: r_f4LegalitasLembaga();			break;
-		case 432: r_f4BidangGerakLembaga();			break;
-		
-		case 44 : r_f4DaftarBerita();				break;
-		case 441: r_f4DetailBerita(packet);			break;
-		
-		case 45 : r_f4ImportData();					break;
-		case 451: r_f4BackupRestore();				break;
-		case 452: r_f4Setelan();					break;
-		case 453: r_f4FormInfoPersonal();			break;
-		
-		case 46 : r_f4InfoPersonal();				break;
-		case 461: r_f4GantiPassword();				break;
+	if(r_auth(index) == true){
+		r_pageClear(); /*-- clear frame on page */
 
-		case 99 : r_fLogin(); 						break;
-		case 999: r_fNotification();				break;
-		default : r_fHome(); 						break;
+		switch(index){
+			case 0  : r_f0Dashboard(); 					break;
+			case 0.1: r_f0Bantuan(); 					break;
+			
+			case 1  : r_f1Kelembagaan(); 				break;
+			case 11 : r_f1DaftarLembaga(packet); 		break;
+			case 12 : r_f1DetailLembaga(packet); 		break;
+			case 13 : r_f1VerifikasiLembaga(packet);	break;
+			case 14 : r_f1KoleksiLembaga(); 			break;
+			case 16 : r_f1PrestasiLembaga(); 			break;
+			case 15 : r_f1FormKelembagaan(packet);		break;
+			
+			case 3  : r_f3Autentikasi(); 				break;
+			case 31 : r_f3FormUser(packet);				break;
+			
+			case 4  : r_f4Pengaturan();					break;
+			case 41 : r_f4LingkupArea();				break;
+			case 411: r_f4TransferLembaga();			break;
+			
+			case 42 : r_f4DaftarVerifikasi();			break;
+			case 421: r_f4GrupVerifikasi();				break;
+			
+			case 43 : r_f4BentukLembaga();				break;
+			case 431: r_f4LegalitasLembaga();			break;
+			case 432: r_f4BidangGerakLembaga();			break;
+			
+			case 44 : r_f4DaftarBerita();				break;
+			case 441: r_f4DetailBerita(packet);			break;
+			
+			case 45 : r_f4ImportData();					break;
+			case 451: r_f4BackupRestore();				break;
+			case 452: r_f4Setelan();					break;
+			
+			case 46 : r_f4InfoPersonal();				break;
+			case 461: r_f4GantiPassword();				break;
+			case 462: r_f4FormInfoPersonal();			break;
+
+			case 99 : r_fLogin(); 						break;
+			case 999: r_fNotification();				break;
+			default : r_fHome(); 						break;
+		}
+		
+		if(packet != 'start' && index != r_pageReader()) /*--set page to static*/ r_pageSet(index);
+	}else{
+		showNotification('danger', 'failure', 'Akses tidak diberikan, hubungi administrator untuk lebih lanjut!');
 	}
 	
-	//alert('index:' + index + ", prev:" + r_pageReader());
-	if(packet != 'start' && index != r_pageReader()){
-	/*--set page to static*/ r_pageSet(index);
+}
+
+function r_auth(index){
+	var res = false;
+
+	switch(index){
+		case 0  : 
+		case 0.1: 
+			res = (r_getCookie('beritaLihat') == '1') ? true : false;
+		break;
+
+		case 1   : 
+		case 11  : 
+		case 12  : 
+		case 13  : 
+		case 14  : 
+		case 15  : 
+			res = (r_getCookie('kelembagaanLihat') == '1') ? true : false;
+		break;
+		
+		case 3  : 
+			res = (r_getCookie('userLevel') != '1') ? true : false;
+		break;
+		
+		case 4  : 			
+			res = (r_getCookie('userLevel') != '1') ? true : false;
+		break;
+
+		case 41 :
+		case 411: 			
+			res = (r_getCookie('lingkupAreaLihat') == '1') ? true : false;
+		break;
+
+		case 42 :
+		case 421: 
+			res = (r_getCookie('pengaturanVerifikasiLihat') == '1') ? true : false;
+		break;
+		
+		case 43 : 
+		case 431:
+		case 432: 
+			res = (r_getCookie('pengaturanKelembagaaLihat') == '1') ? true : false;
+		break;
+		
+		case 44 : 
+			res = (r_getCookie('beritaLihat') == '1') ? true : false;
+		break;
+		case 441: 
+			res = true;
+		break;
+		
+		case 45 : 
+		case 451:
+		case 452:
+			res = (r_getCookie('konfigurasi') == '1') ? true : false;
+		break;
+		
+		case 46 : 
+		case 461: 
+		case 462: 
+			res = (r_getCookie('login') == 'yes') ? true : false;
+		break;
+
+		case 99 : 
+			res = true;
+		break;
+
+		case 999:
+			res = (r_getCookie('userLevel') != '1') ? true : false;
+		break;
+
+		default : 
+			res = true;
+		break;
 	}
+
+	return res;
 }
 
 function r_customCallBack(formType, group, target, recentId, formId, pId){
@@ -323,7 +403,7 @@ function r_customCallBack(formType, group, target, recentId, formId, pId){
 					r_setCookie(accessList[look].module + 'Tambah',accessList[look].tambah,1);
 					r_setCookie(accessList[look].module + 'Ubah',  accessList[look].ubah,  1);
 					r_setCookie(accessList[look].module + 'Hapus', accessList[look].hapus, 1);
-				}
+				} console.log(recentId);
 
 				moduleActive  = accessList;
 				moduleCounter = accessList.length;
@@ -438,13 +518,13 @@ function r_optionDHtml(group){
 				}
 			}
 		break;
-		case "kelurahan": 
-			if(optionD != null && optionD[0].kelurahan != undefined){
-				for(var loop=0; loop<optionD[0].kelurahan.length; loop++){
-					optionHtml = optionHtml + '<option value="' + optionD[0].kelurahan[loop].idData + '">' + optionD[0].kelurahan[loop].caption + '</option>';
-				}
-			}
+		case "level": 
+			if(r_getCookie('userLevel') == '7' || r_getCookie('userLevel') == '3')
+				optionHtml = optionHtml + '<option value="2">Level 2</option>';
+			if(r_getCookie('userLevel') == '7')
+				optionHtml = optionHtml + '<option value="3">Level 3</option>';
 		break;
+
 	}
 	
 	return optionHtml;

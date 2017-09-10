@@ -179,8 +179,10 @@ function r_f1DaftarLembaga(packet) {
 		
 		//--gen
 		headPage.html(r_headPageHtml(4, namaBentukLembagaState));
-		footPage.html(r_footPageHtml('add'));
 		mainPage.html(content).animate({'opacity': '1'},'fast','linear');
+		
+		var ul = r_getCookie('kelembagaanTambah');
+		if(ul == '1') footPage.html(r_footPageHtml('add'));
 		$("#preload").remove();
 		
 		//--command reactor

@@ -84,7 +84,7 @@
 						$lingkupArea	= $row['lingkupArea'];
 						$idBatasArea	= $row['idBatasArea'];
 						$statusActive 	= $row['statusActive'];
-						$access			= $accessTemp;
+						$access			= $accessDumb;
 						
 					}
 

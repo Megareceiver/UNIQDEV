@@ -650,7 +650,7 @@ footer.parent .author-box img { height: 30px; float: right }
 /* =============================================================================================== */
 .cards { 
 	position: relative;
-	padding: 10px 35px;
+	padding: 10px 25px 10px 35px;
 	background-color: #FFF;
 	border-bottom: 1px solid rgba(0,0,0,0.12);
 	-webkit-box-shadow: 0 2px 2px rgba(0,0,0,0.12), 0 0px 0px rgba(0,0,0,0.24);
@@ -1618,6 +1618,7 @@ footer.parent .author-box img { height: 30px; float: right }
 	main.parent .row.default.right { margin: 0 -15px; }
 	
 	/**/
+	.cards { padding: 10px 20px 10px 20px; }
 	.cards .desc-frame .desc-box .labels, 
 	.cards .desc-frame .desc-box .divider { display: block; width: 100%; padding-left: 0 }
 	.cards .desc-frame .desc-box .divider { margin-bottom: 15px }

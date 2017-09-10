@@ -201,8 +201,10 @@ function r_f3Autentikasi() {
 		
 		//--gen
 		headPage.html(r_headPageHtml(4, 'Autentikasi'));
-		footPage.html(r_footPageHtml('add'));
 		mainPage.html(content).animate({'opacity': '1'},'fast','linear');
+		
+		var ul = r_getCookie('userLevel');
+		if(ul == '3' || ul == '7') footPage.html(r_footPageHtml('add'));
 		$("#preload").remove();
 		
 		//--command reactor
@@ -274,17 +276,7 @@ function r_f3FormUser(packet) {
 		body  	= '';
 		part	= ['','','',''];
 		content = '';
-		data    = [
-			{'noreg': '1', 'caption': 'Yayasan', 'description': 'lorem dolor sit amet 2.'},
-			{'noreg': '2', 'caption': 'Pondok Pesantren', 'description': 'lorem dolor sit amet 3.'},
-			{'noreg': '3', 'caption': 'RA', 'description': 'lorem dolor sit amet 4.'},
-		];
 		
-		optionBatch = [
-			{'selector': 'edit-card', 			'icon': 'pencil', 'label': 'Ubah data'},
-			{'selector': 'delete-card', 		'icon': 'trash',  'label': 'Hapus data'},
-		]; 
-
 		dataAccess = [
 			{
 				'module': 'kelembagaan', 'group': "Kelembagaan", "list": 
@@ -305,7 +297,7 @@ function r_f3FormUser(packet) {
 				]
 			},
 			{
-				'module': 'pengaturanKelembagaan', 'group': "Pengaturan user", "list": 
+				'module': 'pengaturanKelembagaan', 'group': "Pengaturan kelembagaan", "list": 
 				[
 					{"id": "pengaturanKelembagaan-lihat", "state": "checked='checked'"},
 					{"id": "pengaturanKelembagaan-tambah", "state": ""},
@@ -429,6 +421,14 @@ function r_f3FormUser(packet) {
 						'<div class="input-box">' +
 							'<input name="email" placeholder="Email (*)" tabindex="2" type="text" value="" />' +
 						'</div>' +
+						'<div class="input-box">' +
+							'<p>Level pengguna</p>' +
+						'</div>' +
+						'<div class="select-box">' +
+							'<select name="userLevel" tabindex="1">' +
+								r_optionDHtml('level') +
+							'</select>' +
+						'</div>' +
 					'</div>' +
 					'<div class="col-md-6">' +
 						'<div class="input-box">' +
@@ -441,7 +441,7 @@ function r_f3FormUser(packet) {
 							'<input name="re-password" placeholder="Password ulang (*)" tabindex="2" type="password" value="" />' +
 						'</div>' +
 						'<div class="input-box">' +
-							'<p>Batasi lingkup area (optional)</p>' +
+							'<p>Batasi lingkup area</p>' +
 						'</div>' +
 						'<div class="select-box">' +
 							'<select name="lingkupArea" tabindex="1">' +
@@ -659,6 +659,7 @@ function r_f3FormUserDataGenerator(packet){
 	$("#f-user-create [name=telp]").val(data.user.noTelp);
 	$("#f-user-create [name=email]").val(data.user.email);
 	$("#f-user-create [name=username]").val(data.user.username);
+	$("#f-user-create [name=userLevel]").val(data.user.userLevel);
 	$("#f-user-create [name=lingkupArea]").val(data.user.lingkupArea);
 	$("#f-user-create [name=batasArea]").val(data.user.batasArea);
 	$("#f-user-create [name=idBatasArea]").val(data.user.idBatasArea);

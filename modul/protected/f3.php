@@ -205,6 +205,7 @@
 						l.`lingkupArea`, 
 						l.`idBatasArea`, 
 						l.`username`, 
+						l.`userLevel`, 
 						l.`urlGambar`
 					FROM
 						dplega_910_user l
@@ -256,6 +257,7 @@
 										"noTelp"			=> $row['noTelp'],
 										"email"				=> $row['email'],
 										"username"			=> $row['username'],
+										"userLevel"			=> $row['userLevel'],
 										"lingkupArea"		=> $row['lingkupArea'],
 										"idBatasArea"		=> $row['idBatasArea'],
 										"batasArea"			=> $batasArea,
@@ -530,6 +532,7 @@
 			|| $data['username'] == ""
 			|| $data['password'] == "" || $data['re-password'] == ""
 			|| $data['lingkupArea'] == "" || $data['idBatasArea'] == ""
+			|| $data['lingkupArea'] == "" || $data['idBatasArea'] == ""
 		){ $error = 1; }
 
 		if($error != 1){
@@ -577,7 +580,7 @@
 							'".$data['email']."',
 							'".$data['username']."',
 							md5('".$data['password']."'),
-							'2',
+							'".$data['userLevel']."',
 							'".$data['lingkupArea']."',
 							'".$data['idBatasArea']."',
 							'1',
@@ -812,6 +815,7 @@
 								email 				= '".$data['email']."',
 								idBatasArea			= '".$data['idBatasArea']."',
 								lingkupArea			= '".$data['lingkupArea']."',
+								userLevel			= '".$data['userLevel']."',
 								".$dumbQuery."
 								changedBy 			= '".$_SESSION['username']."',
 								changedDate			= NOW()

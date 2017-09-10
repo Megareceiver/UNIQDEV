@@ -8,29 +8,7 @@ function r_f4Pengaturan() {
 		body  	= '';
 		part	= ['',''];
 		content = '';
-		// data 	= [{
-			// 'lembaga':[
-				// {
-					// 'group':'Data ajuan', 'collapse': 'y', 'list' : [
-						// { 'id':'1', 'picture': 'avatar-default.jpg', 'nama': 'xx', 'noreg': '001', 'telp':'123', 'email':'a@e.c', 'alamat': 'jkl' },
-						// { 'id':'2', 'picture': 'avatar-default.jpg', 'nama': 'yy', 'noreg': '002', 'telp':'456', 'email':'b@e.c', 'alamat': 'mno' },
-					// ]
-				// },
-				// {
-					// 'group':'Data sudah verifikasi', 'collapse': 'n', 'list' : [
-						// { 'id':'3', 'picture': 'avatar-default.jpg', 'nama': 'aa', 'noreg': '000', 'telp':'789', 'email':'c@e.c', 'alamat': 'pqr' },
-						// { 'id':'4', 'picture': 'avatar-default.jpg', 'nama': 'bb', 'noreg': '004', 'telp':'234', 'email':'d@e.c', 'alamat': 'stu' },
-					// ]
-				// },
-			// ],
-			// 'option': [
-				// {'selector': 'view-card', 			'icon': 'search', 'label': 'Lihat selengkapnya'},
-				// {'selector': 'verification-card', 	'icon': 'check',  'label': 'Verifikasi'},
-				// {'selector': 'edit-card', 			'icon': 'pencil', 'label': 'Ubah profil'},
-				// {'selector': 'delete-card', 		'icon': 'trash',  'label': 'Hapus lembaga'},
-			// ] 
-		// }];
-		
+
 		//--open
 		head	= '';
 		body	= '<div class="row no-head"><div class="container">';
@@ -219,46 +197,48 @@ function r_f4LingkupArea() {
 		
 		//-- fill part
 		//-- Provinsi ==========================================================================
-		part[0] = part[0] +
-		'<form id="f-provinsi-create" f-group = "f4" f-target = "f411">' +
-			'<div class="cards">' +
-				'<div class="cards-header">' +
-					'<h4>Provinsi</h4>' +
-					'<p class="offset">form untuk menambahkan data provinsi.</p>' +
-					'<div class="btn-collapse right">' +
-						'<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
-						'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
+		if(r_getCookie('lingkupAreaTambah') == '1' || r_getCookie('lingkupAreaUbah') == '1'){
+			part[0] = part[0] +
+			'<form id="f-provinsi-create" f-group = "f4" f-target = "f411">' +
+				'<div class="cards">' +
+					'<div class="cards-header">' +
+						'<h4>Provinsi</h4>' +
+						'<p class="offset">form untuk menambahkan data provinsi.</p>' +
+						'<div class="btn-collapse right">' +
+							'<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
+							'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
+						'</div>' +
 					'</div>' +
 				'</div>' +
-			'</div>' +
-			'<div class="cards flush">' +
+				'<div class="cards flush">' +
+					'<div class="row default">' +
+						'<div class="col-md-3">' +
+							'<div class="input-box">' +
+								'<input placeholder="Kode provinsi (*)" maxlength="2" name="kode" tabindex="1" type="text" value="" />' +
+							'</div>' +
+						'</div>' +
+						'<div class="col-md-9">' +
+							'<div class="input-box">' +
+								'<input name="idData" tabindex="1" type="hidden" value="" />' +
+								'<input placeholder="Provinsi (*)" name="nama" tabindex="1" type="text" value="" />' +
+							'</div>' +
+						'</div>' +
+					'</div>' +
+				'</div>' +
+			'</form>' +
+			'<!--div class="cards">' +
 				'<div class="row default">' +
-					'<div class="col-md-3">' +
-						'<div class="input-box">' +
-							'<input placeholder="Kode provinsi" maxlength="2" name="kode" tabindex="1" type="text" value="" />' +
-						'</div>' +
-					'</div>' +
-					'<div class="col-md-9">' +
-						'<div class="input-box">' +
-							'<input name="idData" tabindex="1" type="hidden" value="" />' +
-							'<input placeholder="Provinsi" name="nama" tabindex="1" type="text" value="" />' +
+					'<div class="col-md-12">' +
+						'<div class="input-box fixed">' +
+							'<div class="icon-box left">' +
+								'<input placeholder="Pencarian" class="list-search" f-group = "f4" f-target = "f411" tabindex="13" type="text" value="" />' +
+								'<span class="fa fa-search"></span>' +
+							'</div>' +
 						'</div>' +
 					'</div>' +
 				'</div>' +
-			'</div>' +
-		'</form>' +
-		'<!--div class="cards">' +
-			'<div class="row default">' +
-				'<div class="col-md-12">' +
-					'<div class="input-box fixed">' +
-						'<div class="icon-box left">' +
-							'<input placeholder="Pencarian" class="list-search" f-group = "f4" f-target = "f411" tabindex="13" type="text" value="" />' +
-							'<span class="fa fa-search"></span>' +
-						'</div>' +
-					'</div>' +
-				'</div>' +
-			'</div>' +
-		'</div-->';
+			'</div-->';
+		}
 		
 		if(data != null && data[0].provinsi != undefined){
 			counter = data[0].provinsi.length;
@@ -267,13 +247,13 @@ function r_f4LingkupArea() {
 					part[0] = part[0] + 
 					'<div class="cards provinsi-list list-edit" id ="'+ loop +'provinsi-' + data[0].provinsi[loop].idData + '">' +
 						'<div class="row default">' +
-							'<div class="col-xs-2">' +
+							'<div class="col-xs-3 col-sm-2">' +
 								'<div class="list-box">' +
 									'<div class="list-icon bg-green"><span class="fa fa-map-marker"></span></div>' +
 									'<p class="list-text">' + data[0].provinsi[loop].noreg + '</p>' +
 								'</div>' +
 							'</div>' +
-							'<div class="col-xs-10">' +
+							'<div class="col-xs-9 col-sm-10">' +
 								'<div class="list-box clear">' +
 									'<p class="list-text">' + data[0].provinsi[loop].caption + '</p>' +
 									'<div class="list-button click-option"' + 
@@ -307,55 +287,57 @@ function r_f4LingkupArea() {
 		
 		//--
 		//-- wilayah ==========================================================================
-		part[1] = part[1] +
-		'<form id="f-wilayah-create" f-group = "f4" f-target = "f412">' +
-			'<div class="cards">' +
-				'<div class="cards-header">' +
-					'<h4>Wilayah</h4>' +
-					'<p class="offset">form untuk menambahkan data wilayah berdasarkan provinsi.</p>' +
-					'<div class="btn-collapse right">' +
-						'<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
-						'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
+		if(r_getCookie('lingkupAreaTambah') == '1' || r_getCookie('lingkupAreaUbah') == '1'){
+			part[1] = part[1] +
+			'<form id="f-wilayah-create" f-group = "f4" f-target = "f412">' +
+				'<div class="cards">' +
+					'<div class="cards-header">' +
+						'<h4>Wilayah</h4>' +
+						'<p class="offset">form untuk menambahkan data wilayah berdasarkan provinsi.</p>' +
+						'<div class="btn-collapse right">' +
+							'<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
+							'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
+						'</div>' +
 					'</div>' +
 				'</div>' +
-			'</div>' +
-			'<div class="cards flush">' +
+				'<div class="cards flush">' +
+					'<div class="row default">' +
+						'<div class="col-md-9 col-md-offset-3">' +
+							'<div class="select-box">' +
+								'<select name="referensi" tabindex="1">' +
+									'<option value="" selected>Provinsi (*)</option>' +
+									r_optionDHtml('provinsi') +
+								'</select>' +
+							'</div>' +
+						'</div>' +
+						'<div class="clearfix"></div>' +
+						'<div class="col-md-3">' +
+							'<div class="input-box">' +
+								'<input name="idData" tabindex="1" type="hidden" value="" />' +
+								'<input placeholder="Kode wilayah (*)" maxlength="2" name="kode" tabindex="1" type="text" value="" />' +
+							'</div>' +
+						'</div>' +
+						'<div class="col-md-9">' +
+							'<div class="input-box">' +
+								'<input placeholder="Wilayah (*)" name="nama" tabindex="21" type="text" value="" />' +
+							'</div>' +
+						'</div>' +
+					'</div>' +
+				'</div>' +
+			'</form>' +
+			'<!--div class="cards">' +
 				'<div class="row default">' +
-					'<div class="col-md-9 col-md-offset-3">' +
-						'<div class="select-box">' +
-							'<select name="referensi" tabindex="1">' +
-								'<option value="" selected>Provinsi</option>' +
-								r_optionDHtml('provinsi') +
-							'</select>' +
-						'</div>' +
-					'</div>' +
-					'<div class="clearfix"></div>' +
-					'<div class="col-md-3">' +
-						'<div class="input-box">' +
-							'<input name="idData" tabindex="1" type="hidden" value="" />' +
-							'<input placeholder="Kode wilayah" maxlength="2" name="kode" tabindex="1" type="text" value="" />' +
-						'</div>' +
-					'</div>' +
-					'<div class="col-md-9">' +
-						'<div class="input-box">' +
-							'<input placeholder="Wilayah" name="nama" tabindex="21" type="text" value="" />' +
+					'<div class="col-md-12">' +
+						'<div class="input-box fixed">' +
+							'<div class="icon-box left">' +
+								'<input placeholder="Pencarian" tabindex="23" type="text" value="" />' +
+								'<span class="fa fa-search"></span>' +
+							'</div>' +
 						'</div>' +
 					'</div>' +
 				'</div>' +
-			'</div>' +
-		'</form>' +
-		'<!--div class="cards">' +
-			'<div class="row default">' +
-				'<div class="col-md-12">' +
-					'<div class="input-box fixed">' +
-						'<div class="icon-box left">' +
-							'<input placeholder="Pencarian" tabindex="23" type="text" value="" />' +
-							'<span class="fa fa-search"></span>' +
-						'</div>' +
-					'</div>' +
-				'</div>' +
-			'</div>' +
-		'</div-->';
+			'</div-->';
+		}
 		
 		if(data != null && data[0].wilayah != undefined){
 			counter = data[0].wilayah.length;
@@ -364,18 +346,18 @@ function r_f4LingkupArea() {
 					part[1] = part[1] + 
 					'<div class="cards wilayah-list list-edit" id="' + loop + 'wilayah-' + data[0].wilayah[loop].idData + '">' +
 						'<div class="row default">' +
-							'<div class="col-xs-2">' +
+							'<div class="col-xs-3 col-sm-2">' +
 								'<div class="list-box">' +
 									'<div class="list-icon bg-green"><span class="fa fa-map-marker"></span></div>' +
 									'<p class="list-text">' + data[0].wilayah[loop].noreg + '</p>' +
 								'</div>' +
 							'</div>' +
-							'<div class="col-xs-6">' +
+							'<div class="col-xs-5 col-sm-6">' +
 								'<div class="list-box clear">' +
 									'<p class="list-text">' + data[0].wilayah[loop].caption + '</p>' +
 								'</div>' +
 							'</div>' +
-							'<div class="col-xs-4">' +
+							'<div class="col-xs-4 col-sm-4">' +
 								'<div class="list-box clear">' +
 									'<p class="list-text">' + data[0].wilayah[loop].references + '</p>' +
 									'<div class="list-button click-option"' + 
@@ -410,55 +392,57 @@ function r_f4LingkupArea() {
 		
 		//--
 		//-- kecamatan ==========================================================================
-		part[2] = part[2] +
-		'<form id="f-kecamatan-create" f-group = "f4" f-target = "f413">' +
-			'<div class="cards">' +
-				'<div class="cards-header">' +
-					'<h4>Kecamatan</h4>' +
-					'<p class="offset">form untuk menambahkan data kecamatan berdasarkan wilayah.</p>' +
-					'<div class="btn-collapse right">' +
-						'<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
-						'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
+		if(r_getCookie('lingkupAreaTambah') == '1' || r_getCookie('lingkupAreaUbah') == '1'){
+			part[2] = part[2] +
+			'<form id="f-kecamatan-create" f-group = "f4" f-target = "f413">' +
+				'<div class="cards">' +
+					'<div class="cards-header">' +
+						'<h4>Kecamatan</h4>' +
+						'<p class="offset">form untuk menambahkan data kecamatan berdasarkan wilayah.</p>' +
+						'<div class="btn-collapse right">' +
+							'<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
+							'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
+						'</div>' +
 					'</div>' +
 				'</div>' +
-			'</div>' +
-			'<div class="cards flush">' +
+				'<div class="cards flush">' +
+					'<div class="row default">' +
+						'<div class="col-md-9 col-md-offset-3">' +
+							'<div class="select-box">' +
+								'<select name="referensi" tabindex="1">' +
+									'<option value="" selected>Wilayah (*)</option>' +
+									r_optionDHtml('wilayah') +
+								'</select>' +
+							'</div>' +
+						'</div>' +
+						'<div class="clearfix"></div>' +
+						'<div class="col-md-3">' +
+							'<div class="input-box">' +
+								'<input name="idData" tabindex="1" type="hidden" value="" />' +
+								'<input placeholder="Kode kecamatan (*)" maxlength="2" name="kode" tabindex="1" type="text" value="" />' +
+							'</div>' +
+						'</div>' +
+						'<div class="col-md-9">' +
+							'<div class="input-box">' +
+								'<input placeholder="Kecamatan (*)" name="nama" tabindex="31" type="text" value="" />' +
+							'</div>' +
+						'</div>' +
+					'</div>' +
+				'</div>' +
+			'</form>' +
+			'<!--div class="cards">' +
 				'<div class="row default">' +
-					'<div class="col-md-9 col-md-offset-3">' +
-						'<div class="select-box">' +
-							'<select name="referensi" tabindex="1">' +
-								'<option value="" selected>Wilayah</option>' +
-								r_optionDHtml('wilayah') +
-							'</select>' +
-						'</div>' +
-					'</div>' +
-					'<div class="clearfix"></div>' +
-					'<div class="col-md-3">' +
-						'<div class="input-box">' +
-							'<input name="idData" tabindex="1" type="hidden" value="" />' +
-							'<input placeholder="Kode kecamatan" maxlength="2" name="kode" tabindex="1" type="text" value="" />' +
-						'</div>' +
-					'</div>' +
-					'<div class="col-md-9">' +
-						'<div class="input-box">' +
-							'<input placeholder="Kecamatan" name="nama" tabindex="31" type="text" value="" />' +
+					'<div class="col-md-12">' +
+						'<div class="input-box fixed">' +
+							'<div class="icon-box left">' +
+								'<input placeholder="Pencarian" tabindex="33" type="text" value="" />' +
+								'<span class="fa fa-search"></span>' +
+							'</div>' +
 						'</div>' +
 					'</div>' +
 				'</div>' +
-			'</div>' +
-		'</form>' +
-		'<!--div class="cards">' +
-			'<div class="row default">' +
-				'<div class="col-md-12">' +
-					'<div class="input-box fixed">' +
-						'<div class="icon-box left">' +
-							'<input placeholder="Pencarian" tabindex="33" type="text" value="" />' +
-							'<span class="fa fa-search"></span>' +
-						'</div>' +
-					'</div>' +
-				'</div>' +
-			'</div>' +
-		'</div-->';
+			'</div-->';
+		}
 		
 		if(data != null && data[0].kecamatan != undefined){
 			counter = data[0].kecamatan.length;
@@ -467,18 +451,18 @@ function r_f4LingkupArea() {
 					part[2] = part[2] + 
 					'<div class="cards kecamatan-list list-edit" id="' + loop + 'kecamatan-' + data[0].kecamatan[loop].idData + '">' +
 						'<div class="row default">' +
-							'<div class="col-xs-2">' +
+							'<div class="col-xs-3 col-sm-2">' +
 								'<div class="list-box">' +
 									'<div class="list-icon bg-green"><span class="fa fa-map-marker"></span></div>' +
 									'<p class="list-text">' + data[0].kecamatan[loop].noreg + '</p>' +
 								'</div>' +
 							'</div>' +
-							'<div class="col-xs-6">' +
+							'<div class="col-xs-5 col-sm-6">' +
 								'<div class="list-box clear">' +
 									'<p class="list-text">' + data[0].kecamatan[loop].caption + '</p>' +
 								'</div>' +
 							'</div>' +
-							'<div class="col-xs-4">' +
+							'<div class="col-xs-4 col-sm-4">' +
 								'<div class="list-box clear">' +
 									'<p class="list-text">' + data[0].kecamatan[loop].references + '</p>' +
 									'<div class="list-button click-option"' + 
@@ -514,55 +498,57 @@ function r_f4LingkupArea() {
 		
 		//--
 		//-- kelurahan ==========================================================================
-		part[3] = part[3] +
-		'<form id="f-kelurahan-create" f-group = "f4" f-target = "f414">' +
-			'<div class="cards">' +
-				'<div class="cards-header">' +
-					'<h4>Kelurahan</h4>' +
-					'<p class="offset">form untuk menambahkan data kelurahan berdasarkan Kecamatan.</p>' +
-					'<div class="btn-collapse right">' +
-						'<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
-						'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
+		if(r_getCookie('lingkupAreaTambah') == '1' || r_getCookie('lingkupAreaUbah') == '1'){
+			part[3] = part[3] +
+			'<form id="f-kelurahan-create" f-group = "f4" f-target = "f414">' +
+				'<div class="cards">' +
+					'<div class="cards-header">' +
+						'<h4>Kelurahan</h4>' +
+						'<p class="offset">form untuk menambahkan data kelurahan berdasarkan Kecamatan.</p>' +
+						'<div class="btn-collapse right">' +
+							'<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
+							'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
+						'</div>' +
 					'</div>' +
 				'</div>' +
-			'</div>' +
-			'<div class="cards flush">' +
+				'<div class="cards flush">' +
+					'<div class="row default">' +
+						'<div class="col-md-9 col-md-offset-3">' +
+							'<div class="select-box">' +
+								'<select name="referensi" tabindex="1">' +
+									'<option value="" selected>Kecamatan (*)</option>' +
+									r_optionDHtml('kecamatan') +
+								'</select>' +
+							'</div>' +
+						'</div>' +
+						'<div class="clearfix"></div>' +
+						'<div class="col-md-3">' +
+							'<div class="input-box">' +
+								'<input name="idData" tabindex="1" type="hidden" value="" />' +
+								'<input placeholder="Kode kelurahan (*)" maxlength="2" name="kode" tabindex="1" type="text" value="" />' +
+							'</div>' +
+						'</div>' +
+						'<div class="col-md-9">' +
+							'<div class="input-box">' +
+								'<input placeholder="Kelurahan (*)" name="nama" tabindex="31" type="text" value="" />' +
+							'</div>' +
+						'</div>' +
+					'</div>' +
+				'</div>' +
+			'</form>' +
+			'<!--div class="cards">' +
 				'<div class="row default">' +
-					'<div class="col-md-9 col-md-offset-3">' +
-						'<div class="select-box">' +
-							'<select name="referensi" tabindex="1">' +
-								'<option value="" selected>Kecamatan</option>' +
-								r_optionDHtml('kecamatan') +
-							'</select>' +
-						'</div>' +
-					'</div>' +
-					'<div class="clearfix"></div>' +
-					'<div class="col-md-3">' +
-						'<div class="input-box">' +
-							'<input name="idData" tabindex="1" type="hidden" value="" />' +
-							'<input placeholder="Kode kelurahan" maxlength="2" name="kode" tabindex="1" type="text" value="" />' +
-						'</div>' +
-					'</div>' +
-					'<div class="col-md-9">' +
-						'<div class="input-box">' +
-							'<input placeholder="Kelurahan" name="nama" tabindex="31" type="text" value="" />' +
+					'<div class="col-md-12">' +
+						'<div class="input-box fixed">' +
+							'<div class="icon-box left">' +
+								'<input placeholder="Pencarian" tabindex="33" type="text" value="" />' +
+								'<span class="fa fa-search"></span>' +
+							'</div>' +
 						'</div>' +
 					'</div>' +
 				'</div>' +
-			'</div>' +
-		'</form>' +
-		'<!--div class="cards">' +
-			'<div class="row default">' +
-				'<div class="col-md-12">' +
-					'<div class="input-box fixed">' +
-						'<div class="icon-box left">' +
-							'<input placeholder="Pencarian" tabindex="33" type="text" value="" />' +
-							'<span class="fa fa-search"></span>' +
-						'</div>' +
-					'</div>' +
-				'</div>' +
-			'</div>' +
-		'</div-->';
+			'</div-->';
+		}
 		
 		if(data != null && data[0].kelurahan != undefined){
 			counter = data[0].kelurahan.length;
@@ -571,18 +557,18 @@ function r_f4LingkupArea() {
 					part[3] = part[3] + 
 					'<div class="cards kelurahan-lis list-editt" id="' + loop + 'kelurahan-' + data[0].kelurahan[loop].idData + '">' +
 						'<div class="row default">' +
-							'<div class="col-xs-2">' +
+							'<div class="col-xs-3 col-sm-2">' +
 								'<div class="list-box">' +
 									'<div class="list-icon bg-green"><span class="fa fa-map-marker"></span></div>' +
 									'<p class="list-text">' + data[0].kelurahan[loop].noreg + '</p>' +
 								'</div>' +
 							'</div>' +
-							'<div class="col-xs-6">' +
+							'<div class="col-xs-5 col-sm-6">' +
 								'<div class="list-box clear">' +
 									'<p class="list-text">' + data[0].kelurahan[loop].caption + '</p>' +
 								'</div>' +
 							'</div>' +
-							'<div class="col-xs-4">' +
+							'<div class="col-xs-4 col-sm-4">' +
 								'<div class="list-box clear">' +
 									'<p class="list-text">' + data[0].kelurahan[loop].references + '</p>' +
 									'<div class="list-button click-option"' + 
@@ -2832,7 +2818,7 @@ function r_f4InfoPersonal() {
 		$("#preload").remove();
 		
 		//--command reactor
-		$("#pEditInformasiPersonal").unbind().on('click', function(){ r_navigateTo(453); });
+		$("#pEditInformasiPersonal").unbind().on('click', function(){ r_navigateTo(462); });
 		$(".back-button").unbind().on('click', function(){ r_navigateTo(4); });
 		toggleBoxActivator();
 		r_navbarReactor();
