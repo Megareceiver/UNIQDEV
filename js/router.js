@@ -155,7 +155,7 @@ function r_auth(index){
 		case 45 : 
 		case 451:
 		case 452:
-			res = (r_getCookie('konfigurasi') == '1') ? true : false;
+			res = (r_getCookie('konfigurasiLihat') == '1') ? true : false;
 		break;
 		
 		case 46 : 
