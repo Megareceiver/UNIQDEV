@@ -156,18 +156,15 @@ function r_f4LingkupArea() {
 		content = '';
 		counter = 0;
 		dataHead= [
-			{'idFilter': '1', 'area':'Provinsi', 'jumlahData': '4'},
-			{'idFilter': '2', 'area':'Wilayah', 'jumlahData': '2'},
-			{'idFilter': '3', 'area':'Kecamatan', 'jumlahData': '5'},
-			{'idFilter': '4', 'area':'Kelurahan', 'jumlahData': '6'},
+			{'idFilter': '1', 'area':'Provinsi',  'jumlahData': ''},
+			{'idFilter': '2', 'area':'Wilayah',   'jumlahData': ''},
+			{'idFilter': '3', 'area':'Kecamatan', 'jumlahData': ''},
+			{'idFilter': '4', 'area':'Kelurahan', 'jumlahData': ''},
 		];
 		
 		data = optionD; // updatting global variable
-		optionBatch = [
-			{'selector': 'edit-card', 			'icon': 'pencil', 'label': 'Ubah data'},
-			{'selector': 'delete-card', 		'icon': 'trash',  'label': 'Hapus data'},
-		]; 
-		
+
+		optionBatch = r_f4OptionList(411); 
 		
 		//--open
 		head = 
@@ -888,8 +885,14 @@ function r_f4BeritaGenerator(data){
 							'id 		= "'+data[loop].idBerita +'" '+
 							'title 		= "'+data[loop].judul +'" '+
 							'description= "'+data[loop].isiBerita+'" '+
-						'type="button" class="clear btn-link detail-click text-cyan">Baca lebih lanjut</button> | ' +
-						'<button id-button = '+data[loop].idBerita+' type="reset" class="clear btn-link text-pink">Hapus</button>' +
+						'type="button" class="clear btn-link detail-click text-cyan">Baca lebih lanjut</button>';
+
+			if(r_getCookie('beritaHapus') == '1'){			
+				genHtml = genHtml +
+				' | <button id-button = '+data[loop].idBerita+' type="reset" class="clear btn-link text-pink">Hapus</button>';
+			}
+
+			genHtml = genHtml +
 					'</div>' +
 				'</div>' +
 			'</div>';
@@ -1122,10 +1125,7 @@ function r_f4DaftarVerifikasi() {
 			{'noreg': '3', 'group': 'Verifikasi lapangan', 'caption': 'lorem dolor sit amet 4.'},
 		];
 		
-		optionBatch = [
-			{'selector': 'edit-card', 			'icon': 'pencil', 'label': 'Ubah data'},
-			{'selector': 'delete-card', 		'icon': 'trash',  'label': 'Hapus data'},
-		]; 
+		optionBatch = r_f4OptionList(421); 
 		
 		counter = 0;
 		data = p_getData('f4', 'f422', '');
@@ -1143,43 +1143,46 @@ function r_f4DaftarVerifikasi() {
 		//--open
 		head = '';
 		body = '<div class="row no-head"><div class="container"><div id="section-verifikasi" class="col-md-8 col-md-offset-2">';
-		body = body + 
-		'<form id="f-verifikasi-create" f-group = "f4" f-target = "f422">' +
-			'<div class="cards">' +
-				'<div class="cards-header">' +
-					'<h4>Verifikasi</h4>' +
-					'<p class="offset">form untuk menambahkan subjek verifikasi.</p>' +
-					'<div class="btn-collapse right">' +
-						'<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
-						'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
-					'</div>' +
-				'</div>' +
-			'</div>' +
-			'<div class="cards flush">' +
-				'<div class="row default">' +
-					'<div class="col-md-6">' +
-						'<div class="input-box">' +
-							'<input name="pId" tabindex="1" type="hidden" value="" />' +
-							'<input placeholder="verifikasi" name="nama" tabindex="2" type="text" value="" />' +
-						'</div>' +
-					'</div>' +
-					'<div class="col-md-6">' +
-						'<div class="select-box">' +
-							'<select tabindex="1" name="referensi">' +
-								'<option value="" selected>Grup verifikasi</option>' +
-								grupHtml +
-							'</select>' +
+
+		if(r_getCookie('pengaturanVerifikasiTambah') == '1' || r_getCookie('pengaturanVerifikasiUbah') == '1'){
+			body = body + 
+			'<form id="f-verifikasi-create" f-group = "f4" f-target = "f422">' +
+				'<div class="cards">' +
+					'<div class="cards-header">' +
+						'<h4>Verifikasi</h4>' +
+						'<p class="offset">form untuk menambahkan subjek verifikasi.</p>' +
+						'<div class="btn-collapse right">' +
+							'<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
+							'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
 						'</div>' +
 					'</div>' +
 				'</div>' +
-			'</div>' +
-		'</form>' +
-		'<div class="cards-label plus">' +
-			'<p>' +
-				'<strong>Daftar verifikasi (' + counter + ')</strong>' +
-			'</p>' +
-		'</div>';
-		
+				'<div class="cards flush">' +
+					'<div class="row default">' +
+						'<div class="col-md-6">' +
+							'<div class="input-box">' +
+								'<input name="pId" tabindex="1" type="hidden" value="" />' +
+								'<input placeholder="verifikasi" name="nama" tabindex="2" type="text" value="" />' +
+							'</div>' +
+						'</div>' +
+						'<div class="col-md-6">' +
+							'<div class="select-box">' +
+								'<select tabindex="1" name="referensi">' +
+									'<option value="" selected>Grup verifikasi</option>' +
+									grupHtml +
+								'</select>' +
+							'</div>' +
+						'</div>' +
+					'</div>' +
+				'</div>' +
+			'</form>' +
+			'<div class="cards-label plus">' +
+				'<p>' +
+					'<strong>Daftar verifikasi (' + counter + ')</strong>' +
+				'</p>' +
+			'</div>';
+		}
+			
 		if(counter > 0){
 			for(var loop = 0; loop < data.length; loop++){
 				body = body + 
@@ -1285,10 +1288,7 @@ function r_f4GrupVerifikasi() {
 			{'noreg': '3', 'caption': 'lorem dolor sit amet 4.'},
 		];
 		
-		optionBatch = [
-			{'selector': 'edit-card', 			'icon': 'pencil', 'label': 'Ubah data'},
-			{'selector': 'delete-card', 		'icon': 'trash',  'label': 'Hapus data'},
-		]; 
+		optionBatch = r_f4OptionList(421); 
 		
 		counter = 0;
 		data = p_getData('f4', 'f421', '');
@@ -1299,34 +1299,36 @@ function r_f4GrupVerifikasi() {
 		//--open
 		head = '';
 		body = '<div class="row no-head"><div class="container"><div id="section-grupVerifikasi" class="col-md-8 col-md-offset-2">';
-		body = body + 
-		'<form id="f-grupVerifikasi-create" f-group = "f4" f-target = "f421">' +
-			'<div class="cards">' +
-				'<div class="cards-header">' +
-					'<h4>Grup Verifikasi</h4>' +
-					'<p class="offset">form untuk menambahkan grup verifikasi.</p>' +
-					'<div class="btn-collapse right">' +
-						'<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
-						'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
-					'</div>' +
-				'</div>' +
-			'</div>' +
-			'<div class="cards flush">' +
-				'<div class="row default">' +
-					'<div class="col-md-12">' +
-						'<div class="input-box">' +
-							'<input name="pId" tabindex="1" type="hidden" value="" />' +
-							'<input placeholder="Grup verifikasi" name="nama" tabindex="1" type="text" value="" />' +
+		if(r_getCookie('pengaturanVerifikasiTambah') == '1' || r_getCookie('pengaturanVerifikasiUbah') == '1'){
+			body = body + 
+			'<form id="f-grupVerifikasi-create" f-group = "f4" f-target = "f421">' +
+				'<div class="cards">' +
+					'<div class="cards-header">' +
+						'<h4>Grup Verifikasi</h4>' +
+						'<p class="offset">form untuk menambahkan grup verifikasi.</p>' +
+						'<div class="btn-collapse right">' +
+							'<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
+							'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
 						'</div>' +
 					'</div>' +
 				'</div>' +
-			'</div>' +
-		'</form>' +
-		'<div class="cards-label plus">' +
-			'<p>' +
-				'<strong>Daftar grup (' + counter + ')</strong>' +
-			'</p>' +
-		'</div>';
+				'<div class="cards flush">' +
+					'<div class="row default">' +
+						'<div class="col-md-12">' +
+							'<div class="input-box">' +
+								'<input name="pId" tabindex="1" type="hidden" value="" />' +
+								'<input placeholder="Grup verifikasi" name="nama" tabindex="1" type="text" value="" />' +
+							'</div>' +
+						'</div>' +
+					'</div>' +
+				'</div>' +
+			'</form>' +
+			'<div class="cards-label plus">' +
+				'<p>' +
+					'<strong>Daftar grup (' + counter + ')</strong>' +
+				'</p>' +
+			'</div>';
+		}
 		
 		if(counter > 0){
 			for(var loop = 0; loop < data.length; loop++){
@@ -1548,16 +1550,8 @@ function r_f4BentukLembaga() {
 		body  	= '';
 		part	= ['','','',''];
 		content = '';
-		data    = [
-			{'noreg': '1', 'caption': 'Yayasan', 'description': 'lorem dolor sit amet 2.'},
-			{'noreg': '2', 'caption': 'Pondok Pesantren', 'description': 'lorem dolor sit amet 3.'},
-			{'noreg': '3', 'caption': 'RA', 'description': 'lorem dolor sit amet 4.'},
-		];
 		
-		optionBatch = [
-			{'selector': 'edit-card', 			'icon': 'pencil', 'label': 'Ubah data'},
-			{'selector': 'delete-card', 		'icon': 'trash',  'label': 'Hapus data'},
-		]; 
+		optionBatch = r_f4OptionList(431); 
 		
 		counter = 0;
 		data = p_getData('f4', 'f431', '');
@@ -1567,39 +1561,42 @@ function r_f4BentukLembaga() {
 		//--open
 		head = '';
 		body = '<div class="row no-head"><div class="container"><div id="section-bentukLembaga" class="col-md-8 col-md-offset-2">';
-		body = body + 
-		'<form id="f-bentukLembaga-create" f-group="f4" f-target="f431">' +
-			'<div class="cards">' +
-				'<div class="cards-header">' +
-					'<h4>Bentuk lembaga</h4>' +
-					'<p class="offset">form untuk menambahkan data bentuk lembaga.</p>' +
-					'<div class="btn-collapse right">' +
-						'<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
-						'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
-					'</div>' +
-				'</div>' +
-			'</div>' +
-			'<div class="cards flush">' +
-				'<div class="row default">' +
-					'<div class="col-md-12">' +
-						'<div class="input-box">' +
-							'<input name="pId" tabindex="1" type="hidden" value="" />' +
-							'<input placeholder="Bentuk lembaga" name="nama" tabindex="1" type="text" value="" />' +
-						'</div>' +
-					'</div>' +
-					'<div class="col-md-6">' +
-						'<div class="input-box rows-2">' +
-							'<textarea placeholder="Deskripsi" name="deskripsi" tabindex="2" class="rows-2"></textarea>' +
+
+		if(r_getCookie('pengaturanKelembagaanTambah') == '1' || r_getCookie('pengaturanKelembagaanUbah') == '1'){
+			body = body + 
+			'<form id="f-bentukLembaga-create" f-group="f4" f-target="f431">' +
+				'<div class="cards">' +
+					'<div class="cards-header">' +
+						'<h4>Bentuk lembaga</h4>' +
+						'<p class="offset">form untuk menambahkan data bentuk lembaga.</p>' +
+						'<div class="btn-collapse right">' +
+							'<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
+							'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
 						'</div>' +
 					'</div>' +
 				'</div>' +
-			'</div>' +
-		'</form>' +
-		'<div class="cards-label plus">' +
-			'<p>' +
-				'<strong>Daftar grup (' + counter + ')</strong>' +
-			'</p>' +
-		'</div>';
+				'<div class="cards flush">' +
+					'<div class="row default">' +
+						'<div class="col-md-12">' +
+							'<div class="input-box">' +
+								'<input name="pId" tabindex="1" type="hidden" value="" />' +
+								'<input placeholder="Bentuk lembaga" name="nama" tabindex="1" type="text" value="" />' +
+							'</div>' +
+						'</div>' +
+						'<div class="col-md-6">' +
+							'<div class="input-box rows-2">' +
+								'<textarea placeholder="Deskripsi" name="deskripsi" tabindex="2" class="rows-2"></textarea>' +
+							'</div>' +
+						'</div>' +
+					'</div>' +
+				'</div>' +
+			'</form>' +
+			'<div class="cards-label plus">' +
+				'<p>' +
+					'<strong>Daftar grup (' + counter + ')</strong>' +
+				'</p>' +
+			'</div>';
+		}
 		
 		if(counter > 0){
 			for(var loop = 0; loop < data.length; loop++){
@@ -1701,16 +1698,8 @@ function r_f4LegalitasLembaga() {
 		body  	= '';
 		part	= ['','','',''];
 		content = '';
-		data    = [
-			{'noreg': '1', 'group': 'Yayasan', 'caption': 'lorem dolor sit amet 2.'},
-			{'noreg': '2', 'group': 'Yayasan', 'caption': 'lorem dolor sit amet 3.'},
-			{'noreg': '3', 'group': 'Pondok Pesantren', 'caption': 'lorem dolor sit amet 4.'},
-		];
 		
-		optionBatch = [
-			{'selector': 'edit-card', 			'icon': 'pencil', 'label': 'Ubah data'},
-			{'selector': 'delete-card', 		'icon': 'trash',  'label': 'Hapus data'},
-		]; 
+		optionBatch = optionBatch = r_f4OptionList(432); 
 		
 		counter = 0;
 		data = p_getData('f4', 'f432', '');
@@ -1728,71 +1717,74 @@ function r_f4LegalitasLembaga() {
 		//--open
 		head = '';
 		body = '<div class="row no-head"><div class="container"><div id="section-legalitas" class="col-md-8 col-md-offset-2">';
-		body = body + 
-		'<form id="f-legalitas-create" f-group="f4" f-target="f432">' +
-			'<div class="cards">' +
-				'<div class="cards-header">' +
-					'<h4>Legalitas</h4>' +
-					'<p class="offset">form untuk menambahkan data legalitas berdasarkan bentuk lembaga.</p>' +
-					'<div class="btn-collapse right">' +
-						'<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
-						'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
-					'</div>' +
-				'</div>' +
-			'</div>' +
-			'<div class="cards flush">' +
-				'<div class="row default">' +
-					'<div class="col-md-8">' +
-						'<div class="input-box">' +
-							'<input tabindex="2" name="pId" type="hidden" value="" />' +
-							'<input placeholder="legalitas" name="nama" tabindex="2" type="text" value="" />' +
-						'</div>' +
-					'</div>' +
-					'<div class="col-md-4">' +
-						'<div class="select-box">' +
-							'<select tabindex="1" name="referensi">' +
-								'<option value="" selected>Bentuk lembaga</option>' +
-								grupHtml +
-							'</select>' +
+
+		if(r_getCookie('pengaturanKelembagaanTambah') == '1' || r_getCookie('pengaturanKelembagaanUbah') == '1'){
+			body = body + 
+			'<form id="f-legalitas-create" f-group="f4" f-target="f432">' +
+				'<div class="cards">' +
+					'<div class="cards-header">' +
+						'<h4>Legalitas</h4>' +
+						'<p class="offset">form untuk menambahkan data legalitas berdasarkan bentuk lembaga.</p>' +
+						'<div class="btn-collapse right">' +
+							'<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
+							'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
 						'</div>' +
 					'</div>' +
 				'</div>' +
-			'</div>' +
-		'</form>' +
-		'<div class="cards-label plus">' +
-			'<p>' +
-				'<strong>Daftar legalitas (' + counter + ')</strong>' +
-			'</p>' +
-		'</div>';
+				'<div class="cards flush">' +
+					'<div class="row default">' +
+						'<div class="col-md-8">' +
+							'<div class="input-box">' +
+								'<input tabindex="2" name="pId" type="hidden" value="" />' +
+								'<input placeholder="legalitas" name="nama" tabindex="2" type="text" value="" />' +
+							'</div>' +
+						'</div>' +
+						'<div class="col-md-4">' +
+							'<div class="select-box">' +
+								'<select tabindex="1" name="referensi">' +
+									'<option value="" selected>Bentuk lembaga</option>' +
+									grupHtml +
+								'</select>' +
+							'</div>' +
+						'</div>' +
+					'</div>' +
+				'</div>' +
+			'</form>' +
+			'<div class="cards-label plus">' +
+				'<p>' +
+					'<strong>Daftar legalitas (' + counter + ')</strong>' +
+				'</p>' +
+			'</div>';
+		}
 		
 		if(counter > 0){
 			for(var loop = 0; loop < data.length; loop++){
 				body = body + 
 				'<div class="cards legalitas-list" id="legalitas-' + data[loop].noreg + '">' +
-						'<div class="row default">' +
-							'<div class="col-xs-8">' +
-								'<div class="list-box">' +
-									'<div class="list-icon bg-red"><span class="fa fa-file-text-o"></span></div>' +
-									'<p class="list-text">' + data[loop].caption + '</p>' +
-								'</div>' +
+					'<div class="row default">' +
+						'<div class="col-xs-8">' +
+							'<div class="list-box">' +
+								'<div class="list-icon bg-red"><span class="fa fa-file-text-o"></span></div>' +
+								'<p class="list-text">' + data[loop].caption + '</p>' +
 							'</div>' +
-							'<div class="col-xs-4">' +
-								'<div class="list-box clear">' +
-									'<p class="list-text">' + data[loop].references + '</p>' +
-									'<div class="list-button click-option"' + 
-										'p-label		="' + data[loop].caption + '"' + 
-										'p-id			="' + data[loop].noreg + '"' +
-										'p-references	="' + data[loop].referencesKey + '"' +
-										'p-group		="f4"' + 
-										'p-target		="f432"' +
-										'p-container	="legalitas-' + data[loop].noreg + '">' +
-										'<span class="fa fa-ellipsis-v"></span>' +
-									'</div>' +
-								'</div>' +
-							'</div>' +
-							'<div class="clearfix"></div>' +
 						'</div>' +
-					'</div>';
+						'<div class="col-xs-4">' +
+							'<div class="list-box clear">' +
+								'<p class="list-text">' + data[loop].references + '</p>' +
+								'<div class="list-button click-option"' + 
+									'p-label		="' + data[loop].caption + '"' + 
+									'p-id			="' + data[loop].noreg + '"' +
+									'p-references	="' + data[loop].referencesKey + '"' +
+									'p-group		="f4"' + 
+									'p-target		="f432"' +
+									'p-container	="legalitas-' + data[loop].noreg + '">' +
+									'<span class="fa fa-ellipsis-v"></span>' +
+								'</div>' +
+							'</div>' +
+						'</div>' +
+						'<div class="clearfix"></div>' +
+					'</div>' +
+				'</div>';
 			}	
 		}else{
 			body = body + 
@@ -1864,16 +1856,8 @@ function r_f4BidangGerakLembaga() {
 		body  	= '';
 		part	= ['','','',''];
 		content = '';
-		data    = [
-			{'noreg': '1', 'group': 'Yayasan', 'caption': 'lorem dolor sit amet 2.'},
-			{'noreg': '2', 'group': 'Yayasan', 'caption': 'lorem dolor sit amet 3.'},
-			{'noreg': '3', 'group': 'Pondok Pesantren', 'caption': 'lorem dolor sit amet 4.'},
-		];
 		
-		optionBatch = [
-			{'selector': 'edit-card', 			'icon': 'pencil', 'label': 'Ubah data'},
-			{'selector': 'delete-card', 		'icon': 'trash',  'label': 'Hapus data'},
-		]; 
+		optionBatch = optionBatch = r_f4OptionList(432); ; 
 		
 		counter = 0;
 		data = p_getData('f4', 'f433', '');
@@ -1883,34 +1867,37 @@ function r_f4BidangGerakLembaga() {
 		//--open
 		head = '';
 		body = '<div class="row no-head"><div class="container"><div id="section-bidangGerak" class="col-md-8 col-md-offset-2">';
-		body = body + 
-		'<form id="f-bidangGerak-create" f-group="f4" f-target="f433">' +
-			'<div class="cards">' +
-				'<div class="cards-header">' +
-					'<h4>Bidang gerak lembaga</h4>' +
-					'<p class="offset">form untuk menambahkan data bidang gerak lembaga.</p>' +
-					'<div class="btn-collapse right">' +
-						'<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
-						'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
-					'</div>' +
-				'</div>' +
-			'</div>' +
-			'<div class="cards flush">' +
-				'<div class="row default">' +
-					'<div class="col-md-12">' +
-						'<div class="input-box">' +
-							'<input name="pId" tabindex="2" type="hidden" value="" />' +
-							'<input placeholder="Bidang gerak lembaga" name="nama" tabindex="2" type="text" value="" />' +
+
+		if(r_getCookie('pengaturanKelembagaanTambah') == '1' || r_getCookie('pengaturanKelembagaanUbah') == '1'){
+			body = body + 
+			'<form id="f-bidangGerak-create" f-group="f4" f-target="f433">' +
+				'<div class="cards">' +
+					'<div class="cards-header">' +
+						'<h4>Bidang gerak lembaga</h4>' +
+						'<p class="offset">form untuk menambahkan data bidang gerak lembaga.</p>' +
+						'<div class="btn-collapse right">' +
+							'<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
+							'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
 						'</div>' +
 					'</div>' +
 				'</div>' +
-			'</div>' +
-		'</form>' +
-		'<div class="cards-label plus">' +
-			'<p>' +
-				'<strong>Daftar bidang (' + counter + ')</strong>' +
-			'</p>' +
-		'</div>';
+				'<div class="cards flush">' +
+					'<div class="row default">' +
+						'<div class="col-md-12">' +
+							'<div class="input-box">' +
+								'<input name="pId" tabindex="2" type="hidden" value="" />' +
+								'<input placeholder="Bidang gerak lembaga" name="nama" tabindex="2" type="text" value="" />' +
+							'</div>' +
+						'</div>' +
+					'</div>' +
+				'</div>' +
+			'</form>' +
+			'<div class="cards-label plus">' +
+				'<p>' +
+					'<strong>Daftar bidang (' + counter + ')</strong>' +
+				'</p>' +
+			'</div>';
+		}
 		
 		if(counter > 0){
 			for(var loop = 0; loop < data.length; loop++){
@@ -2180,54 +2167,55 @@ function r_f4DaftarBerita() {
 		head	= '';
 		body	= '<div class="row no-head"><div class="container">';
 		body	= body + '<div class="col-md-8 col-md-offset-2">';
-		body 	= body + 
-		'<form id="f-berita-create" f-group = "f4" f-target = "f441">' +
-		'<div class="cards">' +
-			'<div class="cards-header">' +
-				'<h4>Berita</h4>' +
-				'<p class="offset">form untuk menambahkan berita.</p>' +
-				'<div class="btn-collapse right">' +
-					'<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
-					'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
+		if(r_getCookie('beritaTambah') == '1'){
+			body 	= body + 
+			'<form id="f-berita-create" f-group = "f4" f-target = "f441">' +
+				'<div class="cards">' +
+					'<div class="cards-header">' +
+						'<h4>Berita</h4>' +
+						'<p class="offset">form untuk menambahkan berita.</p>' +
+						'<div class="btn-collapse right">' +
+							'<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
+							'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
+						'</div>' +
+					'</div>' +
 				'</div>' +
-			'</div>' +
-		'</div>' +
-		'<div class="cards flush">' +
-			// '<form id="f-berita-create">' +
-				'<div class="row default">' +
-					'<div class="col-md-12">' +
-						'<div class="input-box">' +
-							'<input name="judul" placeholder="Judul berita (*)" tabindex="2" type="text" value="" />' +
+				'<div class="cards flush">' +
+					'<div class="row default">' +
+						'<div class="col-md-12">' +
+							'<div class="input-box">' +
+								'<input name="judul" placeholder="Judul berita (*)" tabindex="2" type="text" value="" />' +
+							'</div>' +
 						'</div>' +
-					'</div>' +
-					'<div class="col-md-12">' +
-						'<div class="input-box rows-4">' +
-							'<textarea name="isiBerita" placeholder="Isi berita (*)" tabindex="2" class="rows-4"></textarea>' +
+						'<div class="col-md-12">' +
+							'<div class="input-box rows-4">' +
+								'<textarea name="isiBerita" placeholder="Isi berita (*)" tabindex="2" class="rows-4"></textarea>' +
+							'</div>' +
 						'</div>' +
-					'</div>' +
-					'<div class="col-md-12">' +
-						// '<div class="empty-box"></div>' +
-						'<p>Sisipkan gambar pada berita.</p>' +
-						'<div class="input-box fixed">' +
-							'<div class="icon-box both">' +
-								'<label class="browser-box" id="gambar-berita">' +
-									'<p class="placeholder" name="imgName" id="berkas">berkas belum diunggah...</p>' +
-									'<input name="urlFile" type="file" tabindex="32" />' +
-								'</label>' +
-								'<button type="button" browser-id="gambar-berita" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
-								'<span class="left fa fa-paperclip text-purple"></span>' +
+						'<div class="col-md-12">' +
+							// '<div class="empty-box"></div>' +
+							'<p>Sisipkan gambar pada berita.</p>' +
+							'<div class="input-box fixed">' +
+								'<div class="icon-box both">' +
+									'<label class="browser-box" id="gambar-berita">' +
+										'<p class="placeholder" name="imgName" id="berkas">berkas belum diunggah...</p>' +
+										'<input name="urlFile" type="file" tabindex="32" />' +
+									'</label>' +
+									'<button type="button" browser-id="gambar-berita" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
+									'<span class="left fa fa-paperclip text-purple"></span>' +
+								'</div>' +
 							'</div>' +
 						'</div>' +
 					'</div>' +
 				'</div>' +
-			'</form>' +
-		'</div>';
+			'</form>';
+		}
 
 		//--render data
-			body = body +
-			'<div id="renderData">';
-		
-			body = body + '</div>';
+		body = body +
+		'<div id="renderData">';
+	
+		body = body + '</div>';
 		//--render data end
 		body	= body + '</div></div></div>';
 		content = '<section id="">' + head + body + '</section>';
@@ -2259,7 +2247,7 @@ function r_f4DaftarBerita() {
 				if(p_removeData('f4', 'f441', idBerita) == 'success'){
 					counter = counter -1;
 					$('#berita-'+idBerita).remove();
-					console.log(counter);
+					
 					if(counter == 0){
 						genHtml = genHtml +
 						'<div class="cards emptyList">' +
@@ -2625,39 +2613,37 @@ function r_f4GantiPassword() {
 		data    = [];
 		
 		//--open
-		head = '<div class="row no-head"><div class="container"><div class="col-md-8 col-md-offset-2">';
-		head = head +
-		'<div class="cards">' +
-			'<div class="cards-header">' +
-				'<h4>Ganti password</h4>' +
-				'<p class="offset">Demi privasi dan kenyamanan, anda dapat mengganti password akun anda.</p>' +
-				'<div class="btn-collapse right">' +
-					'<button class="clear" type="button"><span class="fa fa-check-circle-o"></span></button>' +
+		head = '';
+		
+		body = '<div class="row no-head"><div class="container"><div class="col-md-8 col-md-offset-2">';
+		body = body + 
+		'<form id="f-password-create" f-group="f3" f-target="f313">' +
+			'<div class="cards">' +
+				'<div class="cards-header">' +
+					'<h4>Ganti password</h4>' +
+					'<p class="offset">Demi privasi dan kenyamanan, anda dapat mengganti password akun anda.</p>' +
+					'<div class="btn-collapse right">' +
+						'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
+					'</div>' +
 				'</div>' +
 			'</div>' +
-		'</div>';
-		head = head + '</div></div></div>';
-		
-		body = '<div class="row"><div class="container"><div class="col-md-8 col-md-offset-2">';
-		body = body + 
-		'<div class="cards flush">' +
-			'<form id="f-password-create">' +
+			'<div class="cards">' +
 				'<div class="row default">' +
 					'<div class="col-md-6">' +
 						'<div class="input-box">' +
-							'<input placeholder="Password lama" tabindex="1" type="password" value="" />' +
+							'<input name="oldPassword" placeholder="Password lama" tabindex="1" type="password" value="" />' +
 						'</div>' +
 						'<div class="input-box">' +
-							'<input placeholder="Password baru" tabindex="1" type="password" value="" />' +
+							'<input name="newPassword" placeholder="Password baru" tabindex="1" type="password" value="" />' +
 						'</div>' +
 						'<div class="input-box">' +
-							'<input placeholder="Ketik ulang password" tabindex="1" type="password" value="" />' +
+							'<input name="rePassword" placeholder="Ketik ulang password" tabindex="1" type="password" value="" />' +
 						'</div>' +
 						'<div class="space-box"></div>' +
 					'</div>' +
 				'</div>' +
-			'</form>' +
-		'</div>';	
+			'</div>' +
+		'</form>';	
 		
 		body	= body + '</div></div></div>';
 		content = '<section id="">' + head + body + '</section>';
@@ -2671,6 +2657,9 @@ function r_f4GantiPassword() {
 		//--command reactor
 		$(".back-button").unbind().on('click', function(){ r_navigateTo(4); });
 		r_navbarReactor();
+
+		//form reactor
+		p_formHandler("f-password-create" , "updateData");
 	});
 }
 
@@ -2833,57 +2822,99 @@ function r_f4FormInfoPersonal() {
 		body  	= '';
 		part	= ['','','',''];
 		content = '';
-		data    = [];
+
+		data    = p_getData('f3', 'f3111');
+		data 	= data.feedData;
+		
+		//-- get data lingkup area
+		dataTemp 		  	= p_getData('f4', 'f401', '');
+		sourcesData 	  	= (dataTemp.feedData != null) ? dataTemp.feedData[0] : ""; 
+		sourcesDetailData 	= (dataTemp.feedData != null) ? dataTemp.feedDataDetail : "";
 		
 		//--open
-		head = '<div class="row head"><div class="container"><div class="col-md-8 col-md-offset-2">';
-		head = head +
-		'<div class="cards">' +
-			'<div class="cards-header">' +
-				'<p class="fixed offset">Form info personal</p>' +
-				'<div class="btn-collapse right">' +
-					'<button class="clear" type="button"><span class="fa fa-check-circle-o"></span></button>' +
-				'</div>' +
-			'</div>' +
-		'</div>';
-		head = head + '</div></div></div>';
+		head = '';
 		
-		body = '<div class="row"><div class="container"><div class="col-md-8 col-md-offset-2">';
+		body = '<div class="row no-head"><div class="container"><div class="col-md-8 col-md-offset-2">';
 		body = body + 
-		'<div class="cards">' +
-			'<div class="col-md-5">' +
-				'<img src="img/avatar/avatar-default-x3.jpg" class="big-pic" />' +
-				'<div class="input-box fixed">' +
-					'<div class="icon-box both">' +
-						'<label class="browser-box" id="import-data">' +
-							'<p class="placeholder">berkas belum diunggah...</p>' +
-							'<input type="file" tabindex="12" />' +
-						'</label>' +
-						'<button type="button" browser-id="import-data" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
-						'<span class="left fa fa-paperclip text-purple"></span>' +
+		'<form id="f-user-update" f-group="f3" f-target="f314">' +
+			'<div class="cards">' +
+				'<div class="cards-header">' +
+					'<p class="fixed offset">Form info personal</p>' +
+					'<div class="btn-collapse right">' +
+						'<button class="clear" type="submit"><span class="fa fa-check-circle-o"></span></button>' +
 					'</div>' +
 				'</div>' +
 			'</div>' +
-			'<div class="col-md-7">' +
-				'<div class="input-box">' +
-					'<input placeholder="Nama" tabindex="1" type="text" value="" />' +
+			'<div class="cards">' +
+				'<div class="col-sm-5">' +
+					'<div class="picture-box relative">' +
+						'<img viewer-id="v-user" class="pic-default pic-relative ' + ((data.urlGambar != null) ? 'changed' : '') + '" src="img/avatar/' + ((data.urlGambar != null) ? data.urlGambar : "img/sources/picture.png") + '" />' +
+					'</div>' +
+					'<div class="input-box">' +
+						'<div class="icon-box both">' +
+							'<label class="browser-box" id="v-user">' +
+								'<p class="placeholder" name="imageName">berkas belum diunggah...</p>' +
+								'<input preview-id="v-user" name="imageUrl" type="file" accept="image/*" tabindex="5" />' +
+								'<input browser-state="fileState" name="fileState" type="hidden" tabindex="1" value="add" />' +
+							'</label>' +
+							'<button type="button" browser-id="v-user" class="browser-clear clear"><i class="fa fa-times-circle"></i></button>' +
+							'<span class="left fa fa-paperclip text-purple"></span>' +
+						'</div>' +
+					'</div>' +
 				'</div>' +
-				'<div class="input-box">' +
-					'<input placeholder="Jabatan" tabindex="1" type="text" value="" />' +
+				'<div class="col-sm-7">' +
+					'<div class="input-box">' +
+						'<input name="nama" placeholder="Nama (*)" tabindex="1" type="text" value="' + data.nama + '" />' +
+					'</div>' +
+					'<div class="input-box">' +
+						'<input name="jabatan" placeholder="Jabatan" tabindex="1" type="text" value="' + data.jabatan + '" />' +
+					'</div>' +
+					'<div class="input-box rows-2">' +
+						'<textarea name="alamat" placeholder="Alamat" tabindex="1" class="rows-2">' + data.alamat + '</textarea>' +
+					'</div>' +
+					'<div class="input-box">' +
+						'<input name="rt" placeholder="RT" tabindex="1" class="half" type="text" value="' + data.noRt + '" />' +
+						'<input name="rw" placeholder="RW" tabindex="1" class="half" type="text" value="' + data.noRw + '" />' +
+					'</div>' +
+					'<div class="input-box">' +
+						'<div class="icon-box left">' +
+							'<input id="f111_lingkupArea" name="kelurahan" placeholder="Kelurahan" tabindex="1" type="text" value="' + data.namaKelurahan + '" />' +
+							'<input id="f111_lingkupArea_kode" name="kodeKelurahan" tabindex="1" type="hidden" value="' + data.kodeKelurahan + '" />' +
+							'<span class="fa fa-magic"></span>' +
+						'</div>' +
+					'</div>' +
+					'<div class="input-box">' +
+						'<div class="icon-box left">' +
+							'<input id="f111_lingkupArea_2" name="kecamatan" placeholder="Kecamatan" tabindex="1" type="text" value="' + data.namaKecamatan + '" readonly />' +
+							'<input id="f111_lingkupArea_kode2" name="kodeKecamatan" tabindex="1" type="hidden" value="' + data.kodeKecamatan + '" readonly />' +
+							'<span class="fa fa-repeat"></span>' +
+						'</div>' +
+					'</div>' +
+					'<div class="input-box">' +
+						'<div class="icon-box left">' +
+							'<input id="f111_lingkupArea_3" name="wilayah" placeholder="Wilayah" tabindex="1" type="text" value="' + data.namaWilayah + '" readonly />' +
+							'<input id="f111_lingkupArea_kode3" name="kodeWilayah" tabindex="1" type="hidden" value="' + data.kodeWilayah + '" readonly />' +
+							'<span class="fa fa-repeat"></span>' +
+						'</div>' +
+					'</div>' +
+					'<div class="input-box">' +
+						'<div class="icon-box left">' +
+							'<input id="f111_lingkupArea_4" name="provinsi" placeholder="Provinsi" tabindex="1" type="text" value="' + data.namaProvinsi + '" readonly />' +
+							'<input id="f111_lingkupArea_kode4" name="kodeProvinsi" tabindex="1" type="hidden" value="' + data.kodeProvinsi + '" readonly />' +
+							'<span class="fa fa-repeat"></span>' +
+						'</div>' +
+					'</div>' +
+					'<div class="input-box">' +
+						'<input name="telp" placeholder="Telp" tabindex="2" type="text" value="' + data.noTelp + '" />' +
+					'</div>' +
+					'<div class="input-box">' +
+						'<input name="email" placeholder="Email (*)" tabindex="2" type="text" value="' + data.email + '" />' +
+					'</div>' +
+					'<div class="empty-box"></div>' +
 				'</div>' +
-				'<div class="input-box rows-2">' +
-					'<textarea placeholder="Alamat" tabindex="2" class="rows-2"></textarea>' +
-				'</div>' +
-				'<div class="input-box">' +
-					'<input placeholder="Telp" tabindex="1" type="text" value="" />' +
-				'</div>' +
-				'<div class="input-box">' +
-					'<input placeholder="Email" tabindex="1" type="text" value="" />' +
-				'</div>' +
-				'<div class="empty-box"></div>' +
+				'<div class="clearfix"></div>' +
 			'</div>' +
-			'<div class="clearfix"></div>' +
-		'</div>';
+		'</form>';
 		
 		body	= body + '</div></div></div>';
 		content = '<section id="">' + head + body + '</section>';
@@ -2896,8 +2927,18 @@ function r_f4FormInfoPersonal() {
 		
 		//--command reactor
 		$(".back-button").unbind().on('click', function(){ r_navigateTo(46); });
+
+		//autocomplete
+		autoCompleteActivator("f111_lingkupArea", sourcesData, sourcesDetailData, "lingkupArea");
+
 		fileBrowserActivator();
+		imagePreviewActivator();
 		r_navbarReactor();
+
+		numberOnlyActivator("[name=telp], [name=rt], [name=rw]");
+
+		//form reactor
+		p_formHandler("f-user-update" , "updateData");
 	});
 }
 
@@ -2926,4 +2967,30 @@ function r_f4RemoveLingkupAreaArray(data, id){
 	}
 	
 	return false;
+}
+
+function r_f4OptionList(target){
+	var res = [];
+	switch(target){
+		case 41 :
+		case 411: 			
+			if(r_getCookie('lingkupAreaUbah') == '1'){ res.push({'selector': 'edit-card', 'icon': 'pencil', 'label': 'Ubah data'}); }
+			if(r_getCookie('lingkupAreaHapus') == '1'){ res.push({'selector': 'delete-card', 'icon': 'trash', 'label': 'Hapus data'}); }
+		break;
+
+		case 42 :
+		case 421: 
+			if(r_getCookie('pengaturanVerifikasiUbah') == '1'){ res.push({'selector': 'edit-card', 'icon': 'pencil', 'label': 'Ubah data'}); }
+			if(r_getCookie('pengaturanVerifikasiHapus') == '1'){ res.push({'selector': 'delete-card', 'icon': 'trash', 'label': 'Hapus data'}); }
+		break;
+		
+		case 43 : 
+		case 431:
+		case 432: 
+			if(r_getCookie('pengaturanKelembagaaUbah') == '1'){ res.push({'selector': 'edit-card', 'icon': 'pencil', 'label': 'Ubah data'}); }
+			if(r_getCookie('pengaturanKelembagaaHapus') == '1'){ res.push({'selector': 'delete-card', 'icon': 'trash', 'label': 'Hapus data'}); }
+		break;
+	}
+
+	return res;
 }

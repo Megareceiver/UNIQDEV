@@ -196,6 +196,8 @@ button.main:hover { background-color: #BF245A; color: #FFF !important }
 	background-color: rgba(0,0,0,0.1);
 }
 
+.picture-box.relative { height: auto }
+
 .picture-box.small { height: 150px }
 .picture-box img.pic-default {
 	position: absolute;
@@ -210,6 +212,10 @@ button.main:hover { background-color: #BF245A; color: #FFF !important }
 .picture-box img.pic-default.changed{
 	width: 100%;
 	height: 100%;
+}
+
+.picture-box img.pic-relative {
+	position: relative;
 }
 
 /* switch box */
@@ -1629,6 +1635,9 @@ footer.parent .author-box img { height: 30px; float: right }
 	/**/
 	#kelembagaan .filter-box .head { background-position-x: 0 }
 	
+	/**/
+	.option-pop, .option-layer { height: 100vh; }
+
 	/**/
 	.jumbotron-content h1 { font-size: 20px }
 	.jumbotron-content .logo-container { display: block; text-align: center; }

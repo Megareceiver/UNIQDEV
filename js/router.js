@@ -50,11 +50,10 @@ $(function(){
 
 /* navigation */
 function r_navigateTo(index, packet, access) {
-		syncnavClose(); /*-- syncnav js*/ 
-
+	syncnavClose(); /*-- syncnav js*/ 
+	
 	if(r_auth(index) == true){
 		r_pageClear(); /*-- clear frame on page */
-
 		switch(index){
 			case 0  : r_f0Dashboard(); 					break;
 			case 0.1: r_f0Bantuan(); 					break;
@@ -99,9 +98,9 @@ function r_navigateTo(index, packet, access) {
 		
 		if(packet != 'start' && index != r_pageReader()) /*--set page to static*/ r_pageSet(index);
 	}else{
-		showNotification('danger', 'failure', 'Akses tidak diberikan, hubungi administrator untuk lebih lanjut!');
+		if(packet != 'start') showNotification('danger', 'failure', 'Akses tidak diberikan, hubungi administrator untuk lebih lanjut!');
+		if(r_getCookie('login') != 'yes') { r_fHome(); }
 	}
-	
 }
 
 function r_auth(index){
@@ -110,7 +109,7 @@ function r_auth(index){
 	switch(index){
 		case 0  : 
 		case 0.1: 
-			res = (r_getCookie('beritaLihat') == '1') ? true : false;
+			res = (r_getCookie('login') == 'yes') ? true : false;
 		break;
 
 		case 1   : 
@@ -143,7 +142,7 @@ function r_auth(index){
 		case 43 : 
 		case 431:
 		case 432: 
-			res = (r_getCookie('pengaturanKelembagaaLihat') == '1') ? true : false;
+			res = (r_getCookie('pengaturanKelembagaanLihat') == '1') ? true : false;
 		break;
 		
 		case 44 : 
@@ -268,6 +267,12 @@ function r_customCallBack(formType, group, target, recentId, formId, pId){
 			switch(target){
 				case 'f31' :
 					r_navigateTo(3);
+				break;
+				case 'f313' :
+					clearTargetForm('f-password-create');
+				break;
+				case 'f314' :
+					$("#" + formId + " [name=imageName]").html(recentId);
 				break;
 			}
 		break;
@@ -403,7 +408,7 @@ function r_customCallBack(formType, group, target, recentId, formId, pId){
 					r_setCookie(accessList[look].module + 'Tambah',accessList[look].tambah,1);
 					r_setCookie(accessList[look].module + 'Ubah',  accessList[look].ubah,  1);
 					r_setCookie(accessList[look].module + 'Hapus', accessList[look].hapus, 1);
-				} console.log(recentId);
+				} 
 
 				moduleActive  = accessList;
 				moduleCounter = accessList.length;
@@ -635,7 +640,7 @@ function r_footPageHtml(type){
 /*F*/
 /*F1*/
 function r_fHome() {
-	$("body").prepend(preload);
+	//$("body").prepend(preload);
 	$('main.parent').animate({'opacity': '0.6'},'fast','linear', function(){
 		mainPage.html('');
 		head  	= '';
@@ -881,7 +886,7 @@ function r_fHome() {
 		$('body').addClass('clear');
 		headPage.html(r_headPageHtml('home', ''));
 		mainPage.html(content).animate({'opacity': '1'},'fast','linear');
-		$("#preload").remove();
+		//$("#preload").remove();
 		
 		//--command reactor
 		$(".go-login").unbind().on('click', function(){ r_navigateTo(99); });

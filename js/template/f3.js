@@ -290,7 +290,7 @@ function r_f3FormUser(packet) {
 			{
 				'module': 'lingkupArea', 'group': "Lingkup Area", "list": 
 				[
-					{"id": "lingkupArea-lihat", "state": "checked='checked'"},
+					{"id": "lingkupArea-lihat", "state": ""},
 					{"id": "lingkupArea-tambah", "state": ""},
 					{"id": "lingkupArea-ubah", "state": ""},
 					{"id": "lingkupArea-hapus", "state": ""},
@@ -299,7 +299,7 @@ function r_f3FormUser(packet) {
 			{
 				'module': 'pengaturanKelembagaan', 'group': "Pengaturan kelembagaan", "list": 
 				[
-					{"id": "pengaturanKelembagaan-lihat", "state": "checked='checked'"},
+					{"id": "pengaturanKelembagaan-lihat", "state": ""},
 					{"id": "pengaturanKelembagaan-tambah", "state": ""},
 					{"id": "pengaturanKelembagaan-ubah", "state": ""},
 					{"id": "pengaturanKelembagaan-hapus", "state": ""},
@@ -308,7 +308,7 @@ function r_f3FormUser(packet) {
 			{
 				'module': 'pengaturanVerifikasi', 'group': "Pengaturan verifikasi", "list": 
 				[
-					{"id": "pengaturanVerifikasi-lihat", "state": "checked='checked'"},
+					{"id": "pengaturanVerifikasi-lihat", "state": ""},
 					{"id": "pengaturanVerifikasi-tambah", "state": ""},
 					{"id": "pengaturanVerifikasi-ubah", "state": ""},
 					{"id": "pengaturanVerifikasi-hapus", "state": ""},
@@ -317,7 +317,7 @@ function r_f3FormUser(packet) {
 			{
 				'module': 'berita', 'group': "Berita", "list": 
 				[
-					{"id": "berita-lihat", "state": "checked='checked'"},
+					{"id": "berita-lihat", "state": ""},
 					{"id": "berita-tambah", "state": ""},
 					{"id": "berita-ubah", "state": ""},
 					{"id": "berita-hapus", "state": ""},
@@ -326,7 +326,7 @@ function r_f3FormUser(packet) {
 			{
 				'module': 'konfigurasi', 'group': "Konfigurasi & pemeliharaan aplikasi", "list": 
 				[
-					{"id": "konfigurasi-lihat", "state": "checked='checked'"},
+					{"id": "konfigurasi-lihat", "state": ""},
 					{"id": "konfigurasi-tambah", "state": ""},
 					{"id": "konfigurasi-ubah", "state": ""},
 					{"id": "konfigurasi-hapus", "state": ""},
