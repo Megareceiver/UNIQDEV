@@ -579,13 +579,13 @@
 					dplega_000_lembaga".$dumbTable." l
 				JOIN
 					dplega_200_bentuklembaga b ON l.kodeBentukLembaga = b.kodeBentukLembaga
-				JOIN
+				LEFT JOIN
 					dplega_100_provinsi p ON l.kodeProvinsi = p.idData
-				JOIN
+				LEFT JOIN
 					dplega_101_wilayah w ON l.kodeWilayah = w.idData
-				JOIN
+				LEFT JOIN
 					dplega_102_kecamatan kc ON l.kodeKecamatan = kc.idData
-				JOIN
+				LEFT JOIN
 					dplega_103_kelurahan kl ON l.kodeKelurahan = kl.idData
 				WHERE
 					l.noRegistrasi = '".$noreg."'
@@ -868,13 +868,13 @@
 						catatan
 					FROM
 						dplega_002_kepengurusan".$dumbTable." l
-					JOIN
+					LEFT JOIN
 						dplega_100_provinsi p ON l.kodeProvinsi = p.idData
-					JOIN
+					LEFT JOIN
 						dplega_101_wilayah w ON l.kodeWilayah = w.idData
-					JOIN
+					LEFT JOIN
 						dplega_102_kecamatan kc ON l.kodeKecamatan = kc.idData
-					JOIN
+					LEFT JOIN
 						dplega_103_kelurahan kl ON l.kodeKelurahan = kl.idData
 					WHERE
 					l.noRegistrasi = '".$noreg."'
@@ -895,7 +895,7 @@
 							array_push($items, array("label" => 'Jabatan lain', "text" => $row['jabatanLain'])); 
 							array_push($items, array("label" => 'Pendidikan', "text" => $row['pendidikan'])); 
 							array_push($items, array("label" => 'Kompetensi', "text" => $row['kompetensi'])); 
-							array_push($items, array("label" => 'Catatan', "text" => $row['catatanLain'])); 
+							array_push($items, array("label" => 'Catatan', "text" => $row['catatan'])); 
 						}
 					}else{
 						array_push($items, array("label" => 'Penanggung jawab', "text" => '')); 
@@ -944,7 +944,7 @@
 							array_push($items, array("label" => 'Detail usaha', "text" => $row['detailUsaha'])); 
 							array_push($items, array("label" => 'Jenis usaha', "text" => $row['jenisUsaha'])); 
 							array_push($items, array("label" => 'Jumlah pekerja', "text" => $row['jumlahPekerja'])); 
-							array_push($items, array("label" => 'Catatan', "text" => $row['catatanLain'])); 
+							array_push($items, array("label" => 'Catatan', "text" => $row['catatan'])); 
 						}
 					}else{
 						array_push($items, array("label" => 'Nama usaha', "text" => '')); 

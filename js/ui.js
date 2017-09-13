@@ -301,6 +301,7 @@ function showOptionConfirm(type){
 	switch(type){
 		case "delete": confirmText = "menghapus data"; break;
 		case "status": confirmText = "mengubah status"; break;
+		case "restore": confirmText = "melakukan restore"; break;
 	}
 	
 	optionHtml = '<div class="option-pop">';

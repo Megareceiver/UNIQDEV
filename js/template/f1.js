@@ -363,7 +363,7 @@ function r_f1DetailLembaga(packet) {
 		profile_look_set(packet);
 		
 		//data = p_getData('f1', 'f1111', '', '12121300001');
-		data = p_getData('f1', 'f1111', '', packet);
+		data = p_getData('f1', 'f1111', '', packet); console.log(packet);
 		data = data.feedData;
 		
 		//-- set option list on a session
@@ -380,152 +380,162 @@ function r_f1DetailLembaga(packet) {
 		part[1] = '<div class="col-md-9">';
 		
 		//--left
-		var temPic = "";
-		temPic = (data.profile[0].avatar != "") ? 'img/logo/' + data.profile[0].avatar : 'img/logo/avatar-5.jpg';
-		part[0] = part[0] +
-		'<div class="cards clear">' +
-			'<div class="cards-banner-blank long smalltron-ground">' +
-				'<div class="user-frame">' +
-					'<img src="' + temPic + '">' +
-					'<p class="caption">' +
-						'<span class="big">' + data.profile[0].nama + '</span>' +
-						'<span>Yayasan</span>' +
-					'</p>' +
-					'<button class="btn-option btn-default click-option" ' + 
-						'p-group		="f1"' + 
-						'p-target		="f111"' +
-						'p-id="' + data.profile[0].noreg + '" p-label="' + data.profile[0].nama + '"><i class="fa fa-ellipsis-h"></i></button>' +
+		if(data.profile[0] != null){
+			var temPic = "";
+			temPic = (data.profile[0].avatar != "") ? 'img/logo/' + data.profile[0].avatar : 'img/logo/avatar-5.jpg';
+			part[0] = part[0] +
+			'<div class="cards clear">' +
+				'<div class="cards-banner-blank long smalltron-ground">' +
+					'<div class="user-frame">' +
+						'<img src="' + temPic + '">' +
+						'<p class="caption">' +
+							'<span class="big">' + data.profile[0].nama + '</span>' +
+							'<span>Yayasan</span>' +
+						'</p>' +
+						'<button class="btn-option btn-default click-option" ' + 
+							'p-group		="f1"' + 
+							'p-target		="f111"' +
+							'p-id="' + data.profile[0].noreg + '" p-label="' + data.profile[0].nama + '"><i class="fa fa-ellipsis-h"></i></button>' +
+					'</div>' +
 				'</div>' +
 			'</div>' +
-		'</div>' +
-		'<div class="cards flush">' +
-			'<div class="desc-frame">' +
-				'<div class="desc-box flush">' +
-					'<p class="text-set">' + data.profile[0].catatan + '</p>' +
-				'</div>' +
-				'<div class="desc-box i-left">' +
-					'<div class="icon-set"><span class="fa fa-phone"></span></div>' +
-					'<p class="text-set">' + data.profile[0].telp + '</p>' +
-				'</div>' +
-				'<div class="desc-box i-left">' +
-					'<div class="icon-set"><span class="fa fa-envelope"></span></div>' +
-					'<p class="text-set">' + data.profile[0].email + '</p>' +
-				'</div>' +
-				'<div class="desc-box i-left">' +
-					'<div class="icon-set"><span class="fa fa-globe"></span></div>' +
-					'<p class="text-set">' + data.profile[0].sosialMedia + '</p>' +
-				'</div>' +
-				'<div class="desc-box i-left">' +
-					'<div class="icon-set"><span class="fa fa-map-marker"></span></div>' +
-					'<p class="text-set">' + data.profile[0].alamat + '</p>' +
-				'</div>' +
-				'<div class="desc-box i-left">' +
-					'<p class="text-set"><span class="text-cyan click" id="go-maps" m-lng="' + data.profile[0].langitude + '" m-lat="' + data.profile[0].latitude + '">Lihat maps</span></p>' +
-				'</div>' +
-			'</div>' +
-		'</div>';
-			
-		//--render data
-		for(var loop = 0; loop < data.detail.length; loop++){
-			//--right
-			if(data.detail[loop].group == 'card'){
-				part[1] = part[1] +
-				'<div class="cards">' +
-					'<div class="cards-header">' +
-						'<p class="fixed">' + data.detail[loop].groupName + '</p>' +
-						'<div class="btn-collapse right">' +
-							'<button class="toggle-click clear" toggle-target="' + data.detail[loop].groupId+ '-group" type="button"><span class="fa fa-chevron-down"></span></button>' +
-						'</div>' +
+			'<div class="cards flush">' +
+				'<div class="desc-frame">' +
+					'<div class="desc-box flush">' +
+						'<p class="text-set">' + data.profile[0].catatan + '</p>' +
 					'</div>' +
-				'</div>';
-				
-				var endLoopY = 0;
-				switch(data.detail[loop].type){
-					case 'table'		: part[1] = part[1] + '<div class="cards flush toggle-content ' + data.detail[loop].groupId + '-group">' + '<div class="desc-frame">';  endLoopY = data.detail[loop].items.length; break;
-					case 'list'			: part[1] = part[1] + '<div class="cards flush toggle-content ' + data.detail[loop].groupId + '-group">' + '<div class="row">'; endLoopY = data.detail[loop].items.length; break;
-					case 'table-list'	: part[1] = part[1] + '<div class="cards flush toggle-content ' + data.detail[loop].groupId + '-group">' + '<div class="row default">'; endLoopY = data.detail[loop].items[0].set.length;  break;
-				}
-				
-				
-				for(var loopY = 0; loopY < endLoopY; loopY++){	
-					switch(data.detail[loop].type){
-						case 'table'	:
-							part[1] = part[1] +
-							'<div class="desc-box">' +
-								'<div class="labels"><p class="text-set">' + data.detail[loop].items[loopY].label + '</p></div>' +
-								'<div class="divider"><p class="text-set">' + data.detail[loop].items[loopY].text + '</p></div>' +
-							'</div>';
-						break;
-						case 'list'	:
-							part[1] = part[1] +
-							'<div class="list-box">' +
-								'<div class="list-icon bg-' + data.detail[loop].items[loopY].color + '"><span class="fa fa-' + data.detail[loop].items[loopY].icon + '"></span></div>' +
-								'<p class="list-text">' + data.detail[loop].items[loopY].text + '</p>' +
-							'</div>';
-						break;
-						case 'table-list'	:
-								 if(data.detail[loop].items[0].set[loopY].size == "large") { part[1] = part[1] + '<div class="col-md-4">'; }
-							else if(data.detail[loop].items[0].set[loopY].size == "medium"){ part[1] = part[1] + '<div class="col-md-3">'; }
-							else if(data.detail[loop].items[0].set[loopY].size == "small") { part[1] = part[1] + '<div class="col-md-2">'; }
-							
-							var classAdd = "";
-							if(loopY > 0){ classAdd = "clear"; }
-							part[1] = part[1] +
-							'<div class="list-box ' + classAdd + '">';
-							
-							if(data.detail[loop].items[0].set[loopY].form == "text-icon"){ 
-								part[1] = part[1] +
-								'<div class="list-icon bg-' + data.detail[loop].items[0].set[loopY].color + '"><span class="fa fa-' + data.detail[loop].items[0].set[loopY].icon + '"></span></div>' +
-								'<p class="list-text"><strong>' + data.detail[loop].items[0].set[loopY].text + '</strong></p>';
-							}else if(data.detail[loop].items[0].set[loopY].form == "text"){
-								part[1] = part[1] +
-								'<p class="list-text">' + data.detail[loop].items[0].set[loopY].text + '</p>';
-							}else if(data.detail[loop].items[0].set[loopY].form == "button"){
-								part[1] = part[1] +
-								'<button type="button" class="clear list-text btn-link">' + data.detail[loop].items[0].set[loopY].text + '</button>';
-							}
-							
-							part[1] = part[1] + 
-								'</div>' +
-							'</div>';
-						break;
-					}
-				}
-				
-				part[1] = part[1] +
+					'<div class="desc-box i-left">' +
+						'<div class="icon-set"><span class="fa fa-phone"></span></div>' +
+						'<p class="text-set">' + data.profile[0].telp + '</p>' +
 					'</div>' +
-				'</div>';
-				
-			}else if(data.detail[loop].group == "img-viewer"){
-				part[1] = part[1] +
-				'<div class="cards-label plus">' +
-					'<p>' +
-						'<strong>' + data.detail[loop].groupName + ' (' + data.detail[loop].items.length + ')</strong>' +
-					'</p>' +
+					'<div class="desc-box i-left">' +
+						'<div class="icon-set"><span class="fa fa-envelope"></span></div>' +
+						'<p class="text-set">' + data.profile[0].email + '</p>' +
+					'</div>' +
+					'<div class="desc-box i-left">' +
+						'<div class="icon-set"><span class="fa fa-globe"></span></div>' +
+						'<p class="text-set">' + data.profile[0].sosialMedia + '</p>' +
+					'</div>' +
+					'<div class="desc-box i-left">' +
+						'<div class="icon-set"><span class="fa fa-map-marker"></span></div>' +
+						'<p class="text-set">' + data.profile[0].alamat + '</p>' +
+					'</div>' +
+					'<div class="desc-box i-left">' +
+						'<p class="text-set"><span class="text-cyan click" id="go-maps" m-lng="' + data.profile[0].langitude + '" m-lat="' + data.profile[0].latitude + '">Lihat maps</span></p>' +
+					'</div>' +
 				'</div>' +
-				'<div class="row default">';
-				for(var loopY = 0; loopY < data.detail[loop].items.length; loopY++){
-					var size = "";
-					if(
-						   data.detail[loop].items[loopY].picture != "saranaPrasarana/picture.png"
-						&& data.detail[loop].items[loopY].picture != "usaha/picture.png"){
-						size = "changed";
-					}	
-
+			'</div>';
+				
+			//--render data
+			for(var loop = 0; loop < data.detail.length; loop++){
+				//--right
+				if(data.detail[loop].group == 'card'){
 					part[1] = part[1] +
-					'<div class="col-md-3">' +
-						'<div class="tumb-cards">' +
-							'<div class="picture-box">' +
-								'<img class="pic-default ' + size + '" src="img/' + data.detail[loop].items[loopY].picture + '" />' +
-							'</div>' +
-							'<div class="desc-box">' +
-								'<p>' + data.detail[loop].items[loopY].desc + '</p>' +
+					'<div class="cards">' +
+						'<div class="cards-header">' +
+							'<p class="fixed">' + data.detail[loop].groupName + '</p>' +
+							'<div class="btn-collapse right">' +
+								'<button class="toggle-click clear" toggle-target="' + data.detail[loop].groupId+ '-group" type="button"><span class="fa fa-chevron-down"></span></button>' +
 							'</div>' +
 						'</div>' +
 					'</div>';
-				}
-				part[1] = part[1] + '</div>';
-			}	
+					
+					var endLoopY = 0;
+					switch(data.detail[loop].type){
+						case 'table'		: part[1] = part[1] + '<div class="cards flush toggle-content ' + data.detail[loop].groupId + '-group">' + '<div class="desc-frame">';  endLoopY = data.detail[loop].items.length; break;
+						case 'list'			: part[1] = part[1] + '<div class="cards flush toggle-content ' + data.detail[loop].groupId + '-group">' + '<div class="row">'; endLoopY = data.detail[loop].items.length; break;
+						case 'table-list'	: part[1] = part[1] + '<div class="cards flush toggle-content ' + data.detail[loop].groupId + '-group">' + '<div class="row default">'; endLoopY = data.detail[loop].items[0].set.length;  break;
+					}
+					
+					
+					for(var loopY = 0; loopY < endLoopY; loopY++){	
+						switch(data.detail[loop].type){
+							case 'table'	:
+								part[1] = part[1] +
+								'<div class="desc-box">' +
+									'<div class="labels"><p class="text-set">' + data.detail[loop].items[loopY].label + '</p></div>' +
+									'<div class="divider"><p class="text-set">' + data.detail[loop].items[loopY].text + '</p></div>' +
+								'</div>';
+							break;
+							case 'list'	:
+								part[1] = part[1] +
+								'<div class="list-box">' +
+									'<div class="list-icon bg-' + data.detail[loop].items[loopY].color + '"><span class="fa fa-' + data.detail[loop].items[loopY].icon + '"></span></div>' +
+									'<p class="list-text">' + data.detail[loop].items[loopY].text + '</p>' +
+								'</div>';
+							break;
+							case 'table-list'	:
+									 if(data.detail[loop].items[0].set[loopY].size == "large") { part[1] = part[1] + '<div class="col-md-4">'; }
+								else if(data.detail[loop].items[0].set[loopY].size == "medium"){ part[1] = part[1] + '<div class="col-md-3">'; }
+								else if(data.detail[loop].items[0].set[loopY].size == "small") { part[1] = part[1] + '<div class="col-md-2">'; }
+								
+								var classAdd = "";
+								if(loopY > 0){ classAdd = "clear"; }
+								part[1] = part[1] +
+								'<div class="list-box ' + classAdd + '">';
+								
+								if(data.detail[loop].items[0].set[loopY].form == "text-icon"){ 
+									part[1] = part[1] +
+									'<div class="list-icon bg-' + data.detail[loop].items[0].set[loopY].color + '"><span class="fa fa-' + data.detail[loop].items[0].set[loopY].icon + '"></span></div>' +
+									'<p class="list-text"><strong>' + data.detail[loop].items[0].set[loopY].text + '</strong></p>';
+								}else if(data.detail[loop].items[0].set[loopY].form == "text"){
+									part[1] = part[1] +
+									'<p class="list-text">' + data.detail[loop].items[0].set[loopY].text + '</p>';
+								}else if(data.detail[loop].items[0].set[loopY].form == "button"){
+									part[1] = part[1] +
+									'<button type="button" class="clear list-text btn-link">' + data.detail[loop].items[0].set[loopY].text + '</button>';
+								}
+								
+								part[1] = part[1] + 
+									'</div>' +
+								'</div>';
+							break;
+						}
+					}
+					
+					part[1] = part[1] +
+						'</div>' +
+					'</div>';
+					
+				}else if(data.detail[loop].group == "img-viewer"){
+					part[1] = part[1] +
+					'<div class="cards-label plus">' +
+						'<p>' +
+							'<strong>' + data.detail[loop].groupName + ' (' + data.detail[loop].items.length + ')</strong>' +
+						'</p>' +
+					'</div>' +
+					'<div class="row default">';
+					for(var loopY = 0; loopY < data.detail[loop].items.length; loopY++){
+						var size = "";
+						if(
+							   data.detail[loop].items[loopY].picture != "saranaPrasarana/picture.png"
+							&& data.detail[loop].items[loopY].picture != "usaha/picture.png"){
+							size = "changed";
+						}	
+
+						part[1] = part[1] +
+						'<div class="col-md-3">' +
+							'<div class="tumb-cards">' +
+								'<div class="picture-box">' +
+									'<img class="pic-default ' + size + '" src="img/' + data.detail[loop].items[loopY].picture + '" />' +
+								'</div>' +
+								'<div class="desc-box">' +
+									'<p>' + data.detail[loop].items[loopY].desc + '</p>' +
+								'</div>' +
+							'</div>' +
+						'</div>';
+					}
+					part[1] = part[1] + '</div>';
+				}	
+			}
+
+		}else{
+			part[1] = part[1] + 
+			'<div class="cards">' +
+				'<div class="cards-header">' +
+					'<p class="fixed offset text-black">Data tidak ditemukan.</p>' +
+				'</div>' +
+			'</div>';
 		}
 		
 		part[0] = part[0] + '</div>';

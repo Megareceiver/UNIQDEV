@@ -1,0 +1,909 @@
+DROP TABLE dplega_000_lembaga;
+
+CREATE TABLE `dplega_000_lembaga` (
+  `noRegistrasi` char(11) NOT NULL,
+  `nama` varchar(100) NOT NULL,
+  `alamat` varchar(100) DEFAULT NULL,
+  `noRt` varchar(3) DEFAULT NULL,
+  `noRw` varchar(3) DEFAULT NULL,
+  `kodeKelurahan` int(11) DEFAULT NULL,
+  `kodeKecamatan` int(11) DEFAULT NULL,
+  `kodeWilayah` int(11) DEFAULT NULL,
+  `kodeProvinsi` int(11) DEFAULT NULL,
+  `langitude` varchar(255) DEFAULT NULL,
+  `latitude` varchar(255) NOT NULL,
+  `noTelp` varchar(16) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `mediaSosial` varchar(100) DEFAULT NULL,
+  `kodeBentukLembaga` int(11) NOT NULL,
+  `kodeBidangGerak` int(11) DEFAULT NULL,
+  `jumlahPengurus` int(11) DEFAULT NULL,
+  `noNpwp` varchar(25) DEFAULT NULL,
+  `visiLembaga` text,
+  `misiLembaga` text,
+  `organisasiAfiliasi` varchar(100) DEFAULT NULL,
+  `catatanLain` text,
+  `statusAktif` char(1) NOT NULL DEFAULT '1' COMMENT '0 (dihapus), 1 (aktif), 2(perubahan)',
+  `urlGambarLogo` varchar(40) DEFAULT NULL,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`noRegistrasi`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+
+DROP TABLE dplega_000_lembaga_temp;
+
+CREATE TABLE `dplega_000_lembaga_temp` (
+  `noRegistrasi` char(11) NOT NULL,
+  `nama` varchar(100) NOT NULL,
+  `alamat` varchar(100) DEFAULT NULL,
+  `noRt` varchar(3) DEFAULT NULL,
+  `noRw` varchar(3) DEFAULT NULL,
+  `kodeKelurahan` int(11) DEFAULT NULL,
+  `kodeKecamatan` int(11) DEFAULT NULL,
+  `kodeWilayah` int(11) DEFAULT NULL,
+  `kodeProvinsi` int(11) DEFAULT NULL,
+  `langitude` varchar(255) DEFAULT NULL,
+  `latitude` varchar(255) NOT NULL,
+  `noTelp` varchar(16) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `mediaSosial` varchar(100) DEFAULT NULL,
+  `kodeBentukLembaga` int(11) NOT NULL,
+  `kodeBidangGerak` int(11) DEFAULT NULL,
+  `jumlahPengurus` int(11) DEFAULT NULL,
+  `noNpwp` varchar(25) DEFAULT NULL,
+  `visiLembaga` text,
+  `misiLembaga` text,
+  `organisasiAfiliasi` varchar(100) DEFAULT NULL,
+  `catatanLain` text,
+  `statusAktif` char(1) NOT NULL DEFAULT '1' COMMENT '0 (dihapus), 1 (aktif)',
+  `urlGambarLogo` varchar(40) DEFAULT NULL,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`noRegistrasi`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO dplega_000_lembaga_temp VALUES("00030200001","Jalasutra","asd","12","21","3","2","3","0","","","12345","ceceprohendi93@gmail.com","","11","0","0","","","","","","1","","TESTSESSION","2017-08-29 14:16:31","","0000-00-00 00:00:00");
+INSERT INTO dplega_000_lembaga_temp VALUES("00037300001","sukamanah","Tasikmalaya","02","02","5","73","3","0","","","085223388235","miftah_pitriyana@yahoo.com","","11","0","0","","","","","","1","","TESTSESSION","2017-08-29 14:18:36","","0000-00-00 00:00:00");
+INSERT INTO dplega_000_lembaga_temp VALUES("0077100001","Insan Madani","Purwakarta","12","21","16","1","77","0","","","0897678","insanmadani@gmail.com","www.insanimadani.com","9","0","10","","","","","","1","","TESTSESSION","2017-08-29 10:05:20","TESTSESSION","2017-08-29 10:45:48");
+INSERT INTO dplega_000_lembaga_temp VALUES("44330900001","c","sdfsdf","4","4","4","4","4","5","","","323","asdasd@asdad.com","","9","0","0","","","","","","1","","admin","2017-09-07 23:18:56","","0000-00-00 00:00:00");
+INSERT INTO dplega_000_lembaga_temp VALUES("55051177000","twerwer","fsdfsdf","3","4","3","1","2","1","","","123123","asdad@asdasd.com","","9","0","0","","","","","","1","","admin","2017-09-07 23:15:29","","0000-00-00 00:00:00");
+INSERT INTO dplega_000_lembaga_temp VALUES("55051177770","sdfsf","dfgdfgdfg","3","4","3","1","2","1","","","546456","asdasd@adad.com","","9","0","0","","","","","","1","","admin","2017-09-07 23:16:07","","0000-00-00 00:00:00");
+INSERT INTO dplega_000_lembaga_temp VALUES("55051177771","a","asdasd","3","4","3","1","2","1","","","23","sdfsdf@adasd.com","","9","0","0","","","","","","1","","admin","2017-09-07 23:17:25","","0000-00-00 00:00:00");
+INSERT INTO dplega_000_lembaga_temp VALUES("55051177772","b","werwer","4","4","3","1","2","1","","","3","asd@asdad.com","","9","0","0","","","","","","1","","admin","2017-09-07 23:18:29","","0000-00-00 00:00:00");
+
+
+
+DROP TABLE dplega_001_sejarah;
+
+CREATE TABLE `dplega_001_sejarah` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `noRegistrasi` char(11) NOT NULL,
+  `deskripsi` text,
+  `tanggalDidirikan` date DEFAULT NULL,
+  `kepemilikan` varchar(10) DEFAULT NULL COMMENT 'PRIBADI/KELUARGA/LEMBAGA',
+  `statusTanah` varchar(20) DEFAULT NULL COMMENT 'SEWA/HAK MILIK/HAK GUNA BANGUN/HAK GUNA PAKAI/WAKAF',
+  `statusSertifikasi` varchar(5) DEFAULT NULL COMMENT 'SUDAH/BELUM',
+  `luasTanah` int(11) DEFAULT NULL,
+  `satuanLuasTanah` varchar(20) DEFAULT NULL COMMENT 'METER PERSEGI/HEKTAR',
+  `luasBangunan` int(11) DEFAULT NULL,
+  `satuanLuasBangunan` varchar(20) DEFAULT NULL COMMENT 'METER PERSEGI/HEKTAR',
+  `kondisiBangunan` varchar(5) DEFAULT NULL COMMENT 'RUSAK/BAIK',
+  `JumlahBangunan` int(11) DEFAULT NULL,
+  `statusSarana` varchar(10) DEFAULT NULL COMMENT 'ADA/TIDAK ADA',
+  `statusStrukturKepengurusan` varchar(10) DEFAULT NULL COMMENT 'ADA/TIDAK ADA',
+  `urlGambarStrukturKepengurusan` varchar(40) DEFAULT NULL,
+  `bahasaPengantar` varchar(20) DEFAULT NULL,
+  `statusSensus` varchar(5) DEFAULT NULL COMMENT 'SUDAH/BELUM',
+  `statusBantuanPemerintah` varchar(5) DEFAULT NULL COMMENT 'SUDAH/BELUM',
+  `kondisiGeografis` varchar(15) DEFAULT NULL COMMENT 'PANTAI/DATARAN RENDAH/DATARAN TINGGI',
+  `potensiWilayah` varchar(25) DEFAULT NULL,
+  `jenisWilayah` varchar(25) DEFAULT NULL,
+  `catatanLain` text,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+
+DROP TABLE dplega_001_sejarah_temp;
+
+CREATE TABLE `dplega_001_sejarah_temp` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `noRegistrasi` char(11) NOT NULL,
+  `deskripsi` text,
+  `tanggalDidirikan` date DEFAULT NULL,
+  `kepemilikan` varchar(10) DEFAULT NULL COMMENT 'PRIBADI/KELUARGA/LEMBAGA',
+  `statusTanah` varchar(20) DEFAULT NULL COMMENT 'SEWA/HAK MILIK/HAK GUNA BANGUN/HAK GUNA PAKAI/WAKAF',
+  `statusSertifikasi` varchar(5) DEFAULT NULL COMMENT 'SUDAH/BELUM',
+  `luasTanah` int(11) DEFAULT NULL,
+  `satuanLuasTanah` varchar(20) DEFAULT NULL COMMENT 'METER PERSEGI/HEKTAR',
+  `luasBangunan` int(11) DEFAULT NULL,
+  `satuanLuasBangunan` varchar(20) DEFAULT NULL COMMENT 'METER PERSEGI/HEKTAR',
+  `kondisiBangunan` varchar(5) DEFAULT NULL COMMENT 'RUSAK/BAIK',
+  `JumlahBangunan` int(11) DEFAULT NULL,
+  `statusSarana` varchar(10) DEFAULT NULL COMMENT 'ADA/TIDAK ADA',
+  `statusStrukturKepengurusan` varchar(10) DEFAULT NULL COMMENT 'ADA/TIDAK ADA',
+  `urlGambarStrukturKepengurusan` varchar(40) DEFAULT NULL,
+  `bahasaPengantar` varchar(20) DEFAULT NULL,
+  `statusSensus` varchar(5) DEFAULT NULL COMMENT 'SUDAH/BELUM',
+  `statusBantuanPemerintah` varchar(5) DEFAULT NULL COMMENT 'SUDAH/BELUM',
+  `kondisiGeografis` varchar(15) DEFAULT NULL COMMENT 'PANTAI/DATARAN RENDAH/DATARAN TINGGI',
+  `potensiWilayah` varchar(25) DEFAULT NULL,
+  `jenisWilayah` varchar(25) DEFAULT NULL,
+  `catatanLain` text,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+INSERT INTO dplega_001_sejarah_temp VALUES("1","44330900001","asdasd","2017-09-07","","","Belum","0","","0","","Baik","0","Tidak ada","Tidak Ada","","","Belum","Belum","","","","","admin","2017-09-07 23:40:54","admin","2017-09-07 23:41:02");
+
+
+
+DROP TABLE dplega_002_kepengurusan;
+
+CREATE TABLE `dplega_002_kepengurusan` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `noRegistrasi` char(11) NOT NULL,
+  `penanggungJawab` varchar(100) DEFAULT NULL,
+  `jabatan` varchar(20) DEFAULT NULL,
+  `alamat` varchar(100) DEFAULT NULL,
+  `noRt` varchar(3) DEFAULT NULL,
+  `noRw` varchar(3) DEFAULT NULL,
+  `kodeKelurahan` int(11) DEFAULT NULL,
+  `kodeKecamatan` int(11) DEFAULT NULL,
+  `kodeWilayah` int(11) DEFAULT NULL,
+  `kodeProvinsi` int(11) DEFAULT NULL,
+  `noTelp` varchar(16) DEFAULT NULL,
+  `kewarganegaraan` char(3) DEFAULT NULL COMMENT 'WNI/WNA',
+  `tempatLahir` varchar(100) DEFAULT NULL,
+  `tanggalLahir` date DEFAULT NULL,
+  `jenisKelamin` char(1) DEFAULT NULL COMMENT 'L/P',
+  `agama` varchar(10) DEFAULT NULL COMMENT 'ISLAM/KRISTEN/HINDU/BUDHA/LAINNYA',
+  `jabatanLain` varchar(20) DEFAULT NULL,
+  `pendidikan` varchar(50) DEFAULT NULL,
+  `kompetensi` varchar(150) DEFAULT NULL,
+  `catatan` text,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+
+DROP TABLE dplega_002_kepengurusan_temp;
+
+CREATE TABLE `dplega_002_kepengurusan_temp` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `noRegistrasi` char(11) NOT NULL,
+  `penanggungJawab` varchar(100) DEFAULT NULL,
+  `jabatan` varchar(20) DEFAULT NULL,
+  `alamat` varchar(100) DEFAULT NULL,
+  `noRt` varchar(3) DEFAULT NULL,
+  `noRw` varchar(3) DEFAULT NULL,
+  `kodeKelurahan` int(11) DEFAULT NULL,
+  `kodeKecamatan` int(11) DEFAULT NULL,
+  `kodeWilayah` int(11) DEFAULT NULL,
+  `kodeProvinsi` int(11) DEFAULT NULL,
+  `noTelp` varchar(16) DEFAULT NULL,
+  `kewarganegaraan` char(3) DEFAULT NULL COMMENT 'WNI/WNA',
+  `tempatLahir` varchar(100) DEFAULT NULL,
+  `tanggalLahir` date DEFAULT NULL,
+  `jenisKelamin` char(1) DEFAULT NULL COMMENT 'L/P',
+  `agama` varchar(10) DEFAULT NULL COMMENT 'ISLAM/KRISTEN/HINDU/BUDHA/LAINNYA',
+  `jabatanLain` varchar(20) DEFAULT NULL,
+  `pendidikan` varchar(50) DEFAULT NULL,
+  `kompetensi` varchar(150) DEFAULT NULL,
+  `catatan` text,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+INSERT INTO dplega_002_kepengurusan_temp VALUES("1","44330900001","","","","","","4","4","4","5","","WNI","","0000-00-00","","","","","","","admin","2017-09-07 23:38:32","","0000-00-00 00:00:00");
+
+
+
+DROP TABLE dplega_003_usaha;
+
+CREATE TABLE `dplega_003_usaha` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `noRegistrasi` char(11) NOT NULL,
+  `namaUsaha` varchar(100) DEFAULT NULL,
+  `jenisUsaha` int(100) DEFAULT NULL,
+  `detailUsaha` text,
+  `jumlahPekerja` int(11) DEFAULT NULL,
+  `catatan` text,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+
+DROP TABLE dplega_003_usaha_temp;
+
+CREATE TABLE `dplega_003_usaha_temp` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `noRegistrasi` char(11) NOT NULL,
+  `namaUsaha` varchar(100) DEFAULT NULL,
+  `jenisUsaha` varchar(100) DEFAULT NULL,
+  `detailUsaha` text,
+  `jumlahPekerja` int(11) DEFAULT NULL,
+  `catatan` text,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+INSERT INTO dplega_003_usaha_temp VALUES("1","44330900001","asd","","","0","","admin","2017-09-07 23:42:50","","0000-00-00 00:00:00");
+
+
+
+DROP TABLE dplega_005_koleksi;
+
+CREATE TABLE `dplega_005_koleksi` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `noRegistrasi` char(11) NOT NULL,
+  `jenisKoleksi` varchar(15) NOT NULL COMMENT 'BUKU/KITAB',
+  `judulKoleksi` varchar(100) DEFAULT NULL,
+  `deskripsi` text,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+
+DROP TABLE dplega_005_koleksi_temp;
+
+CREATE TABLE `dplega_005_koleksi_temp` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `noRegistrasi` char(11) NOT NULL,
+  `jenisKoleksi` varchar(15) NOT NULL COMMENT 'BUKU/KITAB',
+  `judulKoleksi` varchar(100) DEFAULT NULL,
+  `deskripsi` text,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+
+DROP TABLE dplega_006_prestasi;
+
+CREATE TABLE `dplega_006_prestasi` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `noRegistrasi` char(11) NOT NULL,
+  `deskripsi` text NOT NULL,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+
+DROP TABLE dplega_006_prestasi_temp;
+
+CREATE TABLE `dplega_006_prestasi_temp` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `noRegistrasi` char(11) NOT NULL,
+  `deskripsi` text NOT NULL,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+
+DROP TABLE dplega_007_visualisasiusaha;
+
+CREATE TABLE `dplega_007_visualisasiusaha` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `noRegistrasi` char(11) NOT NULL,
+  `urlGambar` varchar(40) NOT NULL,
+  `deskripsi` text NOT NULL,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+
+DROP TABLE dplega_007_visualisasiusaha_temp;
+
+CREATE TABLE `dplega_007_visualisasiusaha_temp` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `noRegistrasi` char(11) NOT NULL,
+  `urlGambar` varchar(40) NOT NULL,
+  `deskripsi` text NOT NULL,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+
+DROP TABLE dplega_008_visualisasisarana;
+
+CREATE TABLE `dplega_008_visualisasisarana` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `noRegistrasi` char(11) NOT NULL,
+  `urlGambar` varchar(40) NOT NULL,
+  `deskripsi` text NOT NULL,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+
+DROP TABLE dplega_008_visualisasisarana_temp;
+
+CREATE TABLE `dplega_008_visualisasisarana_temp` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `noRegistrasi` char(11) NOT NULL,
+  `urlGambar` varchar(40) NOT NULL,
+  `deskripsi` text NOT NULL,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+
+DROP TABLE dplega_009_legalitas;
+
+CREATE TABLE `dplega_009_legalitas` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `noRegistrasi` char(11) NOT NULL,
+  `kodePersyaratan` char(5) NOT NULL,
+  `noLegalitas` varchar(20) NOT NULL,
+  `tanggalLegalitas` date NOT NULL,
+  `urlFile` varchar(40) NOT NULL,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+
+DROP TABLE dplega_009_legalitas_temp;
+
+CREATE TABLE `dplega_009_legalitas_temp` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `noRegistrasi` char(11) NOT NULL,
+  `kodePersyaratan` char(5) NOT NULL,
+  `noLegalitas` varchar(20) NOT NULL,
+  `tanggalLegalitas` date NOT NULL,
+  `urlFile` varchar(40) NOT NULL,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+
+DROP TABLE dplega_010_riwayatbantuan;
+
+CREATE TABLE `dplega_010_riwayatbantuan` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `noRegistrasi` char(11) NOT NULL,
+  `tahun` char(4) NOT NULL,
+  `dibantuOleh` varchar(100) NOT NULL,
+  `deskripsi` text NOT NULL,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+
+DROP TABLE dplega_010_riwayatbantuan_temp;
+
+CREATE TABLE `dplega_010_riwayatbantuan_temp` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `noRegistrasi` char(11) NOT NULL,
+  `tahun` char(4) NOT NULL,
+  `dibantuOleh` varchar(100) NOT NULL,
+  `deskripsi` text NOT NULL,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+
+DROP TABLE dplega_011_hirarkilembaga;
+
+CREATE TABLE `dplega_011_hirarkilembaga` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `noRegistrasi` char(11) NOT NULL,
+  `hirarki` char(1) NOT NULL COMMENT '0: parent; 1: child',
+  `noRegistrasiTarget` char(11) NOT NULL,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+
+DROP TABLE dplega_011_hirarkilembaga_temp;
+
+CREATE TABLE `dplega_011_hirarkilembaga_temp` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `noRegistrasi` char(11) NOT NULL,
+  `hirarki` char(1) NOT NULL COMMENT '0: parent; 1: child',
+  `noRegistrasiTarget` char(11) NOT NULL,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+
+INSERT INTO dplega_011_hirarkilembaga_temp VALUES("2","00037300001","0","00031000002","TESTSESSION","2017-08-29 14:18:51","","0000-00-00 00:00:00");
+INSERT INTO dplega_011_hirarkilembaga_temp VALUES("3","00037300001","1","0077100002","TESTSESSION","2017-08-29 14:19:24","","0000-00-00 00:00:00");
+
+
+
+DROP TABLE dplega_100_provinsi;
+
+CREATE TABLE `dplega_100_provinsi` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `kodeProvinsi` varchar(3) NOT NULL,
+  `namaProvinsi` varchar(100) NOT NULL,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+
+INSERT INTO dplega_100_provinsi VALUES("1","55","yeyedddd","TESTSESSION","0000-00-00 00:00:00","admin","2017-09-06 21:42:35");
+INSERT INTO dplega_100_provinsi VALUES("2","22","wawawa","admin","2017-09-06 19:56:17","admin","2017-09-06 21:56:09");
+INSERT INTO dplega_100_provinsi VALUES("5","44","coba 7","admin","2017-09-06 22:23:45","","0000-00-00 00:00:00");
+INSERT INTO dplega_100_provinsi VALUES("6","11","coba 11","admin","2017-09-06 22:25:09","","0000-00-00 00:00:00");
+
+
+
+DROP TABLE dplega_101_wilayah;
+
+CREATE TABLE `dplega_101_wilayah` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `kodeWilayah` varchar(3) NOT NULL,
+  `namaWilayah` varchar(100) NOT NULL,
+  `idProvinsi` int(11) NOT NULL,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+
+INSERT INTO dplega_101_wilayah VALUES("1","12","coba 1","2","admin","2017-09-06 19:56:49","admin","2017-09-06 21:56:33");
+INSERT INTO dplega_101_wilayah VALUES("2","05","coba 2","1","admin","2017-09-06 20:00:32","admin","2017-09-07 23:01:24");
+INSERT INTO dplega_101_wilayah VALUES("4","33","coba 8","5","admin","2017-09-06 22:24:02","","0000-00-00 00:00:00");
+INSERT INTO dplega_101_wilayah VALUES("5","21","coba 12","6","admin","2017-09-06 22:25:26","admin","2017-09-06 22:25:32");
+INSERT INTO dplega_101_wilayah VALUES("6","19","test","5","megan","2017-09-08 23:25:06","","0000-00-00 00:00:00");
+
+
+
+DROP TABLE dplega_102_kecamatan;
+
+CREATE TABLE `dplega_102_kecamatan` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `kodeKecamatan` varchar(3) NOT NULL,
+  `namaKecamatan` varchar(100) NOT NULL,
+  `idWilayah` int(11) NOT NULL,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+
+INSERT INTO dplega_102_kecamatan VALUES("1","11","coba 3","2","admin","2017-09-06 20:00:11","admin","2017-09-06 21:56:55");
+INSERT INTO dplega_102_kecamatan VALUES("2","23","coba 4","1","admin","2017-09-06 20:09:05","admin","2017-09-06 21:57:01");
+INSERT INTO dplega_102_kecamatan VALUES("4","09","coba 9","4","admin","2017-09-06 22:24:30","admin","2017-09-07 23:01:34");
+
+
+
+DROP TABLE dplega_103_kelurahan;
+
+CREATE TABLE `dplega_103_kelurahan` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `kodeKelurahan` varchar(3) NOT NULL,
+  `namaKelurahan` varchar(100) NOT NULL,
+  `idKecamatan` int(11) NOT NULL,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+
+INSERT INTO dplega_103_kelurahan VALUES("3","77","sdfsd","1","admin","2017-09-06 20:41:56","admin","2017-09-07 23:10:56");
+INSERT INTO dplega_103_kelurahan VALUES("4","00","coba 10","4","admin","2017-09-06 22:24:40","admin","2017-09-07 23:01:42");
+
+
+
+DROP TABLE dplega_200_bentuklembaga;
+
+CREATE TABLE `dplega_200_bentuklembaga` (
+  `kodeBentukLembaga` int(11) NOT NULL AUTO_INCREMENT,
+  `namaBentukLembaga` varchar(100) NOT NULL,
+  `deskripsi` text NOT NULL,
+  `urlGambar` varchar(40) DEFAULT NULL,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`kodeBentukLembaga`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
+
+INSERT INTO dplega_200_bentuklembaga VALUES("9","Yayasan","Suatu badan hukum yang mempunyai maksud dan tujuan bersifat sosial, keagamaan dan kemanusiaan, didirikan dengan memperhatikan persyaratan formal yang ditentukan dalam undang-undang.","icon-1.png","TESTSESSION","2017-08-24 12:21:33","","0000-00-00 00:00:00");
+INSERT INTO dplega_200_bentuklembaga VALUES("10","Perkumpulan","Suatu badan hukum yang merupakan kumpulan orang, didirikan untuk mewujudkan kesamaan maksud dan tujuan tertentu dibidang sosial, kegamaan, dan kemanusiaan dan tidak membagikan keuntungan kepada anggotanya.","icon-2.png","TESTSESSION","2017-08-24 12:22:10","","0000-00-00 00:00:00");
+INSERT INTO dplega_200_bentuklembaga VALUES("11","Pondok Pesantren","Sebuah pendidikan tradisional yang para siswanya tinggal bersama dan belajar dibawah bimbingan guru yang lebih dikenal dengan sebutan kiai dan mempunyai asrama untuk tempat menginap santri.","icon-3.png","TESTSESSION","2017-08-24 12:22:28","","0000-00-00 00:00:00");
+INSERT INTO dplega_200_bentuklembaga VALUES("12","Madrasah Ibtidaiyah","Jenjang paling dasar pada pendidikan formal di Indonesia, setara dengan Sekolah Dasar, yang pengelolaannya dilakukan oleh Kementrian Agama.","icon-4.png","TESTSESSION","2017-08-24 12:22:45","","0000-00-00 00:00:00");
+INSERT INTO dplega_200_bentuklembaga VALUES("13","Madrasah Tsanawiyah","Jenjang dasar pada pendidikan formal di Indonesia , setara dengan Sekolah Menengah Pertama, yang pengelolaannya dilakukan oleh Departemen Agama.","icon-5.png","TESTSESSION","2017-08-24 12:23:04","","0000-00-00 00:00:00");
+INSERT INTO dplega_200_bentuklembaga VALUES("14","Madrasah Aliyah","Jenjang pendidikan menengah pada pendidikan formal di Indonesia, setara dengan Sekolah Menengah Atas, yang pengelolaannya dilakukan oleh Kementrian Agama.","icon-6.png","TESTSESSION","2017-08-24 12:23:21","","0000-00-00 00:00:00");
+INSERT INTO dplega_200_bentuklembaga VALUES("15","Perguruan Tinggi","Satuan pendidikan penyelengara pendidikan tinggi. Peserta didik perguruan tinggi disebut Mahasiswa, sedangkan pendidik perguruan tinggi disebut Dosen.","icon-7.png","TESTSESSION","2017-08-24 12:24:58","","0000-00-00 00:00:00");
+INSERT INTO dplega_200_bentuklembaga VALUES("16","RA","Jenjang pendidikan anak usia dini (yakni usia 6 tahun atau dibawahnya) dalam bentuk pendidikan formal, dibawah Kementrian Agama.","icon-1.png","TESTSESSION","2017-08-24 12:25:15","","0000-00-00 00:00:00");
+INSERT INTO dplega_200_bentuklembaga VALUES("17","DKM","Kelompok Masyarakat\n","","TESTSESSION","2017-08-29 09:36:08","","0000-00-00 00:00:00");
+
+
+
+DROP TABLE dplega_201_persyaratan;
+
+CREATE TABLE `dplega_201_persyaratan` (
+  `kodePersyaratan` int(11) NOT NULL AUTO_INCREMENT,
+  `kodeBentukLembaga` int(11) NOT NULL,
+  `namaPersyaratan` varchar(100) NOT NULL,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changerdDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`kodePersyaratan`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
+
+INSERT INTO dplega_201_persyaratan VALUES("3","3","asdasdasdasd","TESTSESSION","2017-06-12 00:30:15","","0000-00-00 00:00:00");
+INSERT INTO dplega_201_persyaratan VALUES("4","2","ini legalitas","TESTSESSION","2017-08-16 12:04:20","","0000-00-00 00:00:00");
+INSERT INTO dplega_201_persyaratan VALUES("5","2","ini juga legalitas","TESTSESSION","2017-08-16 12:04:39","","0000-00-00 00:00:00");
+INSERT INTO dplega_201_persyaratan VALUES("6","8","c","TESTSESSION","2017-08-20 10:48:09","","0000-00-00 00:00:00");
+INSERT INTO dplega_201_persyaratan VALUES("9","9","Akta Notaris","TESTSESSION","2017-08-24 22:26:16","","0000-00-00 00:00:00");
+INSERT INTO dplega_201_persyaratan VALUES("10","9","SK Kemenhumkam","TESTSESSION","2017-08-24 22:26:30","","0000-00-00 00:00:00");
+INSERT INTO dplega_201_persyaratan VALUES("11","13","Ijin Operasional","TESTSESSION","2017-08-28 17:18:21","","0000-00-00 00:00:00");
+INSERT INTO dplega_201_persyaratan VALUES("12","11","Ijin Operasional","TESTSESSION","2017-08-29 09:34:25","","0000-00-00 00:00:00");
+INSERT INTO dplega_201_persyaratan VALUES("13","12","Ijin Operasional","TESTSESSION","2017-08-29 09:35:29","","0000-00-00 00:00:00");
+INSERT INTO dplega_201_persyaratan VALUES("14","17","Surat Keterangan Terdaftar","TESTSESSION","2017-08-29 09:36:35","","0000-00-00 00:00:00");
+
+
+
+DROP TABLE dplega_210_bidanggerak;
+
+CREATE TABLE `dplega_210_bidanggerak` (
+  `kodeBidangGerak` int(11) NOT NULL AUTO_INCREMENT,
+  `namaBidangGerak` varchar(100) NOT NULL,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`kodeBidangGerak`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+
+INSERT INTO dplega_210_bidanggerak VALUES("6","Kegamaan","TESTSESSION","2017-08-29 01:52:15","","0000-00-00 00:00:00");
+INSERT INTO dplega_210_bidanggerak VALUES("7","Pendidikan dan Keagamaan","TESTSESSION","2017-08-29 09:37:13","","0000-00-00 00:00:00");
+INSERT INTO dplega_210_bidanggerak VALUES("8","Sosial dan Keagamaan","TESTSESSION","2017-08-29 09:37:24","","0000-00-00 00:00:00");
+
+
+
+DROP TABLE dplega_220_grupverifikasi;
+
+CREATE TABLE `dplega_220_grupverifikasi` (
+  `kodeGrupVerifikasi` int(11) NOT NULL AUTO_INCREMENT,
+  `namaGrupVerifikasi` varchar(100) NOT NULL,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`kodeGrupVerifikasi`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=latin1;
+
+INSERT INTO dplega_220_grupverifikasi VALUES("7","Fisik","TESTSESSION","2017-08-25 03:58:43","","0000-00-00 00:00:00");
+INSERT INTO dplega_220_grupverifikasi VALUES("8","KOBONG","TESTSESSION","2017-08-25 03:58:54","","0000-00-00 00:00:00");
+
+
+
+DROP TABLE dplega_221_verifikasi;
+
+CREATE TABLE `dplega_221_verifikasi` (
+  `kodeVerifikasi` int(11) NOT NULL AUTO_INCREMENT,
+  `namaVerifikasi` varchar(100) NOT NULL,
+  `kodeGrupVerifikasi` int(11) NOT NULL,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`kodeVerifikasi`),
+  KEY `kodeGrupVerifikasi` (`kodeGrupVerifikasi`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+
+INSERT INTO dplega_221_verifikasi VALUES("4","Copy bukti kepemilikan atau Penguasaan atas tanah","7","TESTSESSION","2017-08-25 03:59:49","","0000-00-00 00:00:00");
+INSERT INTO dplega_221_verifikasi VALUES("5","Copy ijin operasional dari kemenag kab/kota","8","TESTSESSION","2017-08-25 04:00:37","","0000-00-00 00:00:00");
+
+
+
+DROP TABLE dplega_230_berita;
+
+CREATE TABLE `dplega_230_berita` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `judulBerita` varchar(100) NOT NULL,
+  `deskripsi` text NOT NULL,
+  `urlGambar` varchar(40) DEFAULT NULL,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+INSERT INTO dplega_230_berita VALUES("2","fsfsdf","sdfsf","","TESTSESSION","2017-08-31 16:31:28","","0000-00-00 00:00:00");
+
+
+
+DROP TABLE dplega_900_logactivities;
+
+CREATE TABLE `dplega_900_logactivities` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `activity` text NOT NULL,
+  `status` varchar(7) NOT NULL COMMENT 'SUCCESS/FAILED/PENDING',
+  `message` text NOT NULL,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+
+DROP TABLE dplega_900_logactivities_temp;
+
+CREATE TABLE `dplega_900_logactivities_temp` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `activity` text NOT NULL,
+  `status` varchar(7) NOT NULL COMMENT 'SUCCESS/FAILED/PENDING',
+  `message` text NOT NULL,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+
+DROP TABLE dplega_901_notifications;
+
+CREATE TABLE `dplega_901_notifications` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `deskripsi` text NOT NULL,
+  `waktu` datetime NOT NULL,
+  `targetUser` varchar(20) NOT NULL,
+  `readStatus` char(1) NOT NULL DEFAULT '0',
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+
+INSERT INTO dplega_901_notifications VALUES("1","Data jalasutra telah diubah oleh PAH","2017-08-29 14:14:40","","0","pah","2017-08-29 14:14:40","","0000-00-00 00:00:00");
+INSERT INTO dplega_901_notifications VALUES("2","Data jalasutra telah diubah oleh Administrator","2017-08-31 16:02:41","","0","admin","2017-08-31 16:02:41","","0000-00-00 00:00:00");
+INSERT INTO dplega_901_notifications VALUES("3","Data Test lagi telah diubah oleh Administrator","2017-09-07 23:03:35","","0","admin","2017-09-07 23:03:35","","0000-00-00 00:00:00");
+
+
+
+DROP TABLE dplega_910_user;
+
+CREATE TABLE `dplega_910_user` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `noRegistrasi` char(11) NOT NULL,
+  `nama` varchar(100) NOT NULL,
+  `jabatan` varchar(100) DEFAULT NULL,
+  `alamat` varchar(100) DEFAULT NULL,
+  `noRt` varchar(3) DEFAULT NULL,
+  `noRw` varchar(3) DEFAULT NULL,
+  `kodeKelurahan` int(11) DEFAULT NULL,
+  `kodeKecamatan` int(11) DEFAULT NULL,
+  `kodeWilayah` int(11) DEFAULT NULL,
+  `kodeProvinsi` int(11) DEFAULT NULL,
+  `noTelp` varchar(16) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `username` varchar(20) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `urlGambar` varchar(40) DEFAULT NULL,
+  `userLevel` int(11) NOT NULL,
+  `lingkupArea` char(1) NOT NULL,
+  `idBatasArea` int(11) NOT NULL,
+  `statusActive` int(11) NOT NULL,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`idData`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=latin1;
+
+INSERT INTO dplega_910_user VALUES("43","","Administrator","","\n","","","3","1","2","1","123123","admin@dplega.com","admin","21232f297a57a5a743894a0e4a801fc3","admin_avatar.jpg","7","","0","1","TESTSESSION","2017-08-28 16:08:25","admin","2017-09-11 18:44:03");
+INSERT INTO dplega_910_user VALUES("55","","PAH","Sekretaris","CImahi","12","1","16","1","77","0","","pah@gmail.com","pah","81dc9bdb52d04dc20036dbd8313ed055","","2","2","4","1","TESTSESSION","2017-08-29 09:25:58","admin","2017-09-08 19:03:21");
+INSERT INTO dplega_910_user VALUES("56","0077100001","Insan Madani","Penanggung jawab Lembaga","Purwakarta","12","21","16","1","77","0","0897678","insanmadani@gmail.com","0077100001","d58d1e8da2c4117f552c7e9cc89e1e22","","1","","0","1","TESTSESSION","2017-08-29 10:05:20","","0000-00-00 00:00:00");
+INSERT INTO dplega_910_user VALUES("60","00030200001","Jalasutra","Penanggung jawab Lembaga","asd","12","21","3","2","3","0","12345","ceceprohendi93@gmail.com","00030200001","d58d1e8da2c4117f552c7e9cc89e1e22","","1","","0","1","TESTSESSION","2017-08-29 14:16:31","","0000-00-00 00:00:00");
+INSERT INTO dplega_910_user VALUES("61","00037300001","sukamanah","Penanggung jawab Lembaga","Tasikmalaya","02","02","5","73","3","0","085223388235","miftah_pitriyana@yahoo.com","00037300001","d58d1e8da2c4117f552c7e9cc89e1e22","","1","","0","1","TESTSESSION","2017-08-29 14:18:36","","0000-00-00 00:00:00");
+INSERT INTO dplega_910_user VALUES("64","55051177000","twerwer","Penanggung jawab Lembaga","fsdfsdf","3","4","3","1","2","1","123123","asdad@asdasd.com","twerwer","d58d1e8da2c4117f552c7e9cc89e1e22","","1","","0","1","admin","2017-09-07 23:15:29","","0000-00-00 00:00:00");
+INSERT INTO dplega_910_user VALUES("65","55051177770","sdfsf","Penanggung jawab Lembaga","dfgdfgdfg","3","4","3","1","2","1","546456","asdasd@adad.com","sdfsf","d58d1e8da2c4117f552c7e9cc89e1e22","","1","","0","1","admin","2017-09-07 23:16:07","","0000-00-00 00:00:00");
+INSERT INTO dplega_910_user VALUES("66","55051177771","a","Penanggung jawab Lembaga","asdasd","3","4","3","1","2","1","23","sdfsdf@adasd.com","a","d41d8cd98f00b204e9800998ecf8427e","","1","3","5","1","admin","2017-09-07 23:17:25","admin","2017-09-08 16:29:47");
+INSERT INTO dplega_910_user VALUES("67","55051177772","b","Penanggung jawab Lembaga","werwer","4","4","3","1","2","1","3","asd@asdad.com","b","d58d1e8da2c4117f552c7e9cc89e1e22","","1","","0","1","admin","2017-09-07 23:18:29","","0000-00-00 00:00:00");
+INSERT INTO dplega_910_user VALUES("68","44330900001","c","Penanggung jawab Lembaga","sdfsdf","4","4","4","4","4","5","323","asdasd@asdad.com","c","d58d1e8da2c4117f552c7e9cc89e1e22","","1","","0","1","admin","2017-09-07 23:18:56","","0000-00-00 00:00:00");
+INSERT INTO dplega_910_user VALUES("69","","Megan","","","","","0","0","0","0","","asdasd@esdf.com","megan","81dc9bdb52d04dc20036dbd8313ed055","","3","1","1","1","admin","2017-09-08 16:11:55","admin","2017-09-11 12:09:48");
+
+
+
+DROP TABLE dplega_911_useraccess;
+
+CREATE TABLE `dplega_911_useraccess` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(20) NOT NULL,
+  `idApps` int(11) NOT NULL,
+  `module` varchar(100) NOT NULL,
+  `lihat` char(1) NOT NULL DEFAULT '0' COMMENT '0: non aktif; 1: aktif',
+  `tambah` char(1) NOT NULL DEFAULT '0' COMMENT '0: non aktif; 1: aktif',
+  `ubah` char(1) NOT NULL DEFAULT '0' COMMENT '0: non aktif; 1: aktif',
+  `hapus` char(1) NOT NULL DEFAULT '0' COMMENT '0: non aktif; 1: aktif',
+  `statusAktif` int(11) NOT NULL DEFAULT '1',
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB AUTO_INCREMENT=89 DEFAULT CHARSET=latin1;
+
+INSERT INTO dplega_911_useraccess VALUES("1","admin","1","kelembagaan","1","1","1","1","1","TESTSESSION","2017-08-28 16:08:25","","0000-00-00 00:00:00");
+INSERT INTO dplega_911_useraccess VALUES("2","admin","1","lingkupArea","1","1","1","1","1","TESTSESSION","2017-08-28 16:08:25","","0000-00-00 00:00:00");
+INSERT INTO dplega_911_useraccess VALUES("3","admin","1","pengaturanKelembagaan","1","1","1","1","1","TESTSESSION","2017-08-28 16:08:25","","0000-00-00 00:00:00");
+INSERT INTO dplega_911_useraccess VALUES("4","admin","1","pengaturanVerifikasi","1","1","1","1","1","TESTSESSION","2017-08-28 16:08:25","","0000-00-00 00:00:00");
+INSERT INTO dplega_911_useraccess VALUES("5","admin","1","berita","1","1","1","1","1","TESTSESSION","2017-08-28 16:08:25","","0000-00-00 00:00:00");
+INSERT INTO dplega_911_useraccess VALUES("6","admin","1","konfigurasi","1","1","1","1","1","TESTSESSION","2017-08-28 16:08:25","","0000-00-00 00:00:00");
+INSERT INTO dplega_911_useraccess VALUES("64","pah","1","kelembagaan","1","0","0","0","1","TESTSESSION","2017-08-29 09:25:58","admin","2017-09-08 19:03:21");
+INSERT INTO dplega_911_useraccess VALUES("65","pah","1","lingkupArea","1","0","0","0","1","TESTSESSION","2017-08-29 09:25:58","admin","2017-09-08 19:03:21");
+INSERT INTO dplega_911_useraccess VALUES("66","pah","1","pengaturanKelembagaan","1","0","0","0","1","TESTSESSION","2017-08-29 09:25:58","admin","2017-09-08 19:03:21");
+INSERT INTO dplega_911_useraccess VALUES("67","pah","1","pengaturanVerifikasi","1","0","0","0","1","TESTSESSION","2017-08-29 09:25:58","admin","2017-09-08 19:03:21");
+INSERT INTO dplega_911_useraccess VALUES("68","pah","1","berita","1","0","0","0","1","TESTSESSION","2017-08-29 09:25:58","admin","2017-09-08 19:03:21");
+INSERT INTO dplega_911_useraccess VALUES("69","pah","1","konfigurasi","1","0","0","0","1","TESTSESSION","2017-08-29 09:25:58","admin","2017-09-08 19:03:21");
+INSERT INTO dplega_911_useraccess VALUES("70","0077100001","1","kelembagaan","1","0","1","0","1","TESTSESSION","2017-08-29 10:05:20","","0000-00-00 00:00:00");
+INSERT INTO dplega_911_useraccess VALUES("74","00030200001","1","kelembagaan","1","0","1","0","1","TESTSESSION","2017-08-29 14:16:31","","0000-00-00 00:00:00");
+INSERT INTO dplega_911_useraccess VALUES("75","00037300001","1","kelembagaan","1","0","1","0","1","TESTSESSION","2017-08-29 14:18:36","","0000-00-00 00:00:00");
+INSERT INTO dplega_911_useraccess VALUES("78","twerwer","1","kelembagaan","1","0","1","0","1","TESTSESSION","2017-09-07 23:15:29","","0000-00-00 00:00:00");
+INSERT INTO dplega_911_useraccess VALUES("79","sdfsf","1","kelembagaan","1","0","1","0","1","TESTSESSION","2017-09-07 23:16:07","","0000-00-00 00:00:00");
+INSERT INTO dplega_911_useraccess VALUES("80","a","1","kelembagaan","1","0","1","0","1","TESTSESSION","2017-09-07 23:17:25","admin","2017-09-08 16:29:47");
+INSERT INTO dplega_911_useraccess VALUES("81","b","1","kelembagaan","1","0","1","0","1","TESTSESSION","2017-09-07 23:18:29","","0000-00-00 00:00:00");
+INSERT INTO dplega_911_useraccess VALUES("82","c","1","kelembagaan","1","0","1","0","1","TESTSESSION","2017-09-07 23:18:56","","0000-00-00 00:00:00");
+INSERT INTO dplega_911_useraccess VALUES("83","megan","1","kelembagaan","1","1","0","0","1","admin","2017-09-08 16:11:55","admin","2017-09-11 12:09:48");
+INSERT INTO dplega_911_useraccess VALUES("84","megan","1","lingkupArea","1","1","1","0","1","admin","2017-09-08 16:11:55","admin","2017-09-11 12:09:48");
+INSERT INTO dplega_911_useraccess VALUES("85","megan","1","pengaturanKelembagaan","1","0","0","0","1","admin","2017-09-08 16:11:55","admin","2017-09-11 12:09:48");
+INSERT INTO dplega_911_useraccess VALUES("86","megan","1","pengaturanVerifikasi","1","0","0","0","1","admin","2017-09-08 16:11:55","admin","2017-09-11 12:09:48");
+INSERT INTO dplega_911_useraccess VALUES("87","megan","1","berita","1","1","0","0","1","admin","2017-09-08 16:11:55","admin","2017-09-11 12:09:48");
+INSERT INTO dplega_911_useraccess VALUES("88","megan","1","konfigurasi","1","1","0","0","1","admin","2017-09-08 16:11:55","admin","2017-09-11 12:09:48");
+
+
+
+DROP TABLE dplega_912_apps;
+
+CREATE TABLE `dplega_912_apps` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `idApps` varchar(4) NOT NULL,
+  `appsName` varchar(100) NOT NULL,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+INSERT INTO dplega_912_apps VALUES("1","DPLG","Akses ke dplega 2.0","SESSION TEST","2017-08-25 03:06:12","","0000-00-00 00:00:00");
+
+
+
+DROP TABLE dplega_920_backuphistory;
+
+CREATE TABLE `dplega_920_backuphistory` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `namaFile` varchar(100) NOT NULL,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+
+INSERT INTO dplega_920_backuphistory VALUES("1","dplega_dumb_2017-09-12 145909.db","admin","2017-09-12 19:59:09","","0000-00-00 00:00:00");
+INSERT INTO dplega_920_backuphistory VALUES("2","dplega_dumb_2017-09-12 150257.db","admin","2017-09-12 20:02:57","","");
+
+
+
+DROP TABLE dplega_921_restorehistory;
+
+CREATE TABLE `dplega_921_restorehistory` (
+  `idData` int(11) NOT NULL AUTO_INCREMENT,
+  `namaFile` varchar(100) NOT NULL,
+  `createdBy` varchar(20) NOT NULL,
+  `createdDate` datetime NOT NULL,
+  `changedBy` varchar(20) DEFAULT NULL,
+  `changedDate` datetime DEFAULT NULL,
+  PRIMARY KEY (`idData`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+

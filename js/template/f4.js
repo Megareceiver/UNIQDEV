@@ -2433,66 +2433,65 @@ function r_f4BackupRestore() {
 		body  	= '';
 		part	= ['','','',''];
 		content = '';
-		data    = [
-			{'noreg': '1', 'date': '2017/05/01', 'importBy': 'admin', 'caption': 'lorem dolor sit amet 2.'},
-			{'noreg': '2', 'date': '2017/05/01', 'importBy': 'admin', 'caption': 'lorem dolor sit amet 3.'},
-			{'noreg': '3', 'date': '2017/05/01', 'importBy': 'admin', 'caption': 'lorem dolor sit amet 4.'},
-		];
-		
+		data    = p_getData('dumb', 'f451');
+		data 	= data.feedData;
+
 		//--open
 		head = '';
 		body = '<div class="row no-head"><div class="container"><div class="col-md-8 col-md-offset-2">';
 		body = body + 
-		'<div class="cards">' +
-			'<div class="cards-header">' +
-				'<h4>Backup & restore</h4>' +
-				'<p class="offset">Lakukan backup secara berkala untuk mencegah kehilangan data.</p>' +
-				'<div class="btn-collapse right">' +
-					'<button class="clear" type="button"><span class="fa fa-recycle"></span></button>' +
+		'<form id="f-bakcup-create" f-group="dumb" f-target="">' +
+			'<div class="cards">' +
+				'<div class="cards-header">' +
+					'<h4>Backup & restore</h4>' +
+					'<p class="offset">Lakukan backup secara berkala untuk mencegah kehilangan data.</p>' +
+					'<div class="btn-collapse right">' +
+						'<button class="clear" type="submit"><span class="fa fa-recycle"></span></button>' +
+					'</div>' +
+				'</div>' +
+			'</div>' +
+		'</form>' +
+		'<!--div class="cards flush">' +
+			'<div class="row default">' +
+				'<div class="col-md-12">' +
+					'<div class="input-box">' +
+						'<input placeholder="Ketik nama file" tabindex="1" type="text" value="" />' +
+					'</div>' +
 				'</div>' +
 			'</div>' +
 		'</div>' +
-		'<div class="cards flush">' +
-			'<form id="f-bakcup-create">' +
-				'<div class="row default">' +
-					'<div class="col-md-12">' +
-						'<div class="input-box">' +
-							'<input placeholder="Ketik nama file" tabindex="1" type="text" value="" />' +
-						'</div>' +
-					'</div>' +
-				'</div>' +
-			'</form>' +
-		'</div>' +
 		'<div class="cards-label plus">' +
 			'<p>' +
-				'<strong>File backup (' + data.length + ')</strong>' +
+				'<strong>File backup ()</strong>' +
 			'</p>' +
-		'</div>';
+		'</div-->';
 		
-		for(var loop = 0; loop < data.length; loop++){
-			body = body + 
-			'<div class="cards bakcup-list">' +
-				'<div class="row default">' +
-					'<div class="col-xs-6">' +
-						'<div class="list-box">' +
-							'<div class="list-icon bg-theme"><span class="fa fa-server"></span></div>' +
-							'<p class="list-text">' + data[loop].caption + '</p>' +
+		if(data != null){
+			for(var loop = 0; loop < data.length; loop++){
+				body = body + 
+				'<div class="cards bakcup-list">' +
+					'<div class="row default">' +
+						'<div class="col-xs-6">' +
+							'<div class="list-box">' +
+								'<div class="list-icon bg-theme"><span class="fa fa-server"></span></div>' +
+								'<p class="list-text">' + data[loop].caption + '</p>' +
+							'</div>' +
 						'</div>' +
-					'</div>' +
-					'<div class="col-xs-3">' +
-						'<div class="list-box clear">' +
-							'<p class="list-text">' + data[loop].importBy + '</p>' +
+						'<div class="col-xs-3">' +
+							'<div class="list-box clear">' +
+								'<p class="list-text">' + data[loop].createdBy + '</p>' +
+							'</div>' +
 						'</div>' +
-					'</div>' +
-					'<div class="col-xs-3">' +
-						'<div class="list-box clear">' +
-							'<p class="list-text">' + data[loop].date + '</p>' +
-							'<div class="list-remove" p-id="' + data[loop].noreg + '"><span class="fa fa-life-ring"></span></div>' +
+						'<div class="col-xs-3">' +
+							'<div class="list-box clear">' +
+								'<p class="list-text">' + timeSince(new Date(Date.parse(data[loop].createdDate))) + '</p>' +
+								'<div class="list-remove" p-id="' + data[loop].id + '" p-referencesKey="' + data[loop].caption + '"><span class="fa fa-life-ring"></span></div>' +
+							'</div>' +
 						'</div>' +
+						'<div class="clearfix"></div>' +
 					'</div>' +
-					'<div class="clearfix"></div>' +
-				'</div>' +
-			'</div>';
+				'</div>';
+			}	
 		}	
 		
 		body	= body + '</div></div></div>';
@@ -2507,6 +2506,20 @@ function r_f4BackupRestore() {
 		//--command reactor
 		$(".back-button").unbind().on('click', function(){ r_navigateTo(4); });
 		r_navbarReactor();
+
+		$('.list-remove').unbind().on("click", function(e){
+			clearPacket();
+			pId				= $(this).attr('p-id');
+			pReferencesKey	= $(this).attr('p-referencesKey');
+			showOptionConfirm('restore');
+			$(".option-yes").unbind().on("click", function(){ 
+				showNotification('info', 'waiting', 'sedang me-restore data...', false);
+				hideOptionList(); 
+				setTimeout(function(){ p_restore('dumb', '', pId, pReferencesKey); }, 1000); 
+			});
+		});
+
+		p_formHandler('f-bakcup-create', 'backup');
 	});
 }
 
