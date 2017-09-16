@@ -8,18 +8,6 @@ function r_f3Autentikasi() {
 		body  	= '';
 		part	= ['',''];
 		content = '';
-		data 	= [
-			{ 
-				'id':'3', 'nama': 'aa', 'noreg': '000', 'rule': 'Pengguna level 1',
-				'access': [
-					{ 'id': '1',  'label': 'Akses ke dplega 2.0', 	'type': 'parent', 'status': 'active' },
-					{ 'id': '2',  'label': 'Akses ke tabah 2.0', 	'type': 'parent', 'status': 'deadactive' },
-					{ 'id': '3',  'label': 'Akses ke fkpai online',  'type': 'parent', 'status': 'active' },
-				]
-			},
-		];
-
-
 		data = p_getData('f3', 'f31', '', '');
 		data = data.feedData;
 

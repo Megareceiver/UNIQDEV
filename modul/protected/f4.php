@@ -14,10 +14,6 @@
 		$errorMsg	= "";
 	
 		/* refferences */
-		// f411 : provinsi
-		// f412 : wilayah
-		// f413 : kecamatan
-		// f414 : kelurahan
 		
 		switch($target){
 			case "f40" : $resultList = getLingkupAreaSection(); break;
@@ -1379,10 +1375,6 @@
 		$errorMsg	= "";
 	
 		/* refferences */
-		// f41 : provinsi
-		// f42 : wilayah
-		// f43 : kecamatan
-		// f44 : kelurahan
 		
 		switch($target){
 			case "f411": $resultList = changeLingkupAreaSection($target, $data); break;

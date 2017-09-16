@@ -22,6 +22,10 @@ function init(){
 	//optionListActivator(); //option card lembaga
 	//toggleBoxActivator(); //toogle card lembaga
 	//datePickerActivator(); //datepicker
+
+	window.location.hash="?";
+	window.location.hash="#";//again because google chrome don't insert first hash into history
+	window.onhashchange=function(){window.location.hash="?";}
 }
 
 /* time converter */

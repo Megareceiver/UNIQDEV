@@ -92,7 +92,7 @@ function r_f4Pengaturan() {
 			'<div class="cards flush">' +
 				'<div class="group-box fixed">' +
 					'<div class="button-set">' +
-						'<div class="button-frame"><button type="button" class="btn-link" id="pImportData">Import data</button></div>' +
+						//'<div class="button-frame"><button type="button" class="btn-link" id="pImportData">Import data</button></div>' +
 						'<div class="button-frame"><button type="button" class="btn-link" id="pBackupRestore">Backup & restore</button></div>' +
 						'<div class="button-frame"><button type="button" class="btn-link" id="pSetelan">Setelan</button></div>' +
 					'</div>' +
@@ -937,13 +937,7 @@ function r_f4TransferLembaga() {
 		body  	= '';
 		part	= ['','','',''];
 		content = '';
-		data    = [
-			{'noreg': '1', 'group': 'Yayasan', 'caption': 'lorem dolor sit amet 2.'},
-			{'noreg': '2', 'group': 'Yayasan', 'caption': 'lorem dolor sit amet 3.'},
-			{'noreg': '3', 'group': 'Yayasan', 'caption': 'lorem dolor sit amet 4.'},
-		];
-
-		data = p_getData('f1','f11101'); console.log(data);
+		data = p_getData('f1', 'f1110', "", 'single,');
 		data = data.feedData;
 		
 		//--open
@@ -952,44 +946,46 @@ function r_f4TransferLembaga() {
 		body = body + 
 		'<div class="row default">' +
 			'<div class="col-md-4">' +
-				'<div class="cards">' +
-					'<div class="cards-header">' +
-						'<p class="fixed offset">Filter lembaga</p>' +
-						'<div class="btn-collapse right">' +
-							'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
-							'<button class="clear" type="button"><span class="fa fa-filter text-yellow"></span></button>' +
+				'<form id="f-filter-select">' +
+					'<div class="cards">' +
+						'<div class="cards-header">' +
+							'<p class="fixed offset">Filter lembaga</p>' +
+							'<div class="btn-collapse right">' +
+								'<button class="clear toggle-click" toggle-target="filter-option" type="button"><span class="fa fa-chevron-down"></span></button>' +
+								'<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
+								'<button class="clear" type="sumbit"><span class="fa fa-filter text-yellow"></span></button>' +
+							'</div>' +
 						'</div>' +
 					'</div>' +
-				'</div>' +
-				'<div class="cards flush">' +
-					'<form id="f-verifikasi-create">' +
+					'<div class="cards flush toggle-content filter-option">' +
 						'<div class="row default">' +
 							'<div class="col-md-12">' +
 								'<div class="select-box">' +
-									'<select tabindex="1">' +
+									'<select tabindex="1" id="filter-bentukLembaga">' +
 										'<option value="" selected>Bentuk lembaga</option>' +
+										r_optionDHtml('kelembagaan') +
 									'</select>' +
 								'</div>' +
 								'<div class="select-box">' +
-									'<select tabindex="1">' +
+									'<select tabindex="1" id="filter-provinsi">' +
 										'<option value="" selected>Provinsi</option>' +
 										r_optionDHtml('provinsi') +
 									'</select>' +
 								'</div>' +
 								'<div class="select-box">' +
-									'<select tabindex="1">' +
+									'<select tabindex="1" id="filter-wilayah">' +
 										'<option value="" selected>Wilayah</option>' +
 										r_optionDHtml('wilayah') +
 									'</select>' +
 								'</div>' +
 								'<div class="select-box">' +
-									'<select tabindex="1">' +
+									'<select tabindex="1" id="filter-kecamatan">' +
 										'<option value="" selected>Kecamatan</option>' +
 										r_optionDHtml('kecamatan') +
 									'</select>' +
 								'</div>' +
 								'<div class="select-box">' +
-									'<select tabindex="1">' +
+									'<select tabindex="1" id="filter-kelurahan">' +
 										'<option value="" selected>Kelurahan</option>' +
 										r_optionDHtml('kelurahan') +
 									'</select>' +
@@ -997,126 +993,143 @@ function r_f4TransferLembaga() {
 								'<div class="space-box"></div>' +
 							'</div>' +
 						'</div>' +
-					'</form>' +
-				'</div>' +
+					'</div>' +
+				'</form>' +
 			'<!--/div>' +
 			'<div class="col-md-6"-->' +
-				'<div class="cards">' +
-					'<div class="cards-header">' +
-						'<p class="fixed offset">Area transfer</p>' +
-						'<div class="btn-collapse right">' +
-							'<button class="clear" type="button"><span class="fa fa-refresh"></span></button>' +
-							'<button class="clear" type="button"><span class="fa fa-random text-purple"></span></button>' +
+				'<form id="f-transfer-create" f-group="f1" f-target="f123">' +
+					'<div class="cards">' +
+						'<div class="cards-header">' +
+							'<p class="fixed offset">Area transfer</p>' +
+							'<div class="btn-collapse right">' +
+								'<button class="clear" type="reset"><span class="fa fa-refresh"></span></button>' +
+								'<button class="clear" type="submit"><span class="fa fa-random text-purple"></span></button>' +
+							'</div>' +
 						'</div>' +
 					'</div>' +
-				'</div>' +
-				'<div class="cards">' +
-					'<div class="cards-header">' +
-						'<p class="fixed offset text-bold text-cyan">Lembaga terpilih</p>' +
-						'<div class="btn-collapse right">' +
-							'<span id="counter-select" class="text-bold">0</span>' +
+					'<div class="cards">' +
+						'<div class="cards-header">' +
+							'<p class="fixed offset text-bold text-cyan">Lembaga terpilih</p>' +
+							'<div class="btn-collapse right">' +
+								'<span id="counter-select" class="text-bold">0</span>' +
+							'</div>' +
 						'</div>' +
 					'</div>' +
-				'</div>' +
-				'<div class="cards flush">' +
-					'<form id="f-verifikasi-create">' +
+					'<div class="cards flush">' +
+						'<input type="hidden" name="noreg" />' +
 						'<div class="row default">' +
 							'<div class="col-md-12">' +
 								'<div class="select-box">' +
-									'<select tabindex="1">' +
-										'<option value="" selected>Provinsi</option>' +
+									'<select tabindex="1" name="kodeProvinsi">' +
+										'<option value="" selected>Provinsi (*)</option>' +
 										r_optionDHtml('provinsi') +
 									'</select>' +
 								'</div>' +
 								'<div class="select-box">' +
-									'<select tabindex="1">' +
-										'<option value="" selected>Wilayah</option>' +
+									'<select tabindex="1" name="kodeWilayah">' +
+										'<option value="" selected>Wilayah (*)</option>' +
 										r_optionDHtml('wilayah') +
 									'</select>' +
 								'</div>' +
 								'<div class="select-box">' +
-									'<select tabindex="1">' +
-										'<option value="" selected>Kecamatan</option>' +
+									'<select tabindex="1" name="kodeKecamatan">' +
+										'<option value="" selected>Kecamatan (*)</option>' +
 										r_optionDHtml('kecamatan') +
 									'</select>' +
 								'</div>' +
 								'<div class="select-box">' +
-									'<select tabindex="1">' +
-										'<option value="" selected>Kelurahan</option>' +
+									'<select tabindex="1" name="kodeKelurahan">' +
+										'<option value="" selected>Kelurahan (*)</option>' +
 										r_optionDHtml('kelurahan') +
 									'</select>' +
 								'</div>' +
 								'<div class="space-box"></div>' +
 							'</div>' +
 						'</div>' +
-					'</form>' +
-				'</div>' +
-			'</div>';
-		
-		body = body + '<div class="col-md-8">';
-		body = body + 
-		'<div class="cards-label plus">' +
-			'<p>' +
-				'<strong>Daftar lembaga (' + data.length + ')</strong>' +
-			'</p>' +
-		'</div>';
-		
-		var colorSet = 0;
-		var colorFill = "";
-		for(var loop = 0; loop < data.length; loop++){
-			colorSet = loop;
-			switch(colorSet){
-				case 0: colorFill = 'sky'; break;
-				case 1: colorFill = 'orange'; break;
-				case 2: colorFill = 'yellow'; break;
-				case 3: colorFill = 'green'; break;
-				case 4: colorFill = 'purple'; break;
-				case 5: colorFill = 'theme'; break;
-				case 6: colorFill = 'red'; break;
-				default: colorFill = 'green'; break;
-			}
-			body = body + 
-			'<div class="cards transfer-list">' +
-				'<div class="list-box">' +
-					'<div class="list-icon bg-' + colorFill + '"><span class="fa fa-sitemap"></span></div>' +
-					'<p class="list-text">' + data[loop].caption + '</p>' +
-					'<div class="check-box fixed-position right">' +
-					  '<input id="' + data[loop].noreg + '" class="select-button" type="checkbox">' +
-					  '<label for="' + data[loop].noreg + '"><span class="inner"></span><span class="icon"></span></label>' +
 					'</div>' +
-				'</div>' +
+				'</form>' +
 			'</div>';
-		}	
 		
+		body = body + '<div class="col-md-8" id="transfer-list">';
+		body = body + r_f1LembagaSelectionGenerator(data);	
 		body = body + '</div>';
 		
 		body = body + 
 			'<div class="clearfix"></div>' +
 		'</div>';
 		
-		
-		
 		body	= body + '</div></div></div>';
 		content = '<section id="">' + head + body + '</section>';
 		//--close
 		
 		//--gen
-		headPage.html(r_headPageHtml(3, 'Transfer lembaga'));
+		headPage.html(r_headPageHtml(4, 'Transfer lembaga'));
 		mainPage.html(content).animate({'opacity': '1'},'fast','linear');
 		$("#preload").remove();
 		
 		//--command reactor
 		$(".back-button").unbind().on('click', function(){ r_navigateTo(4); });
+		toggleBoxActivator();
 		r_navbarReactor();
 		
 		// --custom reactor
-		$(".select-button").on('click', function(){
-			if($(this).is(":checked")){
-				$('#counter-select').html(parseInt($('#counter-select').html()) + 1);
-			}else{
-				$('#counter-select').html(parseInt($('#counter-select').html()) - 1);
-			}
+		r_f4TransferLembagaEventActivator();
+
+
+		//search-box
+		searchBoxActivator();
+		$(".search-input").on('keyup', function(){ 
+			var kodeBentukLembagaState = $('#f-filter-select #filter-bentukLembaga').val();
+			var dataKey = p_getData('f1', 'f1110', $(this).val(), 
+						'multipart,' + kodeBentukLembagaState + ',' +
+						$('#f-filter-select #filter-provinsi').val()  + ',' + 
+						$('#f-filter-select #filter-wilayah').val()   + ',' + 
+						$('#f-filter-select #filter-kecamatan').val() + ',' + 
+						$('#f-filter-select #filter-kelurahan').val());
+				dataKey = dataKey.feedData;
+			$("#transfer-list").html('');
+			$("#transfer-list").html(r_f1LembagaSelectionGenerator(dataKey));
+			$('.select-button').prop('checked', false);
+			$('#counter-select').html(0);
+			clearTargetForm('f-transfer-create');
+			r_f4TransferLembagaEventActivator();
 		});
+
+		//filter activation
+		$('#f-filter-select').unbind().on('submit', function(e) {
+			e.preventDefault();
+			var kodeBentukLembagaState = $('#f-filter-select #filter-bentukLembaga').val();
+			var dataKey = p_getData('f1', 'f1110', $(".search-input").val(), 
+						'multipart,' + kodeBentukLembagaState + ',' +
+						$('#f-filter-select #filter-provinsi').val()  + ',' + 
+						$('#f-filter-select #filter-wilayah').val()   + ',' + 
+						$('#f-filter-select #filter-kecamatan').val() + ',' + 
+						$('#f-filter-select #filter-kelurahan').val());
+				dataKey = dataKey.feedData;
+			$("#transfer-list").html('');
+			$("#transfer-list").html(r_f1LembagaSelectionGenerator(dataKey));
+			$('.select-button').prop('checked', false);
+			$('#counter-select').html(0);
+			clearTargetForm('f-transfer-create');
+			r_f4TransferLembagaEventActivator();
+		});
+
+		/* form reactor */
+		p_formHandler('f-transfer-create', 'updateData');
+	});
+}
+
+function r_f4TransferLembagaEventActivator(){
+	customArray = [];
+	$(".select-button").on('click', function(){
+		if($(this).is(":checked")){
+			$('#counter-select').html(parseInt($('#counter-select').html()) + 1);
+			r_f4AddArrayList(customArray, $(this).attr('p-id'));
+		}else{
+			$('#counter-select').html(parseInt($('#counter-select').html()) - 1);
+			r_f4RemoveArrayList(customArray, $(this).attr('p-id'));
+		}
+		$('#f-transfer-create [name=noreg]').val(customArray.toString());
 	});
 }
 
@@ -3018,3 +3031,29 @@ function r_f4OptionList(target){
 
 	return res;
 }
+
+/**/
+function r_f4AddArrayList(data, dataAdd){
+	data.push(dataAdd); 
+	return false;
+}
+
+function r_f4ChangeArrayList(data, dataChange, id){
+	var indexArr = data.map(function(o){ return o;}).indexOf(id); 
+	if(indexArr >= 0) {
+		data[indexArr] = dataChange; 
+	}
+	
+	return false;
+}
+
+function r_f4RemoveArrayList(data, id){
+	var indexArr = data.map(function(o){ return o;}).indexOf(id); 
+	if(indexArr >= 0) {
+		data.splice(indexArr, 1); 
+	}
+	
+	return false;
+}
+
+

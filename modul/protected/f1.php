@@ -90,6 +90,7 @@
 			case "f114": $resultList = changeKepengurusanSection($target, $data); break;
 			case "f115": $resultList = changeKegiatanUsahaSection($target, $data); break;
 			case "f116": $resultList = changeVisualisasiUsahaSection($target, $data); break;
+			case "f123": $resultList = transferLembaga($target, $data); break;
 			default	   : $resultList = array( "feedStatus" => "failed", "feedType" => "danger", "feedMessage" => "Terjadi kesalahan fatal, proses dibatalkan!"); break;
 		}
 		
@@ -143,7 +144,8 @@
 		$errorType  = "";
 		$errorMsg	= "";
 		$dumb		= "";
-		$dumbQuery['keyword'] 	= ""; 
+		$dumbQuery['keyword'] 		= ""; 
+		$dumbQuery['refferences'] 	= ""; 
 		$dumbQuery['provinsi'] 	= ""; 
 		$dumbQuery['wilayah'] 	= ""; 
 		$dumbQuery['kecamatan'] = ""; 
@@ -151,7 +153,7 @@
 		$dumbFieldS	= "";
 		$dumbQueryS	= "";
 
-		//validation 
+		//Validation 
 		if(isset($data['refferences']) && $data['refferences'] != ""){	
 			/* open connection */ 
 			$gate = openGate();
@@ -205,17 +207,26 @@
 					";
 				}
 
+				if(isset($data['refferences']) && $data['refferences'] != ""){	
+					$dumbQuery['refferences'] = "AND l.kodeBentukLembaga = '".$data['refferences']."' ";
+				}
+
 				$sql = 	
 				"
 					SELECT * FROM (
 						SELECT  
-							'ajuan' as `group`,
+							'Ajuan' as `group`,
 							l.`noRegistrasi` as id,
 							l.`noRegistrasi` as noreg,
 							l.`nama` as nama,
 							l.`noTelp` as telp,
 							l.`email` as email,
 							`username` as username,
+							namaProvinsi as np,
+							namaWilayah as nw,
+							namaKecamatan as nc,
+							namaKelurahan as nk,
+							namaBentukLembaga as nb,
 							CONCAT_WS(' ', l.`alamat`, 'RT.',l.`noRt`, '/', 'RW.', l.`noRw`, `namaKelurahan`, `namaKecamatan`, `namaWilayah`, `namaProvinsi`) as alamat,
 							COALESCE(`urlGambarLogo`, '') as picture,
 							l.createdDate as sort
@@ -230,10 +241,12 @@
 						LEFT JOIN
 							dplega_103_kelurahan kl ON l.kodeKelurahan = kl.idData
 						JOIN
+							dplega_200_bentuklembaga bl ON l.kodeBentukLembaga = bl.kodeBentukLembaga
+						JOIN
 							dplega_910_user u ON l.noRegistrasi = u.noRegistrasi
 						WHERE 
-							l.kodeBentukLembaga = '".$data['refferences']."' 
-						AND l.statusAktif = '1'
+						l.statusAktif = '1'
+						".$dumbQuery['refferences']."
 						".$dumbQuery['keyword']."
 						".$dumbQuery['provinsi' ]."
 						".$dumbQuery['wilayah'  ]."
@@ -244,13 +257,18 @@
 					UNION
 					SELECT * FROM (
 						SELECT  
-							'perubahan' as `group`,
+							'Perubahan' as `group`,
 							l.`noRegistrasi` as id,
 							l.`noRegistrasi` as noreg,
 							l.`nama` as nama,
 							l.`noTelp` as telp,
 							l.`email` as email,
 							`username` as username,
+							namaProvinsi as np,
+							namaWilayah as nw,
+							namaKecamatan as nc,
+							namaKelurahan as nk,
+							namaBentukLembaga as nb,
 							CONCAT_WS(' ', l.`alamat`, 'RT.',l.`noRt`, '/', 'RW.', l.`noRw`, `namaKelurahan`, `namaKecamatan`, `namaWilayah`, `namaProvinsi`) as alamat,
 							COALESCE(`urlGambarLogo`, 'avatar-default.jpg') as picture,
 							l.createdDate as sort
@@ -265,10 +283,12 @@
 						LEFT JOIN
 							dplega_103_kelurahan kl ON l.kodeKelurahan = kl.idData
 						JOIN
+							dplega_200_bentuklembaga bl ON l.kodeBentukLembaga = bl.kodeBentukLembaga
+						JOIN
 							dplega_910_user u ON l.noRegistrasi = u.noRegistrasi
 						WHERE 
-							l.kodeBentukLembaga = '".$data['refferences']."' 
-						AND l.statusAktif = '2'
+						l.statusAktif = '2'
+						".$dumbQuery['refferences']."
 						".$dumbQuery['keyword']."
 						".$dumbQuery['provinsi' ]."
 						".$dumbQuery['wilayah'  ]."
@@ -279,13 +299,18 @@
 					UNION
 					SELECT * FROM (
 						SELECT  
-							'valid' as `group`,
+							'Valid' as `group`,
 							l.`noRegistrasi` as id,
 							l.`noRegistrasi` as noreg,
 							l.`nama` as nama,
 							l.`noTelp` as telp,
 							l.`email` as email,
 							`username` as username,
+							namaProvinsi as np,
+							namaWilayah as nw,
+							namaKecamatan as nc,
+							namaKelurahan as nk,
+							namaBentukLembaga as nb,
 							CONCAT_WS(' ', l.`alamat`, 'RT.',l.`noRt`, '/', 'RW.', l.`noRw`, `namaKelurahan`, `namaKecamatan`, `namaWilayah`, `namaProvinsi`) as alamat,
 							COALESCE(`urlGambarLogo`, 'avatar-default.jpg') as picture,
 							l.createdDate as sort
@@ -300,10 +325,12 @@
 						LEFT JOIN
 							dplega_103_kelurahan kl ON l.kodeKelurahan = kl.idData
 						JOIN
+							dplega_200_bentuklembaga bl ON l.kodeBentukLembaga = bl.kodeBentukLembaga
+						JOIN
 							dplega_910_user u ON l.noRegistrasi = u.noRegistrasi
 						WHERE 
-							l.kodeBentukLembaga = '".$data['refferences']."' 
-						AND l.statusAktif = '1'
+						l.statusAktif = '1'
+						".$dumbQuery['refferences']."
 						".$dumbQuery['keyword']."
 						".$dumbQuery['provinsi' ]."
 						".$dumbQuery['wilayah'  ]."
@@ -344,6 +371,11 @@
 										"telp" 		=> $row['telp'],
 										"email"		=> $row['email'],
 										"alamat"	=> $row['alamat'],
+										"np"		=> $row['np'],
+										"nw"		=> $row['nw'],
+										"nc"		=> $row['nc'],
+										"nk"		=> $row['nk'],
+										"nb"		=> $row['nb'],
 										"picture"	=> $row['picture']
 									);
 							
@@ -2097,7 +2129,7 @@
 		$idRecent	= "";
 		$idTemp		= "";
 		
-		/* validation */
+		/* Validation */
 		if( 
 			   $data['nama'] == ""
 			|| $data['alamat'] == ""
@@ -2215,11 +2247,11 @@
 
 					/*upload image*/
 					if(isset($_FILES["imageUrl"])){
-						$validextensions = array("jpeg", "jpg", "png", "gif");
+						$Validextensions = array("jpeg", "jpg", "png", "gif");
 						$temporary = explode(".", $_FILES["imageUrl"]["name"]);
 						$file_extension = end($temporary);
 						$file_name = "berkas belum diunggah...";					
-						if (in_array($file_extension, $validextensions)) {						
+						if (in_array($file_extension, $Validextensions)) {						
 							if ($_FILES["imageUrl"]["error"] > 0)
 							{
 								$upload_message = $_FILES["imageUrl"];
@@ -2396,7 +2428,7 @@
 		$nama 		= "";
 		$states		= "";
 
-		/* validation */
+		/* Validation */
 		if( 
 			   $data['noreg'] == ""
 			|| $data['nomorLegalitas'] == ""
@@ -2500,11 +2532,11 @@
 
 						}else{
 							/*upload image*/
-							$validextensions = array("jpeg", "jpg", "png", "gif");
+							$Validextensions = array("jpeg", "jpg", "png", "gif");
 							$temporary = explode(".", $_FILES["imageUrl"]["name"]);
 							$file_extension = end($temporary);
 							$file_name = "berkas belum diunggah...";			
-							if (in_array($file_extension, $validextensions)) {						
+							if (in_array($file_extension, $Validextensions)) {						
 								if ($_FILES["imageUrl"]["error"] > 0)
 								{
 									$upload_message = $_FILES["imageUrl"];
@@ -2533,7 +2565,7 @@
 						if(mysqli_num_rows($result) > 0) {
 							while($row = mysqli_fetch_assoc($result)) { $namaPersyaratan = $row['namaPersyaratan']; }
 						}
-						if (session_status() == PHP_SESSION_NONE) { session_start(); }
+						
 						$sql = 
 						"	INSERT INTO dplega_901_notifications
 							(
@@ -2830,7 +2862,7 @@
 		$noreg		= "";
 		$dumbTable  = "";
 		
-		/* validation */
+		/* Validation */
 		if( 
 			   $data['noreg'] == ""
 			|| $data['bantuanDari'] == ""
@@ -3030,11 +3062,11 @@
 
 					}else{
 					/*upload image*/
-						$validextensions = array("jpeg", "jpg", "png", "gif");
+						$Validextensions = array("jpeg", "jpg", "png", "gif");
 						$temporary = explode(".", $_FILES["imageUrl"]["name"]);
 						$file_extension = end($temporary);
 						$file_name = "berkas belum diunggah...";				
-						if (in_array($file_extension, $validextensions)) {						
+						if (in_array($file_extension, $Validextensions)) {						
 							if ($_FILES["imageUrl"]["error"] > 0)
 							{
 								$upload_message = $_FILES["imageUrl"];
@@ -3054,7 +3086,6 @@
 					}
 
 					/*add notif*/
-					if (session_status() == PHP_SESSION_NONE) { session_start(); }
 					$sql = 
 					"	INSERT INTO dplega_901_notifications
 						(
@@ -3125,7 +3156,7 @@
 		$dumbTable  = "";
 		$file_name  = "";
 		
-		/* validation */
+		/* Validation */
 		if(
 			!isset($data['noreg']) || $data['noreg']==""
 		){ $error = 1; }
@@ -3242,11 +3273,11 @@
 
 						}else{
 							/*upload image*/
-							$validextensions = array("jpeg", "jpg", "png", "gif");
+							$Validextensions = array("jpeg", "jpg", "png", "gif");
 							$temporary = explode(".", $_FILES["imageUrl"]["name"]);
 							$file_extension = end($temporary);
 							$file_name = "berkas belum diunggah...";				
-							if (in_array($file_extension, $validextensions)) {						
+							if (in_array($file_extension, $Validextensions)) {						
 								if ($_FILES["imageUrl"]["error"] > 0)
 								{
 									$upload_message = $_FILES["imageUrl"];
@@ -3321,7 +3352,7 @@
 		$dumbTable  = "";
 		$file_name  = "";
 		
-		/* validation */
+		/* Validation */
 		if(
 			!isset($data['noreg']) || $data['noreg']==""
 		){ $error = 1; }
@@ -3467,11 +3498,11 @@
 
 					}else{
 						/*upload image*/
-						$validextensions = array("jpeg", "jpg", "png", "gif");
+						$Validextensions = array("jpeg", "jpg", "png", "gif");
 						$temporary = explode(".", $_FILES["imageUrl"]["name"]);
 						$file_extension = end($temporary);
 						$file_name = "berkas belum diunggah...";					
-						if (in_array($file_extension, $validextensions)) {						
+						if (in_array($file_extension, $Validextensions)) {						
 							if ($_FILES["imageUrl"]["error"] > 0)
 							{
 								$upload_message = $_FILES["imageUrl"];
@@ -3546,7 +3577,7 @@
 		$dumbTable  = "";
 		$file_name  = "";
 		
-		/* validation */
+		/* Validation */
 		if(
 			!isset($data['noreg']) || $data['noreg']==""||
 			!isset($data['keterangan']) || $data['keterangan']==""
@@ -3618,11 +3649,11 @@
 
 					}else{
 						/*upload image*/
-						$validextensions = array("jpeg", "jpg", "png", "gif");
+						$Validextensions = array("jpeg", "jpg", "png", "gif");
 						$temporary = explode(".", $_FILES["imageUrl"]["name"]);
 						$file_extension = end($temporary);
 						$file_name = "berkas belum diunggah...";					
-						if (in_array($file_extension, $validextensions)) {						
+						if (in_array($file_extension, $Validextensions)) {						
 							if ($_FILES["imageUrl"]["error"] > 0)
 							{
 								$upload_message = $_FILES["imageUrl"];
@@ -3697,7 +3728,7 @@
 		$dumbTable  = "";
 		$file_name  = "";
 		
-		/* validation */
+		/* Validation */
 		if(
 			!isset($data['noreg']) || $data['noreg']=="" ||
 			!isset($data['keterangan']) || $data['keterangan']==""
@@ -3769,11 +3800,11 @@
 
 					}else{
 						/*upload image*/
-						$validextensions = array("jpeg", "jpg", "png", "gif");
+						$Validextensions = array("jpeg", "jpg", "png", "gif");
 						$temporary = explode(".", $_FILES["imageUrl"]["name"]);
 						$file_extension = end($temporary);
 						$file_name = "berkas belum diunggah...";				
-						if (in_array($file_extension, $validextensions)) {						
+						if (in_array($file_extension, $Validextensions)) {						
 							if ($_FILES["imageUrl"]["error"] > 0)
 							{
 								$upload_message = $_FILES["imageUrl"];
@@ -3830,6 +3861,130 @@
 		return $json;
 	}
 
+	function transferLembaga($target, $data){
+		/* initial condition */
+		$resultList = array();
+		$table 		= "";
+		$field 		= array();
+		$rows		= 0;
+		$condition 	= "";
+		$orderBy	= "";
+		$error		= 0;
+		$resultType = "";
+		$resultMsg	= "";
+		$counter	= "";
+		$idRecent	= "";
+		$idTemp		= "";
+		$noreg		= "";
+		$dumbTable  = "";
+		$regDumb  	= "";
+		
+		/* Validation */
+		if(!isset($data['noreg']) || $data['noreg']==""){ 
+			$error = 1; 
+			$resultType = "danger";
+			$resultMsg	= "Pilih lembaga yang akan di transfer !";
+		}
+
+		if(
+			   !isset($data['kodeProvinsi'])  || $data['kodeProvinsi'] =="" 
+			|| !isset($data['kodeWilayah'])   || $data['kodeWilayah']  =="" 
+			|| !isset($data['kodeKecamatan']) || $data['kodeKecamatan']=="" 
+			|| !isset($data['kodeKelurahan']) || $data['kodeKelurahan']=="" 
+		){ 
+			$error = 1; 
+			$resultType = "danger";
+			$resultMsg	= "Terjadi kesalahan, mandatory tidak boleh kosong!";
+		}
+
+		if($error != 1){
+			/* open connection */
+			$gate = openGate();
+			if($gate){
+				// connection = true
+				$sql ="
+					UPDATE dplega_000_lembaga_temp
+					SET
+						kodeProvinsi	= '".$data['kodeProvinsi']."',
+						kodeWilayah		= '".$data['kodeWilayah']."',
+						kodeKecamatan	= '".$data['kodeKecamatan']."',
+						kodeKelurahan	= '".$data['kodeKelurahan']."',
+						changedBy 		= '".$_SESSION['username']."',
+						changedDate		= NOW()
+					WHERE
+						noRegistrasi IN (";
+
+				$noreg  = explode(',', $data['noreg']);
+				$total  = count($noreg);
+				$counter= 1;
+				foreach ($noreg as $value) {
+					if($counter == $total) {
+						$regDumb = $regDumb.$value;
+						$sql = $sql."'".$value."'";
+					}else{  
+						$regDumb = $regDumb.$value.",";
+						$sql = $sql."'".$value."',";
+					}
+
+					$counter++;
+				}
+
+				$sql = $sql.")";
+
+				$result	  = mysqli_query($gate, $sql);
+				$eresult  = mysqli_error($gate);
+				if($result){	
+					$error	    = 0;
+					$resultType = "success";
+					$resultMsg  = "data lembaga berhasil ditransfer.";
+
+					/*add notif*/
+					$sql = 
+					"	INSERT INTO dplega_901_notifications
+						(
+							deskripsi,
+							waktu,
+							createdBy, createdDate
+						)
+						VALUES
+						(
+							'Data dengan no registrasi ".$regDumb." telah ditransfer oleh ".$_SESSION["nama"]."',
+							NOW(),
+							'".$_SESSION["username"]."',NOW()
+						)
+					";
+
+					$result	  = mysqli_query($gate, $sql);
+					/*end notif*/
+				}else{
+					//error state
+					$error		= 1;
+					$resultType = "danger";
+					$resultMsg	= "Terjadi kesalahan fatal, data gagal diubah! ".$sql;
+				}
+				
+				closeGate($gate);
+			}else{
+				//error state
+				$error		= 1;
+				$resultType = "danger";
+				$resultMsg	= "Terjadi kesalahan, tidak dapat terhubung ke server!";
+			}
+		}
+		
+		if($error == 1){
+			//error state
+			$resultList = array( "feedStatus" => "failed", "feedType" => $resultType, "feedMessage" => $resultMsg);
+		}else{
+			$resultList = array( "feedStatus" => "success", "feedType" => $resultType, "feedMessage" => $resultMsg, "feedId" => $regDumb);
+		}
+		
+		/* result fetch */
+		$json = $resultList;
+		
+		return $json;
+	}
+
 	function createSaranaSection($target, $data){
 		/* initial condition */
 		$resultList = array();
@@ -3848,7 +4003,7 @@
 		$noreg		= "";
 		$file_name	= "";
 		
-		/* validation */
+		/* Validation */
 		if(
 			!isset($data['keterangan']) || $data['keterangan']=="" ||
 			!isset($data['noreg']) || $data['noreg']==""
@@ -3900,11 +4055,11 @@
 						$resultType = "success";
 						$resultMsg  = "Input berhasil disimpan.";
 						/*upload image*/
-							$validextensions = array("jpeg", "jpg", "png", "gif");
+							$Validextensions = array("jpeg", "jpg", "png", "gif");
 							$temporary = explode(".", $_FILES["imageUrl"]["name"]);
 							$file_extension = end($temporary);
 							$file_name = "berkas belum diunggah...";				
-							if (in_array($file_extension, $validextensions)) {						
+							if (in_array($file_extension, $Validextensions)) {						
 								if ($_FILES["imageUrl"]["error"] > 0)
 								{
 									$upload_message = $_FILES["imageUrl"];
@@ -3981,7 +4136,7 @@
 		$dumbTable  = "";
 		$noreg		= "";
 		
-		/* validation */
+		/* Validation */
 		if(
 			!isset($data['noreg']) || $data['noreg']==""
 		){ $error = 1; }
@@ -4121,7 +4276,7 @@
 		$dumbTable  = "";
 		$noreg		= "";
 		
-		/* validation */
+		/* Validation */
 		if(
 			!isset($data['noreg']) || $data['noreg']==""
 		){ $error = 1; }
@@ -4294,7 +4449,7 @@
 		$dumbTable  = "";
 		$noreg		= "";
 		
-		/* validation */
+		/* Validation */
 		if(
 			!isset($data['noreg']) || $data['noreg']==""
 		){ $error = 1; }
@@ -4409,7 +4564,7 @@
 		$dumbTable  = "";
 		$noreg		= "";
 		
-		/* validation */
+		/* Validation */
 		if(
 			!isset($data['noreg']) || $data['noreg']==""
 		){ $error = 1; }
@@ -4542,7 +4697,7 @@
 		$noreg		= "";
 		$file_name	= "";
 		
-		/* validation */
+		/* Validation */
 		if(
 			!isset($data['keterangan']) || $data['keterangan']=="" ||
 			!isset($data['noreg']) || $data['noreg']==""
@@ -4595,11 +4750,11 @@
 						$resultType = "success";
 						$resultMsg  = "Input berhasil disimpan.";
 						/*upload image*/
-							$validextensions = array("jpeg", "jpg", "png", "gif");
+							$Validextensions = array("jpeg", "jpg", "png", "gif");
 							$temporary = explode(".", $_FILES["imageUrl"]["name"]);
 							$file_extension = end($temporary);
 							$file_name = "berkas belum diunggah...";					
-							if (in_array($file_extension, $validextensions)) {						
+							if (in_array($file_extension, $Validextensions)) {						
 								if ($_FILES["imageUrl"]["error"] > 0)
 								{
 									$upload_message = $_FILES["imageUrl"];
@@ -4677,7 +4832,7 @@
 		$dumbTable  = "";
 		$noreg		= "";
 		
-		/* validation */
+		/* Validation */
 		if(
 			!isset($data['noreg']) || $data['noreg']=="" ||
 			!isset($data['judulKoleksi']) || $data['judulKoleksi']=="" ||
@@ -4790,7 +4945,7 @@
 		$noreg 	  	= "";
 		$dumbRes 	= ['','','','','','','','','','','','','','',''];
 
-		/* validation */
+		/* Validation */
 		if(isset($data['pId']) && $data['pId'] != ""){
 			
 			/* open connection */ 
@@ -4990,7 +5145,7 @@
 		$dumbTable  = "";
 		$noreg 	  	= "";
 
-		/* validation */
+		/* Validation */
 		if(	
 			   isset($data['pId']) && $data['pId'] != "" 
 			&& isset($data['refferenceId']) && $data['refferenceId'] != "")
@@ -5106,7 +5261,7 @@
 		$noreg 	  	= "";
 		$file_name = "berkas belum diunggah...";
 
-		/* validation */
+		/* Validation */
 		if(	
 			   isset($data['pId']) && $data['pId'] != "" 
 			&& isset($data['refferenceId']) && $data['refferenceId'] != "")
@@ -5220,7 +5375,7 @@
 		$dumbTable  = "";
 		$noreg 	  	= "";
 
-		/* validation */
+		/* Validation */
 		if(	
 			   isset($data['pId']) && $data['pId'] != "" 
 			&& isset($data['refferenceId']) && $data['refferenceId'] != "")
@@ -5397,7 +5552,7 @@
 		$dumbTable  = "";
 		$noreg		= "";
 		
-		/* validation */
+		/* Validation */
 		if(
 			!isset($data['noreg']) || $data['noreg']=="" ||
 			!isset($data['deskripsi']) || $data['deskripsi']==""
@@ -5506,7 +5661,7 @@
 		$dumbTable  = "";
 		$noreg		= "";
 		
-		/* validation */
+		/* Validation */
 		if(
 			!isset($data['noreg']) || $data['noreg']=="" ||
 			!isset($data['hirarki']) || $data['hirarki']=="" ||
@@ -5626,7 +5781,7 @@
 		$dumbTable  = "";
 		$noreg 	  	= "";
 
-		/* validation */
+		/* Validation */
 		if(	
 			   isset($data['pId']) && $data['pId'] != "" 
 			&& isset($data['refferenceId']) && $data['refferenceId'] != "")
@@ -5719,7 +5874,7 @@
 		$noreg 	  	= "";
 		$nama 	  	= "";
 
-		/* validation */
+		/* Validation */
 		if(	
 			   isset($data['pId']) && $data['pId'] != "" 
 			&& isset($data['refferenceId']) && $data['refferenceId'] != "")
@@ -5767,7 +5922,6 @@
 							while($row = mysqli_fetch_assoc($result)) { $namaPersyaratan = $row['namaPersyaratan']; }
 						}
 
-						if (session_status() == PHP_SESSION_NONE) { session_start(); }
 						$sql = 
 						"	INSERT INTO dplega_901_notifications
 							(
@@ -5840,7 +5994,7 @@
 		$dumbTable  = "";
 		$noreg 	  	= "";
 
-		/* validation */
+		/* Validation */
 		if(	
 			   isset($data['pId']) && $data['pId'] != "" 
 			&& isset($data['refferenceId']) && $data['refferenceId'] != "")
@@ -5932,7 +6086,7 @@
 		$dumbTable  = "";
 		$noreg 	  	= "";
 
-		/* validation */
+		/* Validation */
 		if(	
 			   isset($data['pId']) && $data['pId'] != "" 
 			&& isset($data['refferenceId']) && $data['refferenceId'] != "")

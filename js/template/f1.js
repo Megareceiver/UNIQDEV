@@ -11,7 +11,6 @@ function r_f1Kelembagaan() {
 		data 	= p_getData('f4', 'f431'); 
 		data 	= data.feedData; 
 		
-		
 		//--open
 		head	= '';
 		body	= '<div class="row no-head"><div class="container">';
@@ -50,10 +49,13 @@ function r_f1Kelembagaan() {
 			'</div>';
 			
 			//--right
+			var placeImg = data[loop].noreg;
+				placeImg = placeImg.substr((placeImg.length-1), 1);
+			var temPic = ((data[loop].picture != null && data[loop].picture != '') ? data[loop].picture : 'icon-'+placeImg+'.png');
 			part[1] = part[1] +
 			'<div class="cards clear">' +
 				'<div class="description-box click-frame group-click" p-id="' + data[loop].noreg + '" p-caption="' + data[loop].caption + '">' +
-					'<img class="icon-set" src="img/sources/' + data[loop].picture + '"/>' +
+					'<img class="icon-set" src="img/sources/' + temPic + '"/>' +
 					'<p class="title-set">' + data[loop].caption + '</p>' +
 					'<p class="text-set">' + data[loop].description + '</p>' +
 				'</div>' +
@@ -169,7 +171,7 @@ function r_f1DaftarLembaga(packet) {
 		var tempP = "";
 		var tempB = ""; 
 
-		part[1] = part[1] + r_f1LembagaGenerator (data);
+		part[1] = part[1] + r_f1LembagaGenerator(data);
 		
 		part[0] = part[0] + '</div>';
 		part[1] = part[1] + '</div>';
@@ -329,6 +331,59 @@ function r_f1LembagaGenerator(data){
 						'<div class="list-box foot">' +
 							'<button type="button" class="clear list-text btn-link detail-click" p-id="' + data.lembaga[loop].list[loopY].id + '">Lihat selengkapnya</button>' +
 						'</div>' +
+					'</div>' +
+				'</div>';
+			}
+		}
+	}else{
+		genHtml = genHtml +
+		'<div class="cards">' +
+			'<div class="cards-header">' +
+				'<p class="fixed offset text-black">Data tidak ditemukan.</p>' +
+			'</div>' +
+		'</div>';
+	}
+
+	return genHtml;
+}
+
+function r_f1LembagaSelectionGenerator(data){
+	var genHtml = "";
+	var tempB 	= "";
+	var tempP	= "";
+	if(data.lembaga != null){
+		lembagaCounter = data.lembaga.length;
+		for(var loop = 0; loop < data.lembaga.length; loop++){	
+			if(loop > 0){ tempP = "plus"; }
+			if(data.lembaga[loop].collapse == 'y') { tempB = '<span class="btn-collapse">Lihat semua</span>'; } else { tempB = ""; }
+
+			//--right
+			genHtml = genHtml +
+			'<div class="cards-label ' + tempP + '">' +
+				'<p>' +
+					'<strong>' + data.lembaga[loop].group + ' (' +  data.lembaga[loop].list.length + ')</strong>' +
+					tempB +
+				'</p>' +
+			'</div>';
+			var temPic = "";
+			for(var loopY = 0; loopY < data.lembaga[loop].list.length; loopY++){
+				var placeImg = data.lembaga[loop].list[loopY].noreg;
+				placeImg = placeImg.substr((placeImg.length-1), 1);
+				temPic   = (data.lembaga[loop].list[loopY].picture != "") ? 'img/logo/' + data.lembaga[loop].list[loopY].picture : 'img/logo/avatar-' + placeImg + '.jpg';
+				genHtml  = genHtml +
+				'<div id="' + data.lembaga[loop].list[loopY].id + '" class="cards clear">' +
+					'<div class="description-box">' +
+						'<div class="">' +
+							'<img class="icon-set" src="' + temPic + '"/>' +
+							'<p class="title-set">' + data.lembaga[loop].list[loopY].nb + ' ' + data.lembaga[loop].list[loopY].nama + '</p>' +
+							'<div class="text-set">' +
+								'<span class="pos">' + data.lembaga[loop].list[loopY].nk + ' / ' + data.lembaga[loop].list[loopY].nc + ' / ' + data.lembaga[loop].list[loopY].nw + ' / ' + data.lembaga[loop].list[loopY].np + '</span>' +
+							'</div>' +
+						'</div>' +
+					'</div>' +
+					'<div class="check-box fixed-position right-block">' +
+					  	'<input id="get' + data.lembaga[loop].list[loopY].noreg + '" p-id="' + data.lembaga[loop].list[loopY].noreg + '" class="select-button" type="checkbox">' +
+					 	 '<label for="get' + data.lembaga[loop].list[loopY].noreg + '"><span class="inner"></span><span class="icon"></span></label>' +
 					'</div>' +
 				'</div>';
 			}

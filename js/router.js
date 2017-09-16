@@ -20,6 +20,7 @@ var maxForm 			= 4; //set max form
 var lembagaCounter		= 0;
 var moduleCounter		= 0;
 var moduleActive		= [];
+var customArray			= [];
 
 /* packet data variable */
 var pGroup  		= "";
@@ -260,6 +261,21 @@ function r_customCallBack(formType, group, target, recentId, formId, pId){
 					
 					r_f1HirarkiDataGenerator(dataFec);
 					clearTargetFormNoreg(formId, $('#' + formId + ' input[name="noreg"]').val());
+				break;
+				case 'f123' :
+					var temp = recentId.split(',');
+					var textemp = 
+						$('#f-transfer-create [name=kodeKelurahan] option:selected').text() + ' / ' +
+						$('#f-transfer-create [name=kodeKecamatan] option:selected').text() + ' / ' +
+						$('#f-transfer-create [name=kodeWilayah] option:selected').text() + ' / ' +
+						$('#f-transfer-create [name=kodeProvinsi] option:selected').text();
+					for(var loop=0; loop < temp.length; loop++){
+						$("#" + temp[loop] + " .text-set .pos").html(textemp);
+					}
+
+					$('.select-button').prop('checked', false);
+					$('#counter-select').html(0);
+					clearTargetForm(formId);
 				break;
 			}
 		break;
@@ -523,13 +539,29 @@ function r_optionDHtml(group){
 				}
 			}
 		break;
+		case "kelurahan": 
+			if(optionD != null && optionD[0].kelurahan != undefined){
+				for(var loop=0; loop<optionD[0].kelurahan.length; loop++){
+					optionHtml = optionHtml + '<option value="' + optionD[0].kelurahan[loop].idData + '">' + optionD[0].kelurahan[loop].caption + '</option>';
+				}
+			}
+		break;
 		case "level": 
 			if(r_getCookie('userLevel') == '7' || r_getCookie('userLevel') == '3')
 				optionHtml = optionHtml + '<option value="2">Level 2</option>';
 			if(r_getCookie('userLevel') == '7')
 				optionHtml = optionHtml + '<option value="3">Level 3</option>';
 		break;
-
+		case "kelembagaan": 
+			var data 	= p_getData('f4', 'f431'); 
+			if(data != null && data.feedData != null) {
+				data = data.feedData; 
+				
+				for(var loop=0; loop<data.length; loop++){
+					optionHtml = optionHtml + '<option value="' + data[loop].noreg + '">' + data[loop].caption + '</option>';
+				}
+			}
+		break;
 	}
 	
 	return optionHtml;

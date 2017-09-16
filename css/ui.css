@@ -313,6 +313,7 @@ button.main:hover { background-color: #BF245A; color: #FFF !important }
 }
 
 .check-box.fixed-position.right { right: 0 }
+.check-box.fixed-position.right-block { right: 15px }
 .check-box input { display:none }
 .check-box label {
   display: inline-block;
