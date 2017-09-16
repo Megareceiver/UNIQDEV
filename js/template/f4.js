@@ -942,6 +942,9 @@ function r_f4TransferLembaga() {
 			{'noreg': '2', 'group': 'Yayasan', 'caption': 'lorem dolor sit amet 3.'},
 			{'noreg': '3', 'group': 'Yayasan', 'caption': 'lorem dolor sit amet 4.'},
 		];
+
+		data = p_getData('f1','f11101'); console.log(data);
+		data = data.feedData;
 		
 		//--open
 		head = '';
@@ -970,21 +973,25 @@ function r_f4TransferLembaga() {
 								'<div class="select-box">' +
 									'<select tabindex="1">' +
 										'<option value="" selected>Provinsi</option>' +
+										r_optionDHtml('provinsi') +
 									'</select>' +
 								'</div>' +
 								'<div class="select-box">' +
 									'<select tabindex="1">' +
 										'<option value="" selected>Wilayah</option>' +
+										r_optionDHtml('wilayah') +
 									'</select>' +
 								'</div>' +
 								'<div class="select-box">' +
 									'<select tabindex="1">' +
 										'<option value="" selected>Kecamatan</option>' +
+										r_optionDHtml('kecamatan') +
 									'</select>' +
 								'</div>' +
 								'<div class="select-box">' +
 									'<select tabindex="1">' +
 										'<option value="" selected>Kelurahan</option>' +
+										r_optionDHtml('kelurahan') +
 									'</select>' +
 								'</div>' +
 								'<div class="space-box"></div>' +
@@ -1018,21 +1025,25 @@ function r_f4TransferLembaga() {
 								'<div class="select-box">' +
 									'<select tabindex="1">' +
 										'<option value="" selected>Provinsi</option>' +
+										r_optionDHtml('provinsi') +
 									'</select>' +
 								'</div>' +
 								'<div class="select-box">' +
 									'<select tabindex="1">' +
 										'<option value="" selected>Wilayah</option>' +
+										r_optionDHtml('wilayah') +
 									'</select>' +
 								'</div>' +
 								'<div class="select-box">' +
 									'<select tabindex="1">' +
 										'<option value="" selected>Kecamatan</option>' +
+										r_optionDHtml('kecamatan') +
 									'</select>' +
 								'</div>' +
 								'<div class="select-box">' +
 									'<select tabindex="1">' +
 										'<option value="" selected>Kelurahan</option>' +
+										r_optionDHtml('kelurahan') +
 									'</select>' +
 								'</div>' +
 								'<div class="space-box"></div>' +
