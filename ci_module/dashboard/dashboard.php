@@ -5,7 +5,8 @@ if (! defined('BASEPATH'))
 
 class Dashboard
 {
-
+    var $ci;
+    var $graph_type = null;
     function __construct()
     {
         $this->ci = get_instance();
@@ -131,6 +132,7 @@ class Dashboard
         $column_left = NULL;
         $column_right = NULL;
         $count = 0;
+        $graph_type = null;
         foreach ($blocks as $wg) {
 
             if (method_exists($this, $wg->widget)) {
@@ -294,7 +296,7 @@ class Dashboard
     private function suppliers($graph_type = 'ColumnChart', $title = NULL, $id = 0)
     {
         $suppliers = $this->model->suppliers(NULL, Today(), 10);
-
+        $today = Today();
         if ($graph_type == 'html' or $graph_type == 'Table') {
             $table = array(
                 'supp_name' => 'Supplier',
