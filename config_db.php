@@ -73,7 +73,7 @@ if( isset($db) && isset($db[$user]) ){
 				'host' => 'localhost',
 				'dbuser' => 'root',
 				'dbpassword' => '',
-				'dbname' => 'at_dev',
+				'dbname' => 'uniqdev',
 				'tbpref' => '',
 			),
 	);
