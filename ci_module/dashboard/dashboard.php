@@ -171,7 +171,7 @@ class Dashboard
         end_page();
     }
 
-    private function customers($graph_type = 'ColumnChart', $title = NULL, $id = 0)
+    private function customers($graph_type = 'ColumnChart', $title = NULL, $id = 0, $today = null)
     {
         $debtors = $this->model->debtors(begin_fiscalyear(), Today(), 10);
 
