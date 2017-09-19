@@ -18,30 +18,28 @@ function tax_types_list($name, $selected_id=null, $none_option=false, $submit_on
         $selected_id = input_post($name);
     }
    
-    unset($_SESSION['taxcode'][$group_tax]); $group_tax = '3';
+    // unset($_SESSION['taxcode'][$group_tax]);
     if( !isset($_SESSION['taxcode'][$group_tax]) OR empty($_SESSION['taxcode'][$group_tax])){
         $item_api = get_instance()->api->get_data('taxcode/'.$group_tax);
 
         if( !empty($item_api) AND isset($item_api->options) ){
             $_SESSION['taxcode'][$group_tax] = (array)$item_api->options;
-        }else{
-            $_SESSION['taxcode'][$group_tax] = array("Peter"=>"35");
         }
 
         
     }
 
-    $url = $_SERVER['SERVER_NAME'];
-    $domain_info = explode('.', $url);
+    // $url = $_SERVER['SERVER_NAME'];
+    // $domain_info = explode('.', $url);
 
-    $url = ATAPI;
+    // $url = ATAPI;
    
    // echo "<script> console.log(".json_encode($_SESSION['taxcode']).")</script>";
 
-    echo "<script> console.log('-=-=')</script>";
-    echo "<script> console.log('".$url.'/user'."')</script>";
-    echo "<script> console.log('-=-=')</script>";
-    echo "<script> console.log('".json_encode($_SERVER['SERVER_NAME'])."')</script>";
+    // echo "<script> console.log('-=-=')</script>";
+    // echo "<script> console.log('".$_SESSION['taxcode'][$group_tax]."')</script>";
+    // echo "<script> console.log('-=-=')</script>";
+    echo "<script> console.log('".json_encode($_SESSION['taxcode'][$group_tax])."')</script>";
     $items = $_SESSION['taxcode'][$group_tax];
 
     return array_selector($name, $selected_id, $items, array(
@@ -51,5 +49,4 @@ function tax_types_list($name, $selected_id=null, $none_option=false, $submit_on
         'data-size'=>6,
         'data-live-search'=>true
     ));
-
 }

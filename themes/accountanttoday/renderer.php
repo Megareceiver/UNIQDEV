@@ -194,7 +194,7 @@ class renderer
                                     $dashboard_uri = 'products/dashboard';
                                     break;
                                 case 'AP':
-                                    $dashboard_uri = 'purchases/dashboard';
+                                    $dashboard_uri = '/purchases/dashboard';
                                     break;
                                 default:
                                     $dashboard_uri = NULL;

@@ -22,9 +22,9 @@ class Dashboard_Widgets_Model extends CI_Model {
         if( $date_begin ){
             $this->db->where( 'tran_date >=', date2sql($date_begin) );
         }
-        if( $data_end ){
-            $this->db->where( 'tran_date <=', date2sql($date_end) );
-        }
+        // if( $data_end ){
+        //     $this->db->where( 'tran_date <=', date2sql($date_end) );
+        // }
 
 
         $this->db->group_by('d.debtor_no')->order_by('total DESC, d.debtor_no');

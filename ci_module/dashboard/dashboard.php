@@ -5,7 +5,8 @@ if (! defined('BASEPATH'))
 
 class Dashboard
 {
-
+    var $ci;
+    var $graph_type = null;
     function __construct()
     {
         $this->ci = get_instance();
@@ -131,6 +132,7 @@ class Dashboard
         $column_left = NULL;
         $column_right = NULL;
         $count = 0;
+        $graph_type = null;
         foreach ($blocks as $wg) {
 
             if (method_exists($this, $wg->widget)) {
@@ -169,7 +171,7 @@ class Dashboard
         end_page();
     }
 
-    private function customers($graph_type = 'ColumnChart', $title = NULL, $id = 0)
+    private function customers($graph_type = 'ColumnChart', $title = NULL, $id = 0, $today = null)
     {
         $debtors = $this->model->debtors(begin_fiscalyear(), Today(), 10);
 
@@ -278,7 +280,7 @@ class Dashboard
                 ),
                 'days' => 'Days'
             );
-            $html = '<div class="dashboard_item clearfix" ><h3>' . $limit . '/' . count($invoices) . ' Overdue Purchase Invoices</h3>';
+            $html = '<div class="table-responsive" ><h3>' . $limit . '/' . count($invoices) . ' Overdue Purchase Invoices</h3>';
             $html .= $this->ci->view('common/table-block', array(
                 'style' => 'striped',
                 'table' => $table,
@@ -294,7 +296,7 @@ class Dashboard
     private function suppliers($graph_type = 'ColumnChart', $title = NULL, $id = 0)
     {
         $suppliers = $this->model->suppliers(NULL, Today(), 10);
-
+        $today = Today();
         if ($graph_type == 'html' or $graph_type == 'Table') {
             $table = array(
                 'supp_name' => 'Supplier',
