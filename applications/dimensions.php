@@ -14,20 +14,12 @@ class dimensions_app extends application
 	function dimensions_app()
 	{
 		$dim = get_company_pref('use_dimension');
-		$this->application("proj", _($this->help_context = "Class"), $dim,'fa fa-random');
+		$this->application("AC", _($this->help_context = "Accountant's Area"), true, 'fa fa-desktop');
 
 		if ($dim > 0)
 		{
-			$this->add_module(_("Transactions"),'fa fa-files-o');
-			$this->add_lapp_function(0, _("Class &Entry"), "dimensions/dimension_entry.php?", 'SA_DIMENSION', MENU_ENTRY,'fa fa-list-ul');
-			$this->add_lapp_function(0, _("&Outstanding Class"), "dimensions/inquiry/search_dimensions.php?outstanding_only=1", 'SA_DIMTRANSVIEW', MENU_TRANSACTION,'fa fa-list-ol');
-
-			$this->add_module(_("Inquiries and Reports"),'fa fa-file-text-o');
-			$this->add_lapp_function(1, _("Class"), "dimensions/inquiry/search_dimensions.php?", 'SA_DIMTRANSVIEW', MENU_INQUIRY,'fa fa-list-ol');
-			$this->add_rapp_function(1, _("Class &Reports"), "reporting/reports_main.php?Class=4&REP_ID=501", 'SA_DIMENSIONREP', MENU_REPORT,'fa fa-file-text-o');
-
-			$this->add_module(_("Maintenance"),'fa fa-gear');
-			$this->add_lapp_function(2, _("Class &Tags"), "admin/tags.php?type=dimension", 'SA_DIMTAGS', MENU_MAINTENANCE,'fa fa-list-ol');
+            $this->add_module(_("Mobile Accountant"), 'fa fa-upload', "documents/bookkeepers");
+            $this->add_extensions();
 
 			$this->add_extensions();
 		}
