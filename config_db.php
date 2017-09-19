@@ -27,7 +27,7 @@ $user = $session->checkSubDirectory();
 
 
 if( !defined('ATAPI') ) {
-    define('ATAPI', 'http://uniq.api/index.php/' );
+    define('ATAPI', 'http://membership.dev/api/index.php?/' );
 }
 
 if( function_exists('curl_init') ){
