@@ -280,7 +280,7 @@ class Dashboard
                 ),
                 'days' => 'Days'
             );
-            $html = '<div class="dashboard_item clearfix" ><h3>' . $limit . '/' . count($invoices) . ' Overdue Purchase Invoices</h3>';
+            $html = '<div class="table-responsive" ><h3>' . $limit . '/' . count($invoices) . ' Overdue Purchase Invoices</h3>';
             $html .= $this->ci->view('common/table-block', array(
                 'style' => 'striped',
                 'table' => $table,
