@@ -13,3 +13,6 @@ ci_module/html/test_out.html
 config_db.php
 
 company/0/pdf_files/gst-form3.pdf
+config_db.php
+config_db.php
+*.php
