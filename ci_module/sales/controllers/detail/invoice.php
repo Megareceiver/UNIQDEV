@@ -137,7 +137,8 @@ class SalesDetailInvoice
                         $this->tran2['unit_price'] * $this->tran2['quantity'] *
                                  (1 - $this->tran2['discount_percent']), 
                                 $this->tran['tax_included']);
-                
+                echo "<script> console.log('".json_encode($tax)."')</script>";
+
                 if (! array_key_exists($tax->id, $item_taxes)) {
                     $item_taxes[$tax->id] = array(
                             'name' => $tax->name,

@@ -44,7 +44,7 @@ if( !function_exists("get_gst_string") ){
 }
 
 function tax_calculator($tax_id,$price=0,$tax_included=false,$tax=null){
-    $data = array('rate'=>0,'name'=>null,'price'=>0,'value'=>0,'gst_03_type'=>0,'sales_gl_code'=>null,'purchasing_gl_code'=>null, 'code'=>NULL);
+    $data = array('id'=>0,'rate'=>0,'name'=>null,'price'=>0,'value'=>0,'gst_03_type'=>0,'sales_gl_code'=>null,'purchasing_gl_code'=>null, 'code'=>NULL);
 
     if( !$tax_id OR !is_numeric($tax_id) ){
         $data['price'] = $price;
@@ -59,7 +59,7 @@ function tax_calculator($tax_id,$price=0,$tax_included=false,$tax=null){
     $ci->db->reset();
     $tax_gl_acc = $ci->db->where('id',$tax_id)->get('tax_types')->row();
 
-
+    echo "<script> console.log('".json_encode($tax_gl_acc)."')</script>";
     if($tax && is_object($tax) AND !empty($tax) AND isset($tax->id)){
 
         $data['id'] = $tax->id;
